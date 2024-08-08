@@ -22,6 +22,7 @@ public class BrandService {
         }
 
         Brand brand = Brand.from(brandPostDTO);
+
         brand.pending();
         brand.initLikesCnt();
         // TODO : brand.designateSeller(seller); 판매자 설정.

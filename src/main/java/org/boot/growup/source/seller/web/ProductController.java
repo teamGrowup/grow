@@ -1,31 +1,27 @@
 package org.boot.growup.source.seller.web;
 
-import org.boot.growup.source.seller.dto.ProductRequestDTO;
-import org.boot.growup.source.seller.dto.ProductResponseDTO;
+import lombok.RequiredArgsConstructor;
+import org.boot.growup.source.seller.dto.request.ProductRequestDTO;
+import org.boot.growup.source.seller.dto.response.ProductResponseDTO;
 import org.boot.growup.source.seller.service.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.boot.growup.source.seller.service.ProductServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import jakarta.validation.Valid;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/sellers")
+@RequiredArgsConstructor
 public class ProductController {
 
     private final ProductService productService;
+//    private final ProductServiceImpl productServiceImpl;
     private final ObjectMapper objectMapper;
-
-    @Autowired
-    public ProductController(ProductService productService, ObjectMapper objectMapper) {
-        this.productService = productService;
-        this.objectMapper = objectMapper;
-    }
 
     @PostMapping("/products")
     public ResponseEntity<ProductResponseDTO> registerProduct(

@@ -8,7 +8,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class NoticePostDTO {
+public class PostNoticeRequestDTO {
 
   @NotBlank(message = "제목은 필수 입력입니다.")
   private String title;
@@ -17,15 +17,15 @@ public class NoticePostDTO {
   private String content;
 
   @JsonCreator
-  public NoticePostDTO(
+  public PostNoticeRequestDTO(
       @JsonProperty("title") String title,
       @JsonProperty("content") String content) {
     this.title = title;
     this.content = content;
   }
 
-  public static NoticePostDTO from(NoticePostDTO notice) {
-    return NoticePostDTO.builder()
+  public static PostNoticeRequestDTO from(PostNoticeRequestDTO notice) {
+    return PostNoticeRequestDTO.builder()
         .title(notice.getTitle())
         .content(notice.getContent())
         .build();

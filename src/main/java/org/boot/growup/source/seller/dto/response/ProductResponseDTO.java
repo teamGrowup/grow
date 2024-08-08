@@ -1,4 +1,4 @@
-package org.boot.growup.source.seller.dto;
+package org.boot.growup.source.seller.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
