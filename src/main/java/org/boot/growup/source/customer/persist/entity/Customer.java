@@ -5,8 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.boot.growup.common.Gender;
-import org.boot.growup.common.Role;
+import org.boot.growup.common.enumerate.Gender;
+import org.boot.growup.common.enumerate.Role;
 import org.boot.growup.common.oauth2.Provider;
 import org.boot.growup.common.userdetail.CustomUserDetails;
 
@@ -28,7 +28,7 @@ public class Customer {
     @Column(length = 60)
     private String password;
 
-    @Column(nullable = false, length = 11)
+    @Column(nullable = false, length = 13)
     private String phoneNumber;
 
     @Column(nullable = false, length = 8)

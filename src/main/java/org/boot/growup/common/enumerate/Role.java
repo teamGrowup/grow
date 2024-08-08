@@ -1,4 +1,4 @@
-package org.boot.growup.common;
+package org.boot.growup.common.enumerate;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

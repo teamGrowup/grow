@@ -1,6 +1,6 @@
 package org.boot.growup.common.userdetail;
 
-import org.boot.growup.common.Role;
+import org.boot.growup.common.enumerate.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
