@@ -28,15 +28,17 @@ public class BaseResponse<T> {
         this.message = SUCCESS.getMessage(); // 성공 메세지
         this.data = data; // JSON 데이터
     }
+
     /* 예외발생 시 */
     public BaseResponse(BaseException e) {
         this.isSuccess = e.getErrorCode().isSuccess();
-        this.code=e.getCode();
-        this.message=e.getMessage();
+        this.code = e.getCode();
+        this.message = e.getMessage();
     }
+
     public BaseResponse(ErrorCode e) {
         this.isSuccess = e.isSuccess();
-        this.code=e.getCode();
-        this.message=e.getMessage();
+        this.code = e.getCode();
+        this.message = e.getMessage();
     }
 }

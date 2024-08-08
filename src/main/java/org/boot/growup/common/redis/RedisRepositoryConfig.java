@@ -22,19 +22,19 @@ import java.time.Duration;
 @EnableRedisRepositories
 @EnableCaching
 public class RedisRepositoryConfig {
-  private final RedisProperties redisProperties;
+    private final RedisProperties redisProperties;
 
-  @Bean
-  public RedisConnectionFactory redisConnectionFactory(){
-    return new LettuceConnectionFactory(redisProperties.getHost(),redisProperties.getPort());
-  }
+    @Bean
+    public RedisConnectionFactory redisConnectionFactory() {
+        return new LettuceConnectionFactory(redisProperties.getHost(), redisProperties.getPort());
+    }
 
-  @Bean
-  public RedisTemplate<String,Object> redisTemplate(){
-    RedisTemplate<String,Object> redisTemplate = new RedisTemplate<>();
-    redisTemplate.setConnectionFactory(redisConnectionFactory());
-    redisTemplate.setKeySerializer(new StringRedisSerializer());
-    redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
-    return redisTemplate;
-  }
+    @Bean
+    public RedisTemplate<String, Object> redisTemplate() {
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(redisConnectionFactory());
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+        return redisTemplate;
+    }
 }

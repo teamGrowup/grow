@@ -6,7 +6,7 @@ import org.boot.growup.common.error.ErrorCode;
 
 @AllArgsConstructor
 @Getter
-public class BaseException extends RuntimeException{
+public class BaseException extends RuntimeException {
     private final ErrorCode errorCode;
     private final int code;
     private final String errorMessage;
@@ -17,6 +17,7 @@ public class BaseException extends RuntimeException{
         this.code = errorcode.getCode();
         this.errorMessage = errorcode.getMessage();
     }
+
     public BaseException(ErrorCode errorcode, String errorMessage) {
         super(errorMessage);
         this.errorCode = errorcode;

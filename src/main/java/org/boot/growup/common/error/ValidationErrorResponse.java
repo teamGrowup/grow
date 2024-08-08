@@ -9,7 +9,7 @@ import java.util.Map;
 @Getter
 @AllArgsConstructor
 public class ValidationErrorResponse {
-  private int code;
-  private boolean isSuccess;
-  private List<Map<String, String>> message;
+    private int code;
+    private Boolean isSuccess;
+    private List<Map<String, String>> message;
 }

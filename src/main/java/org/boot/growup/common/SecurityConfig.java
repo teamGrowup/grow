@@ -20,8 +20,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(); // 단방향 해쉬
     }
 
@@ -38,7 +39,7 @@ public class SecurityConfig {
                         .requestMatchers("/customers/email/**", "/customers/oauth/**").permitAll()
                         .requestMatchers("/customers/**").hasRole("CUSTOMER")
                         .anyRequest().authenticated()
-                    )
+                )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();
     }
