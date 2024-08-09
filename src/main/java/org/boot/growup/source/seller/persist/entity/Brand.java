@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.boot.growup.source.seller.constant.AuthorityStatus;
-import org.boot.growup.source.seller.dto.BrandPostDTO;
+import org.boot.growup.source.seller.dto.request.RegisterBrandRequestDTO;
 
 @Entity
 @Getter
@@ -15,25 +15,32 @@ import org.boot.growup.source.seller.dto.BrandPostDTO;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Brand {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "brand_id", nullable = false)
     private Long id;
 
+    @Column(nullable = false, length = 25)
     private String name;
+
+    @Column(nullable = false, length = 500)
     private String description;
+
+    @Column(name = "authority_status", nullable = false)
     @Enumerated(EnumType.STRING)
     private AuthorityStatus authorityStatus;
+
+    @Column(nullable = false)
     private int likes;
 
     @OneToOne
     @JoinColumn(name = "seller_id")
     private Seller seller;
 
-    public static Brand from(BrandPostDTO brandPostDTO) {
+    public static Brand from(RegisterBrandRequestDTO registerBrandRequestDTO) {
         return Brand.builder()
-                .name(brandPostDTO.getName())
-                .description(brandPostDTO.getDescription())
+                .name(registerBrandRequestDTO.getName())
+                .description(registerBrandRequestDTO.getDescription())
                 .build();
     }
 

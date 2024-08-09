@@ -11,7 +11,6 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import lombok.*;
 
 @Entity
 @Table(name = "product")
@@ -39,7 +38,7 @@ public class Product {
     private LocalDateTime deletedAt;
 
     private String status;
-    private String authorityStatus = "대기";
+    private String authorityStatus;
 
     @ManyToOne
     @JoinColumn(name = "sub_category_id")
