@@ -13,12 +13,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BrandImage {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "brand_image_id", nullable = false)
     private Long id;
 
+    @Column(nullable = false)
     private String originalImageName;
+
+    @Column(nullable = false)
     private String path;
 
     @ManyToOne(fetch = FetchType.LAZY)
