@@ -1,5 +1,5 @@
 package org.boot.growup.source.customer.dto.response;
 
-public record EmailValidationResponseDTO(
+public record EmailCheckResponseDTO(
     String validationCode
 ) {}

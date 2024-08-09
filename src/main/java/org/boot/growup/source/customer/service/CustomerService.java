@@ -14,10 +14,10 @@ import org.boot.growup.common.jwt.JwtTokenProvider;
 import org.boot.growup.common.jwt.TokenDto;
 import org.boot.growup.common.oauth2.Provider;
 import org.boot.growup.common.userdetail.CustomUserDetailService;
-import org.boot.growup.source.customer.dto.request.CustomerEmailSignInRequestDTO;
-import org.boot.growup.source.customer.dto.request.CustomerEmailSignUpRequestDTO;
-import org.boot.growup.source.customer.dto.request.EmailValidationRequestDTO;
-import org.boot.growup.source.customer.dto.response.EmailValidationResponseDTO;
+import org.boot.growup.source.customer.dto.request.CustomerSignInRequestDTO;
+import org.boot.growup.source.customer.dto.request.CustomerSignUpRequestDTO;
+import org.boot.growup.source.customer.dto.request.EmailCheckRequestDTO;
+import org.boot.growup.source.customer.dto.response.EmailCheckResponseDTO;
 import org.boot.growup.source.customer.persist.entity.Customer;
 import org.boot.growup.source.customer.persist.repository.CustomerRepository;
 
@@ -40,7 +40,7 @@ public class CustomerService {
     private final EmailService emailService;
 
     @Transactional
-    public void signUp(CustomerEmailSignUpRequestDTO request) {
+    public void signUp(CustomerSignUpRequestDTO request) {
         /* 비밀번호 암호화 */
         String encodedPassword = encodingPassword(request);
         log.info("SignUp Method => before pw : {} | after store pw : {}"
@@ -62,12 +62,12 @@ public class CustomerService {
         customerRepository.save(newCustomer);
     }
 
-    public String encodingPassword(CustomerEmailSignUpRequestDTO request){
+    public String encodingPassword(CustomerSignUpRequestDTO request){
         return passwordEncoder.encode(request.password());
     }
 
     @Transactional
-    public TokenDto signIn(CustomerEmailSignInRequestDTO request) {
+    public TokenDto signIn(CustomerSignInRequestDTO request) {
         UserDetails userDetails =
                 customUserDetailService.loadUserByUsername(request.email());
 
@@ -83,13 +83,13 @@ public class CustomerService {
     }
 
     @Transactional
-    public EmailValidationResponseDTO emailCheck(EmailValidationRequestDTO request) throws MessagingException {
+    public EmailCheckResponseDTO emailCheck(EmailCheckRequestDTO request) throws MessagingException {
         EmailMessageDTO emailMessage = EmailMessageDTO.builder()
                 .to(request.email())
                 .subject("[Grow Team] 이메일 인증 코드")
                 .build();
         String authCode = emailService.sendMail(emailMessage);
 
-        return new EmailValidationResponseDTO(authCode);
+        return new EmailCheckResponseDTO(authCode);
     }
 }
