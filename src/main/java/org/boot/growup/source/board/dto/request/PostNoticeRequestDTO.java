@@ -1,10 +1,11 @@
-package org.boot.growup.source.board.dto;
+package org.boot.growup.source.board.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Data;
+import org.boot.growup.source.board.persist.entity.Notice;
 
 @Data
 @Builder
@@ -24,7 +25,7 @@ public class PostNoticeRequestDTO {
     this.content = content;
   }
 
-  public static PostNoticeRequestDTO from(PostNoticeRequestDTO notice) {
+  public static PostNoticeRequestDTO from(Notice notice) {
     return PostNoticeRequestDTO.builder()
         .title(notice.getTitle())
         .content(notice.getContent())
