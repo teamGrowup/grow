@@ -1,93 +1,54 @@
 package org.boot.growup.source.seller.persist.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.boot.growup.source.seller.constant.AuthorityStatus;
-import org.boot.growup.source.seller.dto.request.ProductRequestDTO;
 
-import java.util.ArrayList;
+import jakarta.persistence.*;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
+import lombok.*;
 
 @Entity
+@Table(name = "product")
 @Getter
 @Builder
-@Table(name = "product")
 @NoArgsConstructor
 @AllArgsConstructor
 public class Product {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long productId;
 
     private String productName;
     private String productDescription;
+    private BigDecimal averageRating;
+    private int likeCount;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "modified_at")
+    private LocalDateTime modifiedAt;
+
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
+
+    private String status;
+    private String authorityStatus = "대기";
 
     @ManyToOne
-    @JoinColumn(name = "subcategory_id")
+    @JoinColumn(name = "sub_category_id")
     private SubCategory subCategory;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<ProductOption> productOptions = new ArrayList<>();
-
-    @ManyToOne
-    @JoinColumn(name = "seller_id")
-    private Seller seller;
-
-    @Enumerated(EnumType.STRING)
-    private AuthorityStatus authorityStatus; // 상품의 허가 상태
+    private List<ProductOption> productOptions;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<ProductImage> productImages = new ArrayList<>();
-
-    public static Product from(ProductRequestDTO productRequestDto) {
-        return Product.builder()
-                .productName(productRequestDto.getProductName())
-                .productDescription(productRequestDto.getProductDescription())
-                .authorityStatus(AuthorityStatus.PENDING) // 기본 상태를 PENDING으로 설정
-                .build();
-    }
-
-    /*
-        상품 옵션 추가
-     */
-    public void addProductOption(ProductOption productOption) {
-        productOptions.add(productOption);
-        productOption.setProduct(this); // 양방향 연관관계 설정
-    }
-
-    /*
-        판매자(대표자) 설정
-     */
-    public void designateSeller(Seller seller) {
-        this.seller = seller;
-    }
-
-    /*
-        허가 상태 변경
-     */
-    public void approve() {
-        this.authorityStatus = AuthorityStatus.APPROVED;
-    }
-
-    public void deny() {
-        this.authorityStatus = AuthorityStatus.DENIED;
-    }
-
-    public void pending() {
-        this.authorityStatus = AuthorityStatus.PENDING;
-    }
-
-    /*
-        상품 옵션 초기화
-     */
-    public void initProductOptions(List<ProductOption> options) {
-        this.productOptions.clear();
-        this.productOptions.addAll(options);
-    }
+    private List<ProductImage> productImages;
 }
+
