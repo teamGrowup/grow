@@ -1,5 +1,6 @@
 package org.boot.growup.common.error;
 
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +10,7 @@ import org.boot.growup.common.constant.BaseResponse;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -22,8 +24,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static org.boot.growup.common.error.ErrorCode.INTERNAL_SERVER_ERROR;
-import static org.boot.growup.common.error.ErrorCode.INVALID_VALUE;
+import static org.boot.growup.common.error.ErrorCode.*;
 
 
 @RestControllerAdvice
@@ -34,6 +35,25 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(e.getCode())
                 .body(new BaseResponse<>(e));
+    }
+
+    @ExceptionHandler(MessagingException.class)
+    public ResponseEntity<BaseResponse<String>> handleMessagingException(
+                MessagingException e, HttpServletRequest request) {
+        log.error("Failed to send email: {}", request.getRequestURL(), e);
+
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new BaseResponse<>(USER_EMAIL_SEND_ERROR));
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<BaseResponse<?>> handleUsernameNotFoundException(
+                UsernameNotFoundException e, HttpServletRequest request) {
+        log.error("[UsernameNotFoundException] url: {}", request.getRequestURL(), e);
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(new BaseResponse<>(ErrorCode.NOT_FOUND));
     }
 
     @ExceptionHandler(IOException.class)

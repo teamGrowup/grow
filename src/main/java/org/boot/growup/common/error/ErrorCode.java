@@ -18,6 +18,9 @@ public enum ErrorCode {
     TOKEN_NOT_EXIST(HttpStatus.UNAUTHORIZED, 401, false, "JWT Token이 존재하지 않습니다."),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, 401, false, "유효하지 않은 JWT Token 입니다."),
 
+    /* Email Send */
+    USER_EMAIL_SEND_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 500, false, "이메일 전송 중 오류가 발생했습니다."),
+
     /* Validation */
     INVALID_VALUE(HttpStatus.BAD_REQUEST, 400, false, "잘못된 입력값입니다."),
     USER_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, 500, false, "유저를 찾지 못했습니다.");
