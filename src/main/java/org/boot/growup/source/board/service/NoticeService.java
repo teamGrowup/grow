@@ -1,29 +1,15 @@
 package org.boot.growup.source.board.service;
 
-import lombok.RequiredArgsConstructor;
-import org.boot.growup.source.board.dto.PostNoticeRequestDTO;
-import org.boot.growup.source.board.persist.NoticeRepository;
-import org.boot.growup.source.board.persist.entity.Notice;
+import java.util.List;
+import org.boot.growup.source.board.dto.request.PostNoticeRequestDTO;
+import org.boot.growup.source.board.dto.response.GetNoticeResponseDTO;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@RequiredArgsConstructor
-@Transactional(readOnly = true)
-public class NoticeService {
+public interface NoticeService {
 
-  private final NoticeRepository noticeRepository;
+  public Long postNotice(PostNoticeRequestDTO postNoticeRequestDTO);
 
-  /**
-   * 공지사항 작성
-   */
-  @Transactional
-  public Long postNotice(PostNoticeRequestDTO postNoticeRequestDTO) {
-    // 관리자 확인 코드 추가 필요!
+  public List<GetNoticeResponseDTO> getNotice();
 
-    Notice notice = Notice.of(postNoticeRequestDTO, "admin");
-    Long id = noticeRepository.save(notice).getNoticeId();
-
-    return id;
-  }
 }

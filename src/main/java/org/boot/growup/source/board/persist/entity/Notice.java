@@ -1,5 +1,6 @@
 package org.boot.growup.source.board.persist.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -9,7 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.boot.growup.source.board.dto.PostNoticeRequestDTO;
+import org.boot.growup.source.board.dto.request.PostNoticeRequestDTO;
 
 @Entity
 @Getter
@@ -21,7 +22,8 @@ public class Notice {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long noticeId;
+  @Column(name = "notice_id", nullable = false)
+  private Long id;
 
   private String title;
   private String content;
