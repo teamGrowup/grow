@@ -9,23 +9,47 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @Builder
-@Table(name = "product_image")
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "product_image")
 public class ProductImage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "product_image_id", nullable = false)
+    private Long id; // 이미지 ID
 
-    private String originalImageName;
-    private String path;
+    @Column(name = "original_image_name", nullable = false)
+    private String originalImageName; // 원본 이미지 이름
+
+    @Column(name = "image_path", nullable = false)
+    private String path; // 이미지 경로
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "section", nullable = false)
+    private Section section; // Section enum 사용
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
-    private Product product;
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product; // 해당 상품과의 관계
 
+    // 상품을 지정하는 메서드
     public void designateProduct(Product product) {
         this.product = product;
+    }
+
+    public enum Section {
+        PRODUCT_IMAGE("상품 이미지"),
+        PRODUCT_DETAIL_IMAGE("상품 상세 설명 이미지");
+
+        private final String description;
+
+        Section(String description) {
+            this.description = description;
+        }
+
+        public String getDescription() {
+            return description;
+        }
     }
 }

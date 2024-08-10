@@ -36,6 +36,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/customers/email/**", "/customers/oauth/**").permitAll()
                         .requestMatchers("/sellers/**").permitAll()
+                        .requestMatchers("/v3/**", "/swagger-ui/**").permitAll() // 스웨거 설정
                         .requestMatchers("/customers/**").permitAll()
                         .anyRequest().authenticated()
                 )

@@ -1,7 +1,11 @@
 package org.boot.growup.source.seller.persist.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
@@ -13,16 +17,21 @@ public class ProductOption {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "product_option_id", nullable = false)
     private Long id;
 
-    private String productOptionName;
-    private int productOptionStock;
-    private int productOptionPrice;
+    @Column(name = "product_option_name", nullable = false, length = 100)
+    private String optionName;
 
-    // setter 메서드 추가
+    @Column(name = "product_option_stock", nullable = false)
+    private int optionStock;
+
+    @Column(name = "product_option_price", nullable = false)
+    private int optionPrice;
+
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "product_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
 //    /*
