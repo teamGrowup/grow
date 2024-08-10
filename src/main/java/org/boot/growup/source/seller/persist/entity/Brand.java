@@ -75,4 +75,12 @@ public class Brand {
     public void initLikesCnt(){
         this.likes = 0;
     }
+
+    /*
+        brand명 및 상세 설명 수정
+     */
+    public void updateBrandInfo(String name, String description){
+        this.name = name;
+        this.description = description;
+    }
 }
