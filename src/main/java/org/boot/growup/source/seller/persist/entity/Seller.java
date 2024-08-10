@@ -13,18 +13,33 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Seller {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "seller_id", nullable = false)
     private Long id;
 
+    @Column(nullable = false, length = 300)
     private String cpEmail;
+
+    @Column(nullable = false, length = 60)
     private String cpPassword;
+
+    @Column(nullable = false, length = 14)
     private String phoneNumber;
+
+    @Column(nullable = false, length = 10)
     private String epName;
+
+    @Column(nullable = false, length = 20)
     private String cpCode;
+
+    @Column(nullable = false, length = 50)
     private String cpName;
+
+    @Column(nullable = false, length = 100)
     private String cpAddress;
+
+    @Column(nullable = true)
     private int netProceeds;
 
     @OneToOne(mappedBy = "seller")

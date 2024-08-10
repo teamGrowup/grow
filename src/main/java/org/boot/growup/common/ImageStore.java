@@ -1,4 +1,4 @@
-package org.boot.growup.source.seller;
+package org.boot.growup.common;
 
 import org.springframework.stereotype.Component;
 
