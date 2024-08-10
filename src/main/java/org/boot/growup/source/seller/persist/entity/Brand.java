@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.boot.growup.source.seller.constant.AuthorityStatus;
+import org.boot.growup.common.enumerate.AuthorityStatus;
 import org.boot.growup.source.seller.dto.request.RegisterBrandRequestDTO;
 
 @Entity

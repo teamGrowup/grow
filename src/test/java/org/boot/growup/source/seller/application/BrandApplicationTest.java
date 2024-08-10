@@ -1,6 +1,6 @@
 package org.boot.growup.source.seller.application;
 
-import org.boot.growup.source.seller.constant.AuthorityStatus;
+import org.boot.growup.common.enumerate.AuthorityStatus;
 import org.boot.growup.source.seller.dto.request.RegisterBrandRequestDTO;
 import org.boot.growup.source.seller.dto.response.ReadSellerBrandResponseDTO;
 import org.boot.growup.source.seller.persist.entity.Brand;

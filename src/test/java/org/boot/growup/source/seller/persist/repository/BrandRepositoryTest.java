@@ -1,6 +1,6 @@
 package org.boot.growup.source.seller.persist.repository;
 
-import org.boot.growup.source.seller.constant.AuthorityStatus;
+import org.boot.growup.common.enumerate.AuthorityStatus;
 import org.boot.growup.source.seller.persist.entity.Brand;
 import org.boot.growup.source.seller.persist.entity.Seller;
 import org.junit.jupiter.api.Test;

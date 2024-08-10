@@ -2,7 +2,7 @@ package org.boot.growup.source.seller.service;
 
 import org.boot.growup.common.constant.BaseException;
 import org.boot.growup.common.error.ErrorCode;
-import org.boot.growup.source.seller.constant.AuthorityStatus;
+import org.boot.growup.common.enumerate.AuthorityStatus;
 import org.boot.growup.source.seller.dto.request.RegisterBrandRequestDTO;
 import org.boot.growup.source.seller.persist.entity.Brand;
 import org.boot.growup.source.seller.persist.entity.Seller;
