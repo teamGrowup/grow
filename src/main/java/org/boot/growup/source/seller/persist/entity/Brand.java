@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.boot.growup.source.seller.constant.AuthorityStatus;
+import org.boot.growup.common.enumerate.AuthorityStatus;
 import org.boot.growup.source.seller.dto.request.RegisterBrandRequestDTO;
 
 @Entity
@@ -74,5 +74,13 @@ public class Brand {
 
     public void initLikesCnt(){
         this.likes = 0;
+    }
+
+    /*
+        brand명 및 상세 설명 수정
+     */
+    public void updateBrandInfo(String name, String description){
+        this.name = name;
+        this.description = description;
     }
 }
