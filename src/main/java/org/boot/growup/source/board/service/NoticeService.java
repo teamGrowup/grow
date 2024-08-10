@@ -9,13 +9,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface NoticeService {
-
   public Long postNotice(PostNoticeRequestDTO postNoticeRequestDTO, String admin);
 
-  public Page<GetNoticeResponseDTO> getNotice(int page);
+  public Page<GetNoticeResponseDTO> getNotice(int pageNo);
 
   public Long updateNotice(Long noticeId, PostNoticeRequestDTO postNoticeRequestDTO, String admin);
 
   public GetNoticeResponseDTO getNoticeDetail(long noticeId);
 
+  public Long deleteNotice(Long noticeId);
 }

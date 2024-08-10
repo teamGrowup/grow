@@ -42,11 +42,11 @@ public class NoticeServiceImpl implements NoticeService {
    * 공지사항 조회
    */
   @Override
-  public Page<GetNoticeResponseDTO> getNotice(int page) {
+  public Page<GetNoticeResponseDTO> getNotice(int pageNo) {
 
     List<Sort.Order> sorts = new ArrayList<>();
     sorts.add(Sort.Order.desc("id")); // 정렬기준 (엔티티명 기준)
-    Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts)); // Pageable 설정
+    Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(sorts)); // Pageable 설정
 
     Page<Notice> noticeList = (Page<Notice>) noticeRepository.findAll(pageable);
 
@@ -79,6 +79,20 @@ public class NoticeServiceImpl implements NoticeService {
         .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND));
 
     return GetNoticeResponseDTO.from(notice);
+  }
+
+  @Override
+  @Transactional
+  public Long deleteNotice(Long noticeId) {
+
+    // 존재 여부 확인
+    if (!noticeRepository.existsById(noticeId)) {
+      throw new BaseException(ErrorCode.NOT_FOUND);
+    }
+
+    noticeRepository.deleteById(noticeId);
+
+    return noticeId;
   }
 
 

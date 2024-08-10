@@ -9,6 +9,7 @@ import org.boot.growup.source.board.dto.request.PostNoticeRequestDTO;
 import org.boot.growup.source.board.dto.response.GetNoticeResponseDTO;
 import org.boot.growup.source.board.service.NoticeService;
 import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,7 +41,6 @@ public class NoticeController {
     String admin = "admin";
 
     Long id = noticeService.postNotice(postNoticeRequestDTO, admin);
-
     return new BaseResponse<>("공지사항 등록 성공. 공지사항 ID : " + id.toString());
   }
 
@@ -49,10 +49,8 @@ public class NoticeController {
    */
   @GetMapping
   public BaseResponse<Page<GetNoticeResponseDTO>> getNotice(
-      @RequestParam(value="page", defaultValue="0") int page) {
-
-    Page<GetNoticeResponseDTO> result = noticeService.getNotice(page);
-
+      @RequestParam(value="pageNo", defaultValue="0") int pageNo) {
+    Page<GetNoticeResponseDTO> result = noticeService.getNotice(pageNo);
     return new BaseResponse<>(result);
   }
 
@@ -62,12 +60,10 @@ public class NoticeController {
   @PatchMapping("/{noticeId}")
   public BaseResponse<String> patchNotice(@PathVariable Long noticeId,
       @Valid @RequestBody PostNoticeRequestDTO postNoticeRequestDTO) {
-
     // 1. 수정한 관리자 정보 가져오기
     String admin = "admin";
 
     Long id = noticeService.updateNotice(noticeId, postNoticeRequestDTO, admin);
-
     return new BaseResponse<>("공지사항 수정 성공. 공지사항 ID : " + id.toString());
   }
 
@@ -76,9 +72,16 @@ public class NoticeController {
    */
   @GetMapping("/{noticeId}")
   public BaseResponse<GetNoticeResponseDTO> getNoticeDetail(@PathVariable Long noticeId) {
-
     GetNoticeResponseDTO result = noticeService.getNoticeDetail(noticeId);
-
     return new BaseResponse<>(result);
+  }
+
+  /**
+   * 5. 공지사항 게시글 삭제
+   */
+  @DeleteMapping("/{noticeId}")
+  public BaseResponse<String> deleteNotice(@PathVariable Long noticeId) {
+    noticeService.deleteNotice(noticeId);
+    return new BaseResponse<>("공지사항 삭제 성공. 삭제된 공지사항 ID : " + noticeId.toString());
   }
 }
