@@ -9,6 +9,7 @@ import org.boot.growup.common.enumerate.Gender;
 import org.boot.growup.common.enumerate.Role;
 import org.boot.growup.common.oauth2.Provider;
 import org.boot.growup.common.userdetail.CustomUserDetails;
+import org.hibernate.validator.constraints.br.CPF;
 
 @Entity
 @Getter
@@ -54,6 +55,8 @@ public class Customer {
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private Role role;
+
+    private String profileUrl;
 
     public CustomUserDetails toUserDetails() {
         return new CustomUserDetails(email, password, role);

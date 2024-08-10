@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -18,7 +19,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final String TOKEN_HEADER = "Authorization";
     private static final String TOKEN_PREFIX = "Bearer ";
     private final JwtTokenProvider jwtTokenProvider;
-
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String path = request.getServletPath();
+        AntPathMatcher pathMatcher = new AntPathMatcher();
+        return (
+            pathMatcher.match("/login",path) && request.getMethod().equals("GET") ||
+            pathMatcher.match("/favicon.ico", path) && request.getMethod().equals("GET")
+        );
+    }
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
                 throws ServletException, IOException {

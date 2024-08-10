@@ -21,6 +21,8 @@ public enum ErrorCode {
     /* Email Send */
     USER_EMAIL_SEND_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 500, false, "이메일 전송 중 오류가 발생했습니다."),
 
+    /* Oauth2.0 */
+    NOT_FOUND_GOOGLE_ACCESS_TOKEN_RESPONSE(HttpStatus.INTERNAL_SERVER_ERROR, 500, false, "구글 액세스 토큰 요청에 실패했습니다."),
     /* Validation */
     INVALID_VALUE(HttpStatus.BAD_REQUEST, 400, false, "잘못된 입력값입니다."),
     USER_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, 500, false, "유저를 찾지 못했습니다."),

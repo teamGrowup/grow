@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>OAuth2.0 Login</title>
+    </head>
+    <body>
+        <h1>Google OAuth2 Login Test</h1>
+        <form action="https://accounts.google.com/o/oauth2/v2/auth" method="post" enctype="application/x-www-form-urlencoded">
+            <input type="hidden" name="client_id" value="778955846796-mtuvddg7pd9o11f9s5nr4rl29taf4r6u.apps.googleusercontent.com">
+            <input type="hidden" name="redirect_uri" value="http://localhost:8081/login/oauth2/code/google">
+            <input type="hidden" name="response_type" value="code">
+            <input type="hidden" name="scope" value="email profile">
+            <input type="submit" value="Google login">
+        </form>
+    </body>
+</html>

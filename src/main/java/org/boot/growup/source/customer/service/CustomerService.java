@@ -68,8 +68,7 @@ public class CustomerService {
 
     @Transactional
     public TokenDto signIn(CustomerSignInRequestDTO request) {
-        UserDetails userDetails =
-                customUserDetailService.loadUserByUsername(request.email());
+        UserDetails userDetails = customUserDetailService.loadUserByUsername(request.email());
 
         if(!checkPassword(request.password(), userDetails.getPassword())){ // 비밀번호 비교
             throw new BaseException(ErrorCode.BAD_REQUEST, "비밀번호가 일치하지 않습니다.");
