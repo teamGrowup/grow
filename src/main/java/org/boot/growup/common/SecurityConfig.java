@@ -43,7 +43,7 @@ public class SecurityConfig {
                         .requestMatchers("/sellers/**").permitAll()
                         .requestMatchers("/v3/**", "/swagger-ui/**").permitAll() // swagger 설정
                         .requestMatchers("/customers/**").permitAll()
-                        .requestMatchers("/login/**").permitAll()
+                        .requestMatchers("/login/**", "/images/**", "/favicon.ico").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

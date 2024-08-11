@@ -1,16 +1,17 @@
 package org.boot.growup.common.oauth2.google;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.boot.growup.common.constant.BaseException;
+import org.boot.growup.common.oauth2.google.call.GoogleTokenFeignClient;
+import org.boot.growup.common.oauth2.google.call.GoogleUserInfoFeignClient;
+import org.boot.growup.common.oauth2.google.dto.GoogleAccessTokenResponseDTO;
+import org.boot.growup.common.oauth2.google.dto.GoogleAccountResponseDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
 
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
@@ -20,6 +21,7 @@ import static org.boot.growup.common.error.ErrorCode.NOT_FOUND_GOOGLE_ACCESS_TOK
 @Component
 @Slf4j
 @RequiredArgsConstructor
+@Getter
 public class GoogleOauthService {
     @Value("${oauth2.google.client.id}")
     private String googleClientId;
@@ -36,20 +38,8 @@ public class GoogleOauthService {
     @Value("${oauth2.google.grant-type}")
     private String grantType;
 
-    private final GoogleAuthFeignClient googleAuthFeignClient;
     private final GoogleTokenFeignClient googleTokenFeignClient;
     private final GoogleUserInfoFeignClient googleUserInfoFeignClient;
-    public String sendAuthorizationRequest() {
-        String body = "client_id=" + googleClientId
-                    + "&redirect_uri=" + googleCallbackUri
-                    + "&response_type=code"
-                    + "&scope=" + googleDataAccessScope;
-
-        return googleAuthFeignClient.sendAuthorizationRequest(
-                MediaType.APPLICATION_FORM_URLENCODED_VALUE,
-                body
-        );
-    }
 
     public String requestGoogleAccessToken(String authCode) {
         String body = "code=" + URLEncoder.encode(authCode, StandardCharsets.UTF_8)

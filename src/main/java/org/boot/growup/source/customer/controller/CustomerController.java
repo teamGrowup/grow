@@ -7,14 +7,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.boot.growup.common.constant.BaseResponse;
 import org.boot.growup.common.jwt.TokenDto;
-import org.boot.growup.common.oauth2.google.GoogleAccountResponseDTO;
+import org.boot.growup.common.oauth2.google.dto.GoogleAccountResponseDTO;
 import org.boot.growup.common.oauth2.google.GoogleOauthService;
-import org.boot.growup.source.customer.dto.request.CustomerSignInRequestDTO;
-import org.boot.growup.source.customer.dto.request.CustomerSignUpRequestDTO;
-import org.boot.growup.source.customer.dto.request.EmailCheckRequestDTO;
-import org.boot.growup.source.customer.dto.request.GoogleSignInRequestDTO;
+import org.boot.growup.common.oauth2.kakao.KakaoOauthService;
+import org.boot.growup.common.oauth2.kakao.dto.KakaoAccountResponseDTO;
+import org.boot.growup.source.customer.dto.request.*;
 import org.boot.growup.source.customer.dto.response.EmailCheckResponseDTO;
-import org.boot.growup.source.customer.dto.response.GoogleSignInResponseDTO;
 import org.boot.growup.source.customer.service.CustomerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +28,7 @@ import java.net.URI;
 public class CustomerController {
     private final CustomerService customerService;
     private final GoogleOauthService googleOauthService;
+    private final KakaoOauthService kakaoOauthService;
 
     /**
      * [POST]
@@ -73,8 +72,6 @@ public class CustomerController {
     /**
      * [POST]
      * 구글 로그인 Oauth2.0
-     * 처음 로그인 시도 -> 구글 플랫폼을 통한 계정선택 후 받은 인가코드와 함께 API를 요청하게 된다.
-     * 이후 로그인 시도 -> 구글 CI를 클릭했을 때 받은 인가코드와 함께 API를 요청하게 된다.
      * @header null
      * @body GoogleSignInRequestDTO
      * @response GoogleSignInResponseDTO
@@ -89,14 +86,18 @@ public class CustomerController {
         return null;
     }
 
-    @GetMapping("/test/google")
-    public ResponseEntity<Void> test(HttpServletResponse response) throws IOException {
-        String redirectUrl = googleOauthService.sendAuthorizationRequest();
-        response.sendRedirect(redirectUrl); // 브라우저를 리디렉션 시킴
-        log.info("url : {}", redirectUrl);
-        return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(redirectUrl)).build();
+    /**
+     * [POST]
+     * 카카오 로그인 Oauth2.0
+     * @header null
+     * @body KakaoSignInRequestDTO
+     * @response
+     */
+    @PostMapping("/oauth/kakao")
+    public ResponseEntity<BaseResponse<TokenDto>> kakaoSignIn(@RequestBody KakaoSignInRequestDTO request) {
+        String accessToken = kakaoOauthService.requestKakaoAccessToken(request.authCode());
+        KakaoAccountResponseDTO kakaoUser = kakaoOauthService.requestKakaoAccount(accessToken);
+        log.info("Kakao User : {}", kakaoUser);
+        return null;
     }
-
-
-
 }

@@ -1,5 +1,6 @@
-package org.boot.growup.common.oauth2.google;
+package org.boot.growup.common.oauth2.google.call;
 
+import org.boot.growup.common.oauth2.google.dto.GoogleAccessTokenResponseDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;

@@ -1,4 +1,4 @@
-package org.boot.growup.common.openforeign;
+package org.boot.growup.common.openfeign;
 
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Configuration;

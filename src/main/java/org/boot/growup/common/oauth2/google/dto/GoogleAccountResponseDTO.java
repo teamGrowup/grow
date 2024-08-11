@@ -1,4 +1,4 @@
-package org.boot.growup.common.oauth2.google;
+package org.boot.growup.common.oauth2.google.dto;
 
 public record GoogleAccountResponseDTO(
     String id,
