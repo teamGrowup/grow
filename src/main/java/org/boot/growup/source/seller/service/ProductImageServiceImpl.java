@@ -18,32 +18,20 @@ public class ProductImageServiceImpl implements ProductImageService {
     private final ProductImageRepository productImageRepository;
     private final ImageStore imageStore;
 
-    private String productImageDir = "C:\\Users\\xcv41\\IdeaProjects\\grow\\src\\main\\java\\org\\boot\\growup\\source\\seller";
+    private final String productImageDir = "C:\\Users\\xcv41\\IdeaProjects\\grow\\src\\main\\java\\org\\boot\\growup\\source\\seller";
 
     public String getFullPath(String filename) {
         return productImageDir + filename;
     }
 
     @Transactional
-    public void saveProductImages(List<MultipartFile> productImageFiles, Product product) {
-        int sectionIndex = 1; // 섹션 인덱스 초기화
+    public void saveProductImages(List<MultipartFile> productImages, Product product, ProductImage.Section section) {
 
-        for (MultipartFile multipartFile : productImageFiles) {
+        for (MultipartFile multipartFile : productImages) {
             if (!multipartFile.isEmpty()) {
-                // 섹션 값 결정
-                ProductImage.Section section = (sectionIndex == 1)
-                        ? ProductImage.Section.PRODUCT_IMAGE
-                        : ProductImage.Section.PRODUCT_DETAIL_IMAGE;
-
-
-                // 로그 출력
-                System.out.println("Saving image with section: " + section);
-                // 이미지 저장 및 섹션 설정
-                ProductImage uploadImage = storeImage(multipartFile, section);
-                uploadImage.designateProduct(product);
-
-                productImageRepository.save(uploadImage); // 데이터베이스에 저장
-                sectionIndex++; // 섹션 인덱스 증가
+                ProductImage uploadImage = storeImage(multipartFile,section); // 이미지 저장 로직
+                uploadImage.designateProduct(product); // 상품 설정
+                productImageRepository.save(uploadImage); // 이미지 저장
             }
         }
     }
@@ -68,8 +56,23 @@ public class ProductImageServiceImpl implements ProductImageService {
         return ProductImage.builder()
                 .originalImageName(originalFilename)
                 .path(storeFilename)
-                .section(section)
+                .section(ProductImage.Section.valueOf(section.name()))
                 .build(); // section은 설정하지 않음
+    }
+    @Transactional
+    @Override
+    public void updateProductImages(List<MultipartFile> productImages, Product product, ProductImage.Section section) {
+        // 1. 현재 등록된 상품 이미지를 지움.
+        productImageRepository.deleteProductImageByProduct_Id(product.getId());
+
+        // 2. 해당 상품에 이미지를 새로 등록함.
+        for (MultipartFile multipartFile : productImages) {
+            if (!multipartFile.isEmpty()) {
+                ProductImage uploadImage = storeImage(multipartFile,section); // 이미지 저장 로직
+                uploadImage.designateProduct(product); // 상품 설정
+                productImageRepository.save(uploadImage); // 이미지 저장
+            }
+        }
     }
 }
 

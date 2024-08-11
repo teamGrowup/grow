@@ -39,17 +39,7 @@ public class ProductImage {
     }
 
     public enum Section {
-        PRODUCT_IMAGE("상품 이미지"),
-        PRODUCT_DETAIL_IMAGE("상품 상세 설명 이미지");
-
-        private final String description;
-
-        Section(String description) {
-            this.description = description;
-        }
-
-        public String getDescription() {
-            return description;
-        }
+        PRODUCT_IMAGE,
+        PRODUCT_DETAIL_IMAGE;
     }
 }

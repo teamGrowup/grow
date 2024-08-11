@@ -1,8 +1,5 @@
 package org.boot.growup.source.seller.dto.response;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.Builder;
 import lombok.Getter;
 import org.boot.growup.source.seller.constant.AuthorityStatus;
@@ -27,6 +24,7 @@ public class ProductDetailResponseDTO {
     @Builder
     public static class ProductImageDTO {
         private String path;
+        private String originalImageName;
         private String section;
     }
 

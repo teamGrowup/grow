@@ -18,8 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-import static org.boot.growup.source.seller.persist.entity.QSeller.seller;
-
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -45,7 +43,7 @@ public class ProductApplication {
         productRequestDto.setSellerId(seller.getId());
 
         // 상품 등록 및 ProductResponseDTO 반환
-        ProductResponseDTO response = productService.registerProduct(productRequestDto, productImages);
+        ProductResponseDTO response = productService.registerProduct(productRequestDto, seller);
 
         // 등록된 상품 ID로 Product 객체를 가져오기
         Long productId = response.getProductId();
@@ -53,8 +51,9 @@ public class ProductApplication {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new IllegalArgumentException("상품 등록 후 Product를 찾을 수 없습니다."));
 
+        ProductImage.Section section = ProductImage.Section.PRODUCT_IMAGE; // 적절한 섹션으로 변경
         // 이미지 저장
-        productImageService.saveProductImages(productImages, product);
+        productImageService.saveProductImages(productImages, product, section);
 
         return response; // 성공적으로 등록된 상품에 대한 응답 반환
     }
@@ -86,6 +85,7 @@ public class ProductApplication {
         return productImages.stream()
                 .map(image -> ProductDetailResponseDTO.ProductImageDTO.builder()
                         .path(image.getPath())
+                        .originalImageName(image.getOriginalImageName())
                         .section(image.getSection().name())
                         .build())
                 .toList();
@@ -101,4 +101,30 @@ public class ProductApplication {
                         .build())
                 .toList();
     }
+    @Transactional
+    public void updateProduct(Long productId, ProductRequestDTO productRequestDto, List<MultipartFile> productImages) {
+        // 현재 유저가 seller인지 확인 및 seller 가져오기
+        Long sellerId = 1L; // 실제 seller ID로 변경
+        Seller seller = sellerRepository.findById(sellerId)
+                .orElseThrow(() -> new IllegalArgumentException("판매자를 찾을 수 없습니다."));
+
+        // 해당 seller가 상품을 갖고 있는지 검사
+        Product product = productRepository.findById(productId)
+                .filter(p -> p.getSeller().getId().equals(seller.getId()))
+                .orElseThrow(() -> new IllegalArgumentException("해당 판매자가 소유한 상품이 아닙니다."));
+
+        // 상품 정보 업데이트 (productService 사용)
+        productService.updateProduct(product, productRequestDto);
+
+        // 이미지 파일 처리 로직
+        ProductImage.Section section = ProductImage.Section.PRODUCT_IMAGE; // 적절한 섹션으로 변경
+        if (productImages != null && !productImages.isEmpty()) {
+            productImageService.updateProductImages(productImages, product, section);
+        } else {
+            System.out.println("업데이트할 상품 이미지가 없습니다. 기존 이미지를 유지합니다.");
+            // 기존 이미지를 유지하는 로직 추가 가능
+        }
+    }
+
+
 }

@@ -59,17 +59,14 @@ public class Product {
                 .name(productRequestDto.getName())
                 .description(productRequestDto.getDescription())
                 .authorityStatus(AuthorityStatus.PENDING) // 기본 상태를 PENDING으로 설정
+                .subCategory(SubCategory.builder().build())
                 .averageRating(0.0) // 초기 평균 평점
                 .likeCount(0) // 초기 좋아요 수
                 .build();
     }
 
-    /*
-        상품 옵션 추가
-     */
-    public void addProductOption(ProductOption productOption) {
-        productOptions.add(productOption);
-        productOption.setProduct(this); // 양방향 연관관계 설정
+    public void setSubCategory(SubCategory subCategory) {
+        this.subCategory = subCategory;
     }
 
     /*
@@ -94,6 +91,13 @@ public class Product {
         this.authorityStatus = AuthorityStatus.PENDING;
     }
 
+    public void initAverageRating() {
+        this.averageRating = 0.0; // 초기 평균 평점
+    }
+
+    public void initLikeCount() {
+        this.likeCount = 0; // 초기 좋아요 수
+    }
     /*
         상품 옵션 초기화
      */
@@ -105,6 +109,14 @@ public class Product {
                 option.setProduct(this); // 양방향 관계 설정
             }
         }
+    }
+
+    /*
+        product명 및 상세 설명 수정
+     */
+    public void updateProductInfo(String name, String description){
+        this.name = name;
+        this.description = description;
     }
 }
 
