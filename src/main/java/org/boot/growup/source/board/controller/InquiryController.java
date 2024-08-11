@@ -1,5 +1,6 @@
 package org.boot.growup.source.board.controller;
 
+import com.fasterxml.jackson.databind.ser.Serializers.Base;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.boot.growup.common.constant.BaseResponse;
@@ -50,6 +51,18 @@ public class InquiryController {
   }
 
   /**
-   * 3. [관리자] 문의 조회
+   * 3. [관리자] 미답변 문의 조회
    */
+  @GetMapping("/unanswered")
+  public BaseResponse<Page<GetInquiryResponseDTO>> getUnansweredInquiry(
+      @RequestParam(value="pageNo", defaultValue="0") int pageNo) {
+    // 관리자 확인
+    long admin = 1L;
+
+    // 미답변 문의 조회
+    Page<GetInquiryResponseDTO> result = inquiryService.getUnansweredInquiry(pageNo);
+
+    return new BaseResponse<>(result);
+  }
+
 }

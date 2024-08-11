@@ -39,8 +39,24 @@ public class InquiryServiceImpl implements InquiryService {
     Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(sorts)); // Pageable 설정
 
     // 데이터 조회 (수정필요)
-    Page<Inquiry> inquiry = inquiryRepository.findByCustomer(id, pageable);
+    Page<Inquiry> inquiryList = inquiryRepository.findByCustomer(id, pageable);
 
-    return GetInquiryResponseDTO.pageFrom(inquiry);
+    return GetInquiryResponseDTO.pageFrom(inquiryList);
+  }
+
+  /**
+   * 미답변 문의 조회
+   */
+  @Override
+  public Page<GetInquiryResponseDTO> getUnansweredInquiry(int pageNo) {
+
+    List<Order> sorts = new ArrayList<>();
+    sorts.add(Sort.Order.asc("id")); // 정렬기준
+    Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(sorts)); // Pageable 설정
+
+    // 데이터 조회
+    Page<Inquiry> inquiryList = inquiryRepository.findByIsAnswered(false, pageable);
+
+    return GetInquiryResponseDTO.pageFrom(inquiryList);
   }
 }

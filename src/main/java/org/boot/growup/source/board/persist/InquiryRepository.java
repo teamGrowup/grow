@@ -10,4 +10,6 @@ import org.springframework.stereotype.Repository;
 public interface InquiryRepository extends JpaRepository<Inquiry, Long> {
 
   Page<Inquiry> findByCustomer(long id, Pageable pageable);
+
+  Page<Inquiry> findByIsAnswered(Boolean isAnswered, Pageable pageable);
 }

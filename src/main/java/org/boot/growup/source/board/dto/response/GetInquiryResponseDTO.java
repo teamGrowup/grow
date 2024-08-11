@@ -28,7 +28,7 @@ public class GetInquiryResponseDTO {
         .category(inquiry.getCategory())
         .title(inquiry.getTitle())
         .content(inquiry.getContent())
-        .isAnswered(inquiry.isAnswered())
+        .isAnswered(inquiry.getIsAnswered())
         .createdAt("수정 필요")
         .customer(inquiry.getCustomer())
         .build();

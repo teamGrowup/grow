@@ -10,4 +10,6 @@ public interface InquiryService {
   public Long postInquiry(PostInquiryRequestDTO input, long customer);
 
   public Page<GetInquiryResponseDTO> getInquiry(long id, int pageNo);
+
+  public Page<GetInquiryResponseDTO> getUnansweredInquiry(int pageNo);
 }
