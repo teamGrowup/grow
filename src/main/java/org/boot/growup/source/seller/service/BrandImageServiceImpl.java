@@ -38,6 +38,7 @@ public class BrandImageServiceImpl implements BrandImageService {
     }
 
     @Transactional
+    @Override
     public void saveBrandImages(List<MultipartFile> brandImageFiles, Brand brand) {
 //      TODO : S3설정  String fileName = menuImage.getOriginalFilename();
 //        String fileUrl = "https://" + bucket + ".s3." + region + ".amazonaws.com/" + fileName;
@@ -47,6 +48,27 @@ public class BrandImageServiceImpl implements BrandImageService {
 //        amazonS3Client.putObject(bucket, fileName, menuImage.getInputStream(), metadata);
 //        log.info("fileUrl={}",fileUrl);
 
+        for(MultipartFile multipartFile : brandImageFiles){
+            if(!multipartFile.isEmpty()){
+                BrandImage uploadImage = storeImage(multipartFile);
+                uploadImage.designateBrand(brand);
+                brandImageRepository.save(uploadImage);
+            }
+        }
+    }
+
+    @Override
+    public List<BrandImage> readBrandImages(Long id) {
+        return brandImageRepository.findBrandImageByBrand_Id(id);
+    }
+
+    @Transactional
+    @Override
+    public void updateBrandImages(List<MultipartFile> brandImageFiles, Brand brand) {
+        // 1. 현재 등록된 브랜드 이미지를 지움.
+        brandImageRepository.deleteBrandImageByBrand_Id(brand.getId());
+
+        // 2. 해당 브랜드에 이미지를 새로 등록함.
         for(MultipartFile multipartFile : brandImageFiles){
             if(!multipartFile.isEmpty()){
                 BrandImage uploadImage = storeImage(multipartFile);

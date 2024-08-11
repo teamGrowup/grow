@@ -24,7 +24,7 @@ public class Seller {
     @Column(nullable = false, length = 60)
     private String cpPassword;
 
-    @Column(nullable = false, length = 11)
+    @Column(nullable = false, length = 14)
     private String phoneNumber;
 
     @Column(nullable = false, length = 10)
