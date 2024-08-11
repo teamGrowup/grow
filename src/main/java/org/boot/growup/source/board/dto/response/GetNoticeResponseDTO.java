@@ -30,7 +30,7 @@ public class GetNoticeResponseDTO {
         .build();
   }
 
-  /* Page<Entity> -> Page<DTO> 변환 처리 */
+    /* Page<Entity> -> Page<DTO> 변환 처리 */
   public static Page<GetNoticeResponseDTO> pageFrom(Page<Notice> noticeList) {
     return noticeList.map(m -> from(m));
   }
