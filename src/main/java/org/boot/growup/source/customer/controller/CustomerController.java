@@ -1,7 +1,6 @@
 package org.boot.growup.source.customer.controller;
 
 import jakarta.mail.MessagingException;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,15 +10,13 @@ import org.boot.growup.common.oauth2.google.dto.GoogleAccountResponseDTO;
 import org.boot.growup.common.oauth2.google.GoogleOauthService;
 import org.boot.growup.common.oauth2.kakao.KakaoOauthService;
 import org.boot.growup.common.oauth2.kakao.dto.KakaoAccountResponseDTO;
+import org.boot.growup.common.oauth2.naver.NaverOauthService;
+import org.boot.growup.common.oauth2.naver.dto.NaverAccountResponseDTO;
 import org.boot.growup.source.customer.dto.request.*;
 import org.boot.growup.source.customer.dto.response.EmailCheckResponseDTO;
 import org.boot.growup.source.customer.service.CustomerService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
-import java.net.URI;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,6 +26,7 @@ public class CustomerController {
     private final CustomerService customerService;
     private final GoogleOauthService googleOauthService;
     private final KakaoOauthService kakaoOauthService;
+    private final NaverOauthService naverOauthService;
 
     /**
      * [POST]
@@ -98,6 +96,21 @@ public class CustomerController {
         String accessToken = kakaoOauthService.requestKakaoAccessToken(request.authCode());
         KakaoAccountResponseDTO kakaoUser = kakaoOauthService.requestKakaoAccount(accessToken);
         log.info("Kakao User : {}", kakaoUser);
+        return null;
+    }
+
+    /**
+     * [POST]
+     * 네이버 로그인 Oauth2.0
+     * @header null
+     * @body NaverSignInRequestDTO
+     * @response
+     */
+    @PostMapping("/oauth/naver")
+    public ResponseEntity<BaseResponse<TokenDto>> naverSignIn(@RequestBody NaverSignInRequestDTO request) {
+        String accessToken = naverOauthService.requestNaverAccessToken(request.authCode());
+        NaverAccountResponseDTO naverUser = naverOauthService.requestNaverAccount(accessToken);
+        log.info("Naver User : {}", naverUser);
         return null;
     }
 }

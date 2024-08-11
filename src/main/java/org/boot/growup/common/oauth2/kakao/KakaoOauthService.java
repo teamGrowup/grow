@@ -4,8 +4,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.boot.growup.common.constant.BaseException;
-import org.boot.growup.common.oauth2.google.dto.GoogleAccessTokenResponseDTO;
-import org.boot.growup.common.oauth2.google.dto.GoogleAccountResponseDTO;
 import org.boot.growup.common.oauth2.kakao.call.KakaoTokenFeignClient;
 import org.boot.growup.common.oauth2.kakao.call.KakaoUserInfoFeignClient;
 import org.boot.growup.common.oauth2.kakao.dto.KakaoAccessTokenResponseDTO;

@@ -20,5 +20,12 @@
             <input type="hidden" name="response_type" value="code">
             <input type="image" th:src="@{/images/kakao_login_medium_narrow.png}" alt="Kakao Login">
         </form>
+        <br>
+        <form action="https://nid.naver.com/oauth2.0/authorize" method="get">
+            <input type="hidden" name="client_id" th:value="${naverClientId}">
+            <input type="hidden" name="redirect_uri" th:value="${naverRedirectUri}">
+            <input type="hidden" name="response_type" value="code">
+            <input type="image" th:src="@{/images/naver_login_medium_narrow.png}" alt="Naver Login">
+        </form>
     </body>
 </html>
