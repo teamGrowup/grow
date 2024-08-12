@@ -24,7 +24,8 @@ public enum ErrorCode {
 
     /* Brand 관련 */
     BRAND_NAME_ALREADY_EXISTS(HttpStatus.BAD_REQUEST,404, false, "해당 브랜드명은 이미 존재합니다."),
-    BRAND_BY_SELLER_NOT_FOUND(HttpStatus.BAD_REQUEST, 404, false, "해당 셀러ID의 브랜드는 존재하지 않습니다.");
+    BRAND_BY_SELLER_NOT_FOUND(HttpStatus.BAD_REQUEST, 404, false, "해당 셀러ID의 브랜드는 존재하지 않습니다."),
+    BRAND_BY_ID_NOT_FOUND(HttpStatus.BAD_REQUEST, 404, false, "해당 ID를 가진 BRAND는 존재하지 않습니다.");
 
     private final HttpStatus httpStatus;
     private final int code;
