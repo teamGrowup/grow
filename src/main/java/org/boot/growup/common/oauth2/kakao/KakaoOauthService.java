@@ -16,7 +16,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
-import static org.boot.growup.common.error.ErrorCode.NOT_FOUND_GOOGLE_ACCESS_TOKEN_RESPONSE;
+import static org.boot.growup.common.error.ErrorCode.NOT_FOUND_KAKAO_ACCESS_TOKEN_RESPONSE;
 
 @Component
 @Slf4j
@@ -48,7 +48,7 @@ public class KakaoOauthService {
         log.info("Kakao AccessToken : {} // {}", response.tokenType(), response.accessToken());
 
         return Optional.of(response)
-                .orElseThrow(() -> new BaseException(NOT_FOUND_GOOGLE_ACCESS_TOKEN_RESPONSE))
+                .orElseThrow(() -> new BaseException(NOT_FOUND_KAKAO_ACCESS_TOKEN_RESPONSE))
                 .accessToken();
     }
 

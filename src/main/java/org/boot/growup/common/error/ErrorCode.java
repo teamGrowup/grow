@@ -23,6 +23,8 @@ public enum ErrorCode {
 
     /* Oauth2.0 */
     NOT_FOUND_GOOGLE_ACCESS_TOKEN_RESPONSE(HttpStatus.INTERNAL_SERVER_ERROR, 500, false, "구글 액세스 토큰 요청에 실패했습니다."),
+    NOT_FOUND_KAKAO_ACCESS_TOKEN_RESPONSE(HttpStatus.INTERNAL_SERVER_ERROR,500,false,"카카오 액세스 토큰 요청에 실패했습니다."),
+    NOT_FOUND_NAVER_ACCESS_TOKEN_RESPONSE(HttpStatus.INTERNAL_SERVER_ERROR,500,false,"네이버 액세스 토큰 요청에 실패했습니다."),
     /* Validation */
     INVALID_VALUE(HttpStatus.BAD_REQUEST, 400, false, "잘못된 입력값입니다."),
     USER_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, 500, false, "유저를 찾지 못했습니다."),

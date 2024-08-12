@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.boot.growup.common.constant.BaseException;
-import org.boot.growup.common.oauth2.kakao.dto.KakaoAccountResponseDTO;
 import org.boot.growup.common.oauth2.naver.call.NaverTokenFeignClient;
 import org.boot.growup.common.oauth2.naver.call.NaverUserInfoFeignClient;
 import org.boot.growup.common.oauth2.naver.dto.NaverAccessTokenResponseDTO;
@@ -16,7 +15,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
-import static org.boot.growup.common.error.ErrorCode.NOT_FOUND_GOOGLE_ACCESS_TOKEN_RESPONSE;
+import static org.boot.growup.common.error.ErrorCode.NOT_FOUND_NAVER_ACCESS_TOKEN_RESPONSE;
 
 @Component
 @Slf4j
@@ -48,7 +47,7 @@ public class NaverOauthService {
         log.info("Naver AccessToken info: {}", response);
 
         return Optional.of(response)
-                .orElseThrow(() -> new BaseException(NOT_FOUND_GOOGLE_ACCESS_TOKEN_RESPONSE))
+                .orElseThrow(() -> new BaseException(NOT_FOUND_NAVER_ACCESS_TOKEN_RESPONSE))
                 .accessToken();
     }
 
