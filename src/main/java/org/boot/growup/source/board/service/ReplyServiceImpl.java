@@ -1,6 +1,7 @@
 package org.boot.growup.source.board.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.boot.growup.common.constant.BaseException;
 import org.boot.growup.common.error.ErrorCode;
 import org.boot.growup.source.board.dto.request.PostReplyRequestDTO;
@@ -11,6 +12,7 @@ import org.boot.growup.source.board.persist.entity.Reply;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)

@@ -2,6 +2,7 @@ package org.boot.growup.source.board.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.boot.growup.common.constant.BaseException;
 import org.boot.growup.common.constant.BaseResponse;
 import org.boot.growup.common.error.ErrorCode;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
 @RequestMapping("/board/notice")
 @RequiredArgsConstructor

@@ -3,6 +3,7 @@ package org.boot.growup.source.board.service;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.boot.growup.source.board.dto.request.PostInquiryRequestDTO;
 import org.boot.growup.source.board.dto.request.PostReplyRequestDTO;
 import org.boot.growup.source.board.dto.response.GetInquiryResponseDTO;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)

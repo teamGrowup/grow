@@ -3,6 +3,7 @@ package org.boot.growup.source.board.controller;
 import com.fasterxml.jackson.databind.ser.Serializers.Base;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.boot.growup.common.constant.BaseResponse;
 import org.boot.growup.source.board.dto.request.PostInquiryRequestDTO;
 import org.boot.growup.source.board.dto.request.PostReplyRequestDTO;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
 @RequestMapping("/board/inquiry")
 @RequiredArgsConstructor

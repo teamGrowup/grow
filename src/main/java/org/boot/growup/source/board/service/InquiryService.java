@@ -1,5 +1,6 @@
 package org.boot.growup.source.board.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.boot.growup.source.board.dto.request.PostInquiryRequestDTO;
 import org.boot.growup.source.board.dto.request.PostReplyRequestDTO;
 import org.boot.growup.source.board.dto.response.GetInquiryResponseDTO;
