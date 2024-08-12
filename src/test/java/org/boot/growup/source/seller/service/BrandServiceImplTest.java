@@ -21,7 +21,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Transactional
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -88,7 +88,7 @@ class BrandServiceImplTest {
 
         //when
         brandServiceImpl.registerBrand(registerBrandRequestDTO1, seller);
-        Brand brand = brandRepository.findById(seller.getId()).get();
+        Brand brand = brandRepository.findBySeller_Id(seller.getId()).get();
 
         //then
         assertNotNull(brand);
@@ -151,7 +151,7 @@ class BrandServiceImplTest {
 
         //when
         brandServiceImpl.updateBrand(registerBrandRequestDTO3, seller);
-        Brand brand = brandRepository.findBySeller_Id(1L).get();
+        Brand brand = brandRepository.findBySeller_Id(seller.getId()).get();
 
         //then
         assertNotNull(brand);
