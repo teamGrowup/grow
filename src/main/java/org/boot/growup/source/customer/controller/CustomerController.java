@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.boot.growup.common.constant.BaseResponse;
+import org.boot.growup.common.enumerate.Role;
 import org.boot.growup.common.jwt.TokenDto;
 import org.boot.growup.common.oauth2.google.dto.GoogleAccountResponseDTO;
 import org.boot.growup.common.oauth2.google.GoogleOauthService;
@@ -16,7 +17,12 @@ import org.boot.growup.source.customer.dto.request.*;
 import org.boot.growup.source.customer.dto.response.EmailCheckResponseDTO;
 import org.boot.growup.source.customer.service.CustomerService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collection;
 
 @RestController
 @RequiredArgsConstructor
@@ -61,7 +67,7 @@ public class CustomerController {
      * @response String
      */
     @PostMapping("/email/validation")
-    public ResponseEntity<BaseResponse<EmailCheckResponseDTO>> emailCheck(
+    public ResponseEntity<BaseResponse<EmailCheckResponseDTO>> checkEmail(
                 @Valid @RequestBody EmailCheckRequestDTO request) throws MessagingException {
         EmailCheckResponseDTO response = customerService.emailCheck(request);
         return ResponseEntity.ok(new BaseResponse<>(response));
@@ -75,14 +81,14 @@ public class CustomerController {
      * @response TokenDto
      */
     @PostMapping("/oauth/google")
-    public ResponseEntity<BaseResponse<TokenDto>> googleSignIn(@Valid @RequestBody GoogleSignInRequestDTO request) {
+    public ResponseEntity<BaseResponse<TokenDto>> signInGoogle(@Valid @RequestBody GoogleSignInRequestDTO request) {
         /* 인가코드를 받아서 Google에 AccessToken 요청 -> 받은 AccessToken으로 Google 사용자 정보 요청 */
         String accessToken = googleOauthService.requestGoogleAccessToken(request.getAuthCode());
         GoogleAccountResponseDTO googleAccount = googleOauthService.requestGoogleAccount(accessToken);
         log.info("Google User : {}", googleAccount);
 
         /* Google 사용자 정보를 userService에서 회원가입 및 로그인 처리 */
-        TokenDto response = customerService.googleSignIn(googleAccount);
+        TokenDto response = customerService.signInGoogle(googleAccount);
         return ResponseEntity.ok(new BaseResponse<>(response));
     }
 
@@ -94,9 +100,9 @@ public class CustomerController {
      * @response TokenDto
      */
     @PostMapping("/oauth/google/additional-info")
-    public ResponseEntity<BaseResponse<TokenDto>> googleAdditionalSignIn(
+    public ResponseEntity<BaseResponse<TokenDto>> signInGoogleAdditional(
                 @Valid @RequestBody GoogleAdditionalInfoRequestDTO request) {
-        TokenDto response = customerService.googleAdditionalSignIn(request);
+        TokenDto response = customerService.signInGoogleAdditional(request);
         return ResponseEntity.ok(new BaseResponse<>(response));
     }
 
@@ -108,12 +114,12 @@ public class CustomerController {
      * @response TokenDTO
      */
     @PostMapping("/oauth/kakao")
-    public ResponseEntity<BaseResponse<TokenDto>> kakaoSignIn(@Valid @RequestBody KakaoSignInRequestDTO request) {
+    public ResponseEntity<BaseResponse<TokenDto>> signInKakao(@Valid @RequestBody KakaoSignInRequestDTO request) {
         String accessToken = kakaoOauthService.requestKakaoAccessToken(request.getAuthCode());
         KakaoAccountResponseDTO kakaoAccount = kakaoOauthService.requestKakaoAccount(accessToken);
         log.info("Kakao User : {}", kakaoAccount);
 
-        TokenDto response = customerService.kakaoSignIn(kakaoAccount);
+        TokenDto response = customerService.signInKakao(kakaoAccount);
         return ResponseEntity.ok(new BaseResponse<>(response));
     }
 
@@ -125,9 +131,9 @@ public class CustomerController {
      * @response TokenDTO
      */
     @PostMapping("/oauth/kakao/additional-info")
-    public ResponseEntity<BaseResponse<TokenDto>> kakaoAdditionalSignIn(
+    public ResponseEntity<BaseResponse<TokenDto>> signInKakaoAdditional(
             @Valid @RequestBody KakaoAdditionalInfoRequestDTO request) {
-        TokenDto response = customerService.kakaoAdditionalSignIn(request);
+        TokenDto response = customerService.signInKakaoAdditional(request);
         return ResponseEntity.ok(new BaseResponse<>(response));
     }
 
@@ -139,12 +145,12 @@ public class CustomerController {
      * @response
      */
     @PostMapping("/oauth/naver")
-    public ResponseEntity<BaseResponse<TokenDto>> naverSignIn(@Valid @RequestBody NaverSignInRequestDTO request) {
+    public ResponseEntity<BaseResponse<TokenDto>> signInNaver(@Valid @RequestBody NaverSignInRequestDTO request) {
         String accessToken = naverOauthService.requestNaverAccessToken(request.getAuthCode());
         NaverAccountResponseDTO naverAccount = naverOauthService.requestNaverAccount(accessToken);
         log.info("Naver User : {}", naverAccount);
 
-        TokenDto response = customerService.naverSignIn(naverAccount);
+        TokenDto response = customerService.signInNaver(naverAccount);
         return ResponseEntity.ok(new BaseResponse<>(response));
     }
 
@@ -156,9 +162,15 @@ public class CustomerController {
      * @response
      */
     @PostMapping("/oauth/naver/additional-info")
-    public ResponseEntity<BaseResponse<TokenDto>> naverAdditionalSignIn(
+    public ResponseEntity<BaseResponse<TokenDto>> signInNaverAdditional(
                 @Valid @RequestBody NaverAdditionalInfoRequestDTO request) {
-        TokenDto response = customerService.naverAdditionalSignIn(request);
+        TokenDto response = customerService.signInNaverAdditional(request);
         return ResponseEntity.ok(new BaseResponse<>(response));
+    }
+
+    @GetMapping("/role")
+    public void roleTest() {
+        Collection<? extends GrantedAuthority> role = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+        log.info("Role : {}",role);
     }
 }

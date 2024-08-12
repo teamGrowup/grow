@@ -15,9 +15,15 @@ public enum ErrorCode {
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 500, false, "서버 내부에 오류가 발생했습니다."),
 
     /* jwt */
-    TOKEN_NOT_EXIST(HttpStatus.UNAUTHORIZED, 401, false, "JWT Token이 존재하지 않습니다."),
-    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, 401, false, "유효하지 않은 JWT Token 입니다."),
-
+    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, 401, false, "유효하지 않은 토큰입니다."),
+    EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, 401, false, "만료된 토큰입니다."),
+    UNSUPPORTED_TOKEN(HttpStatus.UNAUTHORIZED, 401, false, "지원되지 않는 토큰입니다."),
+    MALFORMED_TOKEN(HttpStatus.UNAUTHORIZED, 401, false, "잘못된 형식의 토큰입니다."),
+    EMPTY_TOKEN(HttpStatus.UNAUTHORIZED, 401, false, "JWT 토큰이 비어 있습니다."),
+    WRONG_TYPE_TOKEN(HttpStatus.UNAUTHORIZED, 401, false, "잘못된 JWT 서명입니다."),
+    ILLEGAL_ARGUMENT_TOKEN(HttpStatus.UNAUTHORIZED, 401, false, "JWT 토큰 처리 중 잘못된 인수가 전달되었습니다."),
+    UNKNOWN_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 500, false, "알 수 없는 서버 오류가 발생했습니다."),
+    ACCESS_DENIED(HttpStatus.UNAUTHORIZED, 401, false, "접근이 거부되었습니다."),
     /* Email Send */
     USER_EMAIL_SEND_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 500, false, "이메일 전송 중 오류가 발생했습니다."),
 

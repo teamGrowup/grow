@@ -83,7 +83,7 @@ public class CustomerService {
     }
 
     @Transactional
-    public TokenDto googleSignIn(GoogleAccountResponseDTO googleAccount) {
+    public TokenDto signInGoogle(GoogleAccountResponseDTO googleAccount) {
         return customerRepository
                 .findByEmailAndProvider(googleAccount.getEmail(), Provider.GOOGLE)
                 .map(customer -> { // 고객이 존재하는 경우
@@ -104,7 +104,7 @@ public class CustomerService {
     }
 
     @Transactional
-    public TokenDto googleAdditionalSignIn(GoogleAdditionalInfoRequestDTO request) {
+    public TokenDto signInGoogleAdditional(GoogleAdditionalInfoRequestDTO request) {
         GoogleAccountResponseDTO googleAccount = (GoogleAccountResponseDTO) session.getAttribute("googleAccount");
         if(googleAccount == null) {
             throw new BaseException(SESSION_NOT_FOUND);
@@ -119,7 +119,7 @@ public class CustomerService {
     }
 
     @Transactional
-    public TokenDto kakaoSignIn(KakaoAccountResponseDTO kakaoAccount) {
+    public TokenDto signInKakao(KakaoAccountResponseDTO kakaoAccount) {
         return customerRepository
                 .findByEmailAndProvider(kakaoAccount.getKakaoAccount().getEmail(), Provider.KAKAO)
                 .map(customer -> { // 고객이 존재하는 경우
@@ -140,7 +140,7 @@ public class CustomerService {
     }
 
     @Transactional
-    public TokenDto kakaoAdditionalSignIn(KakaoAdditionalInfoRequestDTO request) {
+    public TokenDto signInKakaoAdditional(KakaoAdditionalInfoRequestDTO request) {
         KakaoAccountResponseDTO kakaoAccount = (KakaoAccountResponseDTO) session.getAttribute("kakaoAccount");
         if(kakaoAccount == null) {
             throw new BaseException(SESSION_NOT_FOUND);
@@ -155,7 +155,7 @@ public class CustomerService {
     }
 
     @Transactional
-    public TokenDto naverSignIn(NaverAccountResponseDTO naverAccount) {
+    public TokenDto signInNaver(NaverAccountResponseDTO naverAccount) {
         return customerRepository
                 .findByEmailAndProvider(naverAccount.getResponse().getEmail(), Provider.NAVER)
                 .map(customer -> { // 고객이 존재하는 경우
@@ -176,7 +176,7 @@ public class CustomerService {
     }
 
     @Transactional
-    public TokenDto naverAdditionalSignIn(NaverAdditionalInfoRequestDTO request) {
+    public TokenDto signInNaverAdditional(NaverAdditionalInfoRequestDTO request) {
         NaverAccountResponseDTO naverAccount = (NaverAccountResponseDTO) session.getAttribute("naverAccount");
         if(naverAccount == null) {
             throw new BaseException(SESSION_NOT_FOUND);
