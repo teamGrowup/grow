@@ -1,13 +1,12 @@
 package org.boot.growup.source.seller.application;
 
+import jakarta.persistence.Id;
 import lombok.RequiredArgsConstructor;
+import org.boot.growup.common.enumerate.Section;
 import org.boot.growup.source.seller.dto.request.ProductRequestDTO;
 import org.boot.growup.source.seller.dto.response.ProductDetailResponseDTO;
 import org.boot.growup.source.seller.dto.response.ProductResponseDTO;
-import org.boot.growup.source.seller.persist.entity.Product;
-import org.boot.growup.source.seller.persist.entity.ProductImage;
-import org.boot.growup.source.seller.persist.entity.ProductOption;
-import org.boot.growup.source.seller.persist.entity.Seller;
+import org.boot.growup.source.seller.persist.entity.*;
 import org.boot.growup.source.seller.persist.repository.ProductRepository;
 import org.boot.growup.source.seller.persist.repository.SellerRepository;
 import org.boot.growup.source.seller.service.ProductImageServiceImpl;
@@ -32,7 +31,7 @@ public class ProductApplication {
      * 상품 등록 및 이미지 저장
      */
     @Transactional
-    public ProductResponseDTO registerProductWithImages(ProductRequestDTO productRequestDto, List<MultipartFile> productImages) {
+    public void registerProductWithImages(ProductRequestDTO productRequestDto, List<MultipartFile> productImages) {
         // 현재 유저가 seller인지 확인 및 seller 가져오기 (여기서는 하드코딩된 ID 사용)
         Long sellerId = 1L; // 예시: 실제 판매자 ID를 가져오는 로직을 작성해야 함.
 
@@ -42,20 +41,11 @@ public class ProductApplication {
         // 상품 등록 요청 DTO에 판매자 ID 설정
         productRequestDto.setSellerId(seller.getId());
 
-        // 상품 등록 및 ProductResponseDTO 반환
-        ProductResponseDTO response = productService.registerProduct(productRequestDto, seller);
-
-        // 등록된 상품 ID로 Product 객체를 가져오기
-        Long productId = response.getProductId();
-
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new IllegalArgumentException("상품 등록 후 Product를 찾을 수 없습니다."));
-
-        ProductImage.Section section = ProductImage.Section.PRODUCT_IMAGE; // 적절한 섹션으로 변경
+        Section section = Section.PRODUCT_IMAGE; // 적절한 섹션으로 변경
+        Product product = productService.registerProduct(productRequestDto, seller);
         // 이미지 저장
         productImageService.saveProductImages(productImages, product, section);
 
-        return response; // 성공적으로 등록된 상품에 대한 응답 반환
     }
 
     /**
@@ -102,22 +92,13 @@ public class ProductApplication {
                 .toList();
     }
     @Transactional
-    public void updateProduct(Long productId, ProductRequestDTO productRequestDto, List<MultipartFile> productImages) {
-        // 현재 유저가 seller인지 확인 및 seller 가져오기
-        Long sellerId = 1L; // 실제 seller ID로 변경
-        Seller seller = sellerRepository.findById(sellerId)
-                .orElseThrow(() -> new IllegalArgumentException("판매자를 찾을 수 없습니다."));
+    public void updateProduct(ProductRequestDTO productRequestDto, List<MultipartFile> productImages) {
 
-        // 해당 seller가 상품을 갖고 있는지 검사
-        Product product = productRepository.findById(productId)
-                .filter(p -> p.getSeller().getId().equals(seller.getId()))
-                .orElseThrow(() -> new IllegalArgumentException("해당 판매자가 소유한 상품이 아닙니다."));
+        Seller seller = sellerRepository.findById(1L).get();
+        Section section = Section.PRODUCT_IMAGE;
 
-        // 상품 정보 업데이트 (productService 사용)
-        productService.updateProduct(product, productRequestDto);
+        Product product = productService.updateProduct(productRequestDto, seller);
 
-        // 이미지 파일 처리 로직
-        ProductImage.Section section = ProductImage.Section.PRODUCT_IMAGE; // 적절한 섹션으로 변경
         if (productImages != null && !productImages.isEmpty()) {
             productImageService.updateProductImages(productImages, product, section);
         } else {

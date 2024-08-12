@@ -27,6 +27,7 @@ public class ProductRequestDTO {
     // 판매자 ID 추가
     private Long sellerId; // 판매자 ID 필드 추가
     @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ProductOptionDTO {

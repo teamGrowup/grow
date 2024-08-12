@@ -2,6 +2,7 @@ package org.boot.growup.source.seller.service;
 
 import lombok.RequiredArgsConstructor;
 import org.boot.growup.common.ImageStore;
+import org.boot.growup.common.enumerate.Section;
 import org.boot.growup.source.seller.persist.entity.Product;
 import org.boot.growup.source.seller.persist.entity.ProductImage;
 import org.boot.growup.source.seller.persist.repository.ProductImageRepository;
@@ -25,7 +26,7 @@ public class ProductImageServiceImpl implements ProductImageService {
     }
 
     @Transactional
-    public void saveProductImages(List<MultipartFile> productImages, Product product, ProductImage.Section section) {
+    public void saveProductImages(List<MultipartFile> productImages, Product product, Section section) {
 
         for (MultipartFile multipartFile : productImages) {
             if (!multipartFile.isEmpty()) {
@@ -36,7 +37,7 @@ public class ProductImageServiceImpl implements ProductImageService {
         }
     }
 
-    public ProductImage storeImage(MultipartFile multipartFile, ProductImage.Section section) {
+    public ProductImage storeImage(MultipartFile multipartFile, Section section) {
         if (multipartFile.isEmpty()) {
             throw new IllegalStateException("이미지가 없습니다.");
         }
@@ -56,12 +57,12 @@ public class ProductImageServiceImpl implements ProductImageService {
         return ProductImage.builder()
                 .originalImageName(originalFilename)
                 .path(storeFilename)
-                .section(ProductImage.Section.valueOf(section.name()))
+                .section(Section.valueOf(section.name()))
                 .build(); // section은 설정하지 않음
     }
     @Transactional
     @Override
-    public void updateProductImages(List<MultipartFile> productImages, Product product, ProductImage.Section section) {
+    public void updateProductImages(List<MultipartFile> productImages, Product product, Section section) {
         // 1. 현재 등록된 상품 이미지를 지움.
         productImageRepository.deleteProductImageByProduct_Id(product.getId());
 

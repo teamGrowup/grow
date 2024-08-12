@@ -56,7 +56,7 @@ public class ProductController {
             @RequestPart(value = "images", required = false) List<MultipartFile> productImages,
             @RequestPart(value = "form") ProductRequestDTO productRequestDto
     ) {
-        productApplication.updateProduct(productId, productRequestDto, productImages);
+        productApplication.updateProduct(productRequestDto, productImages);
         return new BaseResponse<>("수정 성공");
     }
 

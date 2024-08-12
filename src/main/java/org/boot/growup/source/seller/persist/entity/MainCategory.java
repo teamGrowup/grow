@@ -1,6 +1,7 @@
 package org.boot.growup.source.seller.persist.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
@@ -8,9 +9,10 @@ import jakarta.persistence.*;
 
 @Entity
 @Getter
+@Builder
+@Table(name = "main_category")
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "main_category")
 public class MainCategory {
 
     @Id

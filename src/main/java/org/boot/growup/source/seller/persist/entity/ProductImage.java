@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import org.boot.growup.common.enumerate.Section;
+
 @Entity
 @Getter
 @Builder
@@ -38,8 +40,4 @@ public class ProductImage {
         this.product = product;
     }
 
-    public enum Section {
-        PRODUCT_IMAGE,
-        PRODUCT_DETAIL_IMAGE;
-    }
 }

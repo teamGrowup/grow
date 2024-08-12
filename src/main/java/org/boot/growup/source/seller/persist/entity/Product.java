@@ -1,17 +1,15 @@
 package org.boot.growup.source.seller.persist.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.boot.growup.source.seller.constant.AuthorityStatus;
+import lombok.*;
+import org.boot.growup.common.enumerate.AuthorityStatus;
 import org.boot.growup.source.seller.dto.request.ProductRequestDTO;
 
 import java.util.ArrayList;
 import java.util.List;
 @Entity
 @Getter
+@Setter
 @Builder
 @Table(name = "product")
 @NoArgsConstructor

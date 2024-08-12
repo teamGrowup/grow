@@ -1,6 +1,8 @@
 package org.boot.growup.source.seller.service;
 
 import lombok.RequiredArgsConstructor;
+import org.boot.growup.common.constant.BaseException;
+import org.boot.growup.common.error.ErrorCode;
 import org.boot.growup.source.seller.dto.request.ProductRequestDTO; // ProductRequestDTO 임포트
 import org.boot.growup.source.seller.dto.response.ProductResponseDTO;
 import org.boot.growup.source.seller.persist.entity.*;
@@ -12,6 +14,8 @@ import jakarta.transaction.Transactional;
 
 import java.util.List;
 
+import static org.boot.growup.source.seller.persist.entity.QProduct.product;
+
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
@@ -21,7 +25,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ProductResponseDTO registerProduct(ProductRequestDTO productRequestDto, Seller seller) {
+    public Product registerProduct(ProductRequestDTO productRequestDto, Seller seller) {
         // 서브 카테고리 가져오기
         SubCategory subCategory = subCategoryRepository.findById(productRequestDto.getSubCategoryId())
                 .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 서브 카테고리 ID입니다."));
@@ -39,7 +43,7 @@ public class ProductServiceImpl implements ProductService {
         product.designateSeller(seller); // 판매자 설정.
 
         productRepository.save(product);
-        return new ProductResponseDTO("등록 성공", product.getId());
+        return product;
     }
 
 
@@ -54,15 +58,19 @@ public class ProductServiceImpl implements ProductService {
                         .build())
                 .toList();
     }
-
-    public void updateProduct(Product product, ProductRequestDTO productRequestDto) {
-        product.updateProductInfo(
-                productRequestDto.getName(),
-                productRequestDto.getDescription()
+    @Transactional
+    @Override
+    public Product updateProduct(ProductRequestDTO productRequestDto, Seller seller) {
+        Product product = productRepository.findBySeller_Id(seller.getId()).orElseThrow(
+                () -> new BaseException(ErrorCode.PRODUCT_BY_SELLER_NOT_FOUND)
         );
+
+        product.pending(); // 대기 상태로 변경.
+        product.updateProductInfo(productRequestDto.getName(), productRequestDto.getDescription());
 
         // 상품 저장 (optional, if not already handled by ProductApplication)
         productRepository.save(product);
+        return product;
     }
 
 }

@@ -8,6 +8,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface ProductService {
-    ProductResponseDTO registerProduct(ProductRequestDTO productRequestDto, Seller seller);
-    void updateProduct(Product product, ProductRequestDTO productRequestDto);
+    Product registerProduct(ProductRequestDTO productRequestDto, Seller seller);
+    Product updateProduct(ProductRequestDTO productRequestDto, Seller seller);
 }
