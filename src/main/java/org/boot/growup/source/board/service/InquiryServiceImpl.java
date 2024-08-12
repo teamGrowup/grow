@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.boot.growup.source.board.dto.request.PostInquiryRequestDTO;
+import org.boot.growup.source.board.dto.request.PostReplyRequestDTO;
 import org.boot.growup.source.board.dto.response.GetInquiryResponseDTO;
 import org.boot.growup.source.board.persist.InquiryRepository;
 import org.boot.growup.source.board.persist.entity.Inquiry;
