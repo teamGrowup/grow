@@ -75,7 +75,7 @@ public class CustomerController {
      * @response TokenDto
      */
     @PostMapping("/oauth/google")
-    public ResponseEntity<BaseResponse<TokenDto>> googleSignIn(@RequestBody GoogleSignInRequestDTO request) {
+    public ResponseEntity<BaseResponse<TokenDto>> googleSignIn(@Valid @RequestBody GoogleSignInRequestDTO request) {
         /* 인가코드를 받아서 Google에 AccessToken 요청 -> 받은 AccessToken으로 Google 사용자 정보 요청 */
         String accessToken = googleOauthService.requestGoogleAccessToken(request.getAuthCode());
         GoogleAccountResponseDTO googleAccount = googleOauthService.requestGoogleAccount(accessToken);
@@ -139,10 +139,26 @@ public class CustomerController {
      * @response
      */
     @PostMapping("/oauth/naver")
-    public ResponseEntity<BaseResponse<TokenDto>> naverSignIn(@RequestBody NaverSignInRequestDTO request) {
+    public ResponseEntity<BaseResponse<TokenDto>> naverSignIn(@Valid @RequestBody NaverSignInRequestDTO request) {
         String accessToken = naverOauthService.requestNaverAccessToken(request.getAuthCode());
-        NaverAccountResponseDTO naverUser = naverOauthService.requestNaverAccount(accessToken);
-        log.info("Naver User : {}", naverUser);
-        return null;
+        NaverAccountResponseDTO naverAccount = naverOauthService.requestNaverAccount(accessToken);
+        log.info("Naver User : {}", naverAccount);
+
+        TokenDto response = customerService.naverSignIn(naverAccount);
+        return ResponseEntity.ok(new BaseResponse<>(response));
+    }
+
+    /**
+     * [POST]
+     * 네이버 로그인 Oauth2.0 - 초기 사용자 회원가입 처리
+     * @header null
+     * @body NaverAdditionalInfoRequestDTO
+     * @response
+     */
+    @PostMapping("/oauth/naver/additional-info")
+    public ResponseEntity<BaseResponse<TokenDto>> naverAdditionalSignIn(
+                @Valid @RequestBody NaverAdditionalInfoRequestDTO request) {
+        TokenDto response = customerService.naverAdditionalSignIn(request);
+        return ResponseEntity.ok(new BaseResponse<>(response));
     }
 }

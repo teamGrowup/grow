@@ -14,6 +14,7 @@ import org.boot.growup.common.jwt.TokenDto;
 import org.boot.growup.common.oauth2.Provider;
 import org.boot.growup.common.oauth2.google.dto.GoogleAccountResponseDTO;
 import org.boot.growup.common.oauth2.kakao.dto.KakaoAccountResponseDTO;
+import org.boot.growup.common.oauth2.naver.dto.NaverAccountResponseDTO;
 import org.boot.growup.common.userdetail.CustomUserDetailService;
 import org.boot.growup.source.customer.dto.request.*;
 import org.boot.growup.source.customer.dto.response.EmailCheckResponseDTO;
@@ -94,6 +95,7 @@ public class CustomerService {
                         session.setAttribute("googleAccount", googleAccount); // 세션에 구글 사용자 정보 저장
                     }catch (Exception e) {
                         log.error("Session 저장 Error : ", e);
+                        log.info("googleAccount saved in session: {}", session.getAttribute("googleAccount"));
                         throw new BaseException(SESSION_SAVE_FAILED);
                     }
                     throw new BaseException(NEED_TO_GIVE_ADDITIONAL_INFORMATION);
@@ -148,6 +150,42 @@ public class CustomerService {
         customerRepository.save(newCustomer);
 
         UserDetails userDetails = customUserDetailService.loadUserByUsername(kakaoAccount.getKakaoAccount().getEmail());
+
+        return jwtTokenProvider.generateToken(userDetails.getUsername(),userDetails.getAuthorities());
+    }
+
+    @Transactional
+    public TokenDto naverSignIn(NaverAccountResponseDTO naverAccount) {
+        return customerRepository
+                .findByEmailAndProvider(naverAccount.getResponse().getEmail(), Provider.NAVER)
+                .map(customer -> { // 고객이 존재하는 경우
+                    UserDetails userDetails = customUserDetailService
+                            .loadUserByUsername(naverAccount.getResponse().getEmail());
+                    return jwtTokenProvider.generateToken(userDetails.getUsername(), userDetails.getAuthorities());
+                })
+                .orElseGet(() -> { // 고객이 존재하지 않는 경우
+                    try{
+                        session.setAttribute("naverAccount", naverAccount); // 세션에 카카오 사용자 정보 저장
+                        log.info("naverAccount saved in session: {}", session.getAttribute("naverAccount"));
+                    }catch (Exception e) {
+                        log.error("Session 저장 Error : ", e);
+                        throw new BaseException(SESSION_SAVE_FAILED);
+                    }
+                    throw new BaseException(NEED_TO_GIVE_ADDITIONAL_INFORMATION);
+                });
+    }
+
+    @Transactional
+    public TokenDto naverAdditionalSignIn(NaverAdditionalInfoRequestDTO request) {
+        NaverAccountResponseDTO naverAccount = (NaverAccountResponseDTO) session.getAttribute("naverAccount");
+        if(naverAccount == null) {
+            throw new BaseException(SESSION_NOT_FOUND);
+        }
+        /* 데이터 삽입 */
+        Customer newCustomer = Customer.of(request, naverAccount);
+        customerRepository.save(newCustomer);
+
+        UserDetails userDetails = customUserDetailService.loadUserByUsername(naverAccount.getResponse().getEmail());
 
         return jwtTokenProvider.generateToken(userDetails.getUsername(),userDetails.getAuthorities());
     }

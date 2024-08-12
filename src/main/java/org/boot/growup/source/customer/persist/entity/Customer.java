@@ -10,10 +10,12 @@ import org.boot.growup.common.enumerate.Role;
 import org.boot.growup.common.oauth2.Provider;
 import org.boot.growup.common.oauth2.google.dto.GoogleAccountResponseDTO;
 import org.boot.growup.common.oauth2.kakao.dto.KakaoAccountResponseDTO;
+import org.boot.growup.common.oauth2.naver.dto.NaverAccountResponseDTO;
 import org.boot.growup.common.userdetail.CustomUserDetails;
 import org.boot.growup.source.customer.dto.request.CustomerSignUpRequestDTO;
 import org.boot.growup.source.customer.dto.request.GoogleAdditionalInfoRequestDTO;
 import org.boot.growup.source.customer.dto.request.KakaoAdditionalInfoRequestDTO;
+import org.boot.growup.source.customer.dto.request.NaverAdditionalInfoRequestDTO;
 import org.hibernate.validator.constraints.br.CPF;
 
 @Entity
@@ -68,6 +70,7 @@ public class Customer {
 
 
 
+
     public CustomUserDetails toUserDetails() {
         return new CustomUserDetails(email, password, role);
     }
@@ -116,6 +119,22 @@ public class Customer {
                 .nickname(kakaoAccount.getProperties().get("nickname"))
                 .name(request.getName())
                 .provider(Provider.KAKAO)
+                .role(Role.CUSTOMER)
+                .build();
+    }
+
+    /* 네이버 유저 회원가입 */
+    public static Customer of(NaverAdditionalInfoRequestDTO request, NaverAccountResponseDTO naverAccount) {
+        return Customer.builder()
+                .email(naverAccount.getResponse().getEmail())
+                .phoneNumber(request.getPhoneNumber())
+                .birthday(request.getBirthday())
+                .gender(Gender.valueOf(naverAccount.getResponse().getGender().equals("M") ? "MALE" : "FEMALE"))
+                .address(request.getAddress())
+                .postCode(request.getPostCode())
+                .nickname(request.getNickname())
+                .name(naverAccount.getResponse().getName())
+                .provider(Provider.NAVER)
                 .role(Role.CUSTOMER)
                 .build();
     }
