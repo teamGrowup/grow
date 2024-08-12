@@ -57,7 +57,7 @@ public class GoogleOauthService {
 
         return Optional.of(response)
                 .orElseThrow(() -> new BaseException(NOT_FOUND_GOOGLE_ACCESS_TOKEN_RESPONSE))
-                .accessToken();
+                .getAccessToken();
     }
 
     public GoogleAccountResponseDTO requestGoogleAccount(String accessToken) {

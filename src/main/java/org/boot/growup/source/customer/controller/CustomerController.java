@@ -2,6 +2,9 @@ package org.boot.growup.source.customer.controller;
 
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.boot.growup.common.constant.BaseResponse;
@@ -57,8 +60,8 @@ public class CustomerController {
      * [POST]
      * 이메일 인증
      * @header null
-     * @body EmailCheckRequestDTO
-     * @response EmailCheckResponseDTO
+     * @body String
+     * @response String
      */
     @PostMapping("/email/validation")
     public ResponseEntity<BaseResponse<EmailCheckResponseDTO>> emailCheck(
@@ -77,9 +80,9 @@ public class CustomerController {
     @PostMapping("/oauth/google")
     public ResponseEntity<BaseResponse<TokenDto>> googleSignIn(@RequestBody GoogleSignInRequestDTO request) {
         /* 인가코드를 받아서 Google에 AccessToken 요청 -> 받은 AccessToken으로 Google 사용자 정보 요청 */
-        String accessToken = googleOauthService.requestGoogleAccessToken(request.authCode());
+        String accessToken = googleOauthService.requestGoogleAccessToken(request.getAuthCode());
         GoogleAccountResponseDTO googleUser = googleOauthService.requestGoogleAccount(accessToken);
-        log.info("Google User : {}", googleUser.email());
+        log.info("Google User : {}", googleUser);
         /* Google 사용자 정보를 userService에서 회원가입 및 로그인 처리 */
         return null;
     }
@@ -93,7 +96,7 @@ public class CustomerController {
      */
     @PostMapping("/oauth/kakao")
     public ResponseEntity<BaseResponse<TokenDto>> kakaoSignIn(@RequestBody KakaoSignInRequestDTO request) {
-        String accessToken = kakaoOauthService.requestKakaoAccessToken(request.authCode());
+        String accessToken = kakaoOauthService.requestKakaoAccessToken(request.getAuthCode());
         KakaoAccountResponseDTO kakaoUser = kakaoOauthService.requestKakaoAccount(accessToken);
         log.info("Kakao User : {}", kakaoUser);
         return null;
@@ -108,7 +111,7 @@ public class CustomerController {
      */
     @PostMapping("/oauth/naver")
     public ResponseEntity<BaseResponse<TokenDto>> naverSignIn(@RequestBody NaverSignInRequestDTO request) {
-        String accessToken = naverOauthService.requestNaverAccessToken(request.authCode());
+        String accessToken = naverOauthService.requestNaverAccessToken(request.getAuthCode());
         NaverAccountResponseDTO naverUser = naverOauthService.requestNaverAccount(accessToken);
         log.info("Naver User : {}", naverUser);
         return null;

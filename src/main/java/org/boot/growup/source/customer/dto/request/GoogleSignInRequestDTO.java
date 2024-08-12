@@ -1,5 +1,8 @@
 package org.boot.growup.source.customer.dto.request;
 
-public record GoogleSignInRequestDTO (
-    String authCode
-) {}
+import lombok.Data;
+
+@Data
+public class GoogleSignInRequestDTO {
+    private String authCode;
+}

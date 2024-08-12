@@ -44,18 +44,18 @@ public class CustomerService {
         /* 비밀번호 암호화 */
         String encodedPassword = encodingPassword(request);
         log.info("SignUp Method => before pw : {} | after store pw : {}"
-                , request.password()
+                , request.getPassword()
                 , encodedPassword);
         /* 데이터 삽입 */
         Customer newCustomer = Customer.builder()
-                .email(request.email())
+                .email(request.getEmail())
                 .password(encodedPassword)
-                .phoneNumber(request.phoneNumber())
-                .birthday(request.birthday())
-                .gender(Gender.valueOf(request.gender().name()))
-                .address(request.address())
-                .nickname(request.nickname())
-                .name(request.name())
+                .phoneNumber(request.getPhoneNumber())
+                .birthday(request.getBirthday())
+                .gender(Gender.valueOf(request.getGender().name()))
+                .address(request.getAddress())
+                .nickname(request.getNickname())
+                .name(request.getName())
                 .provider(Provider.EMAIL)
                 .role(Role.CUSTOMER)
                 .build();
@@ -63,14 +63,14 @@ public class CustomerService {
     }
 
     public String encodingPassword(CustomerSignUpRequestDTO request){
-        return passwordEncoder.encode(request.password());
+        return passwordEncoder.encode(request.getPassword());
     }
 
     @Transactional
     public TokenDto signIn(CustomerSignInRequestDTO request) {
-        UserDetails userDetails = customUserDetailService.loadUserByUsername(request.email());
+        UserDetails userDetails = customUserDetailService.loadUserByUsername(request.getEmail());
 
-        if(!checkPassword(request.password(), userDetails.getPassword())){ // 비밀번호 비교
+        if(!checkPassword(request.getPassword(), userDetails.getPassword())){ // 비밀번호 비교
             throw new BaseException(ErrorCode.BAD_REQUEST, "비밀번호가 일치하지 않습니다.");
         }
 
@@ -83,12 +83,10 @@ public class CustomerService {
 
     @Transactional
     public EmailCheckResponseDTO emailCheck(EmailCheckRequestDTO request) throws MessagingException {
-        EmailMessageDTO emailMessage = EmailMessageDTO.builder()
-                .to(request.email())
-                .subject("[Grow Team] 이메일 인증 코드")
+        EmailMessageDTO emailMessage = EmailMessageDTO.from(request);
+        String validationCode = emailService.sendMail(emailMessage);
+        return EmailCheckResponseDTO.builder()
+                .validationCode(validationCode)
                 .build();
-        String authCode = emailService.sendMail(emailMessage);
-
-        return new EmailCheckResponseDTO(authCode);
     }
 }

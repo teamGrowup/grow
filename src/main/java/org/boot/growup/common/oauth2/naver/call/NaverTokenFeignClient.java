@@ -3,8 +3,6 @@ package org.boot.growup.common.oauth2.naver.call;
 import org.boot.growup.common.oauth2.naver.dto.NaverAccessTokenResponseDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(name = "naverTokenFeignClient", url = "https://nid.naver.com/oauth2.0")

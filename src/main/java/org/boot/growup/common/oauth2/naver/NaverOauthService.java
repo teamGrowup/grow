@@ -48,12 +48,10 @@ public class NaverOauthService {
 
         return Optional.of(response)
                 .orElseThrow(() -> new BaseException(NOT_FOUND_NAVER_ACCESS_TOKEN_RESPONSE))
-                .accessToken();
+                .getAccessToken();
     }
 
     public NaverAccountResponseDTO requestNaverAccount(String accessToken) {
-        return naverUserInfoFeignClient.requestNaverAccount(
-                "Bearer " + accessToken
-        );
+        return naverUserInfoFeignClient.requestNaverAccount("Bearer " + accessToken);
     }
 }

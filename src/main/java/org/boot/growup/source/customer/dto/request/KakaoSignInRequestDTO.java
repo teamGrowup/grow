@@ -1,5 +1,8 @@
 package org.boot.growup.source.customer.dto.request;
 
-public record KakaoSignInRequestDTO(
-    String authCode
-) {}
+import lombok.Data;
+
+@Data
+public class KakaoSignInRequestDTO {
+    private String authCode;
+}

@@ -25,8 +25,8 @@ public class EmailService {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
-        mimeMessageHelper.setTo(emailMessage.to()); // 메일 수신자
-        mimeMessageHelper.setSubject(emailMessage.subject()); // 메일 제목
+        mimeMessageHelper.setTo(emailMessage.getTo()); // 메일 수신자
+        mimeMessageHelper.setSubject(emailMessage.getSubject()); // 메일 제목
         mimeMessageHelper.setText(setContext(authCode), true); // 메일 본문 내용, HTML 여부
         javaMailSender.send(mimeMessage);
 

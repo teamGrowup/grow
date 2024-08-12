@@ -45,11 +45,11 @@ public class KakaoOauthService {
                 body
         );
 
-        log.info("Kakao AccessToken : {} // {}", response.tokenType(), response.accessToken());
+        log.info("Kakao AccessToken : {} {}", response.getTokenType(), response.getAccessToken());
 
         return Optional.of(response)
                 .orElseThrow(() -> new BaseException(NOT_FOUND_KAKAO_ACCESS_TOKEN_RESPONSE))
-                .accessToken();
+                .getAccessToken();
     }
 
     public KakaoAccountResponseDTO requestKakaoAccount(String accessToken) {

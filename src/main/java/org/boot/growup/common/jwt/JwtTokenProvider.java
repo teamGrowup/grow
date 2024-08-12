@@ -53,10 +53,6 @@ public class JwtTokenProvider {
         // redis에 저장
         redisDao.setValues(userEmail, refreshToken, REFRESH_TOKEN_EXPIRE_TIME + 5000L);
 
-        return TokenDto.builder()
-                .grantType("Bearer")
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .build();
+        return TokenDto.of(accessToken, refreshToken);
     }
 }

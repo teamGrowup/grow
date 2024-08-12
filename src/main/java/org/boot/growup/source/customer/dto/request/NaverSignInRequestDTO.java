@@ -1,5 +1,8 @@
 package org.boot.growup.source.customer.dto.request;
 
-public record NaverSignInRequestDTO(
-    String authCode
-) {}
+import lombok.Data;
+
+@Data
+public class NaverSignInRequestDTO {
+    private String authCode;
+}
