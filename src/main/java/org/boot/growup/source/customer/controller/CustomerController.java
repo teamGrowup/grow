@@ -1,11 +1,7 @@
 package org.boot.growup.source.customer.controller;
 
 import jakarta.mail.MessagingException;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.boot.growup.common.constant.BaseResponse;
@@ -84,15 +80,23 @@ public class CustomerController {
         String accessToken = googleOauthService.requestGoogleAccessToken(request.getAuthCode());
         GoogleAccountResponseDTO googleAccount = googleOauthService.requestGoogleAccount(accessToken);
         log.info("Google User : {}", googleAccount);
+
         /* Google 사용자 정보를 userService에서 회원가입 및 로그인 처리 */
         TokenDto response = customerService.googleSignIn(googleAccount);
         return ResponseEntity.ok(new BaseResponse<>(response));
     }
 
+    /**
+     * [POST]
+     * 구글 로그인 Oauth2.0 - 초기 사용자 회원가입 처리
+     * @header null
+     * @body GoogleAdditionalInfoRequestDTO
+     * @response TokenDto
+     */
     @PostMapping("/oauth/google/additional-info")
-    public ResponseEntity<BaseResponse<TokenDto>> signUpByGoogle(
+    public ResponseEntity<BaseResponse<TokenDto>> googleAdditionalSignIn(
                 @Valid @RequestBody GoogleAdditionalInfoRequestDTO request) {
-        TokenDto response = customerService.signUpByGoogle(request);
+        TokenDto response = customerService.googleAdditionalSignIn(request);
         return ResponseEntity.ok(new BaseResponse<>(response));
     }
 
@@ -101,14 +105,30 @@ public class CustomerController {
      * 카카오 로그인 Oauth2.0
      * @header null
      * @body KakaoSignInRequestDTO
-     * @response
+     * @response TokenDTO
      */
     @PostMapping("/oauth/kakao")
-    public ResponseEntity<BaseResponse<TokenDto>> kakaoSignIn(@RequestBody KakaoSignInRequestDTO request) {
+    public ResponseEntity<BaseResponse<TokenDto>> kakaoSignIn(@Valid @RequestBody KakaoSignInRequestDTO request) {
         String accessToken = kakaoOauthService.requestKakaoAccessToken(request.getAuthCode());
-        KakaoAccountResponseDTO kakaoUser = kakaoOauthService.requestKakaoAccount(accessToken);
-        log.info("Kakao User : {}", kakaoUser);
-        return null;
+        KakaoAccountResponseDTO kakaoAccount = kakaoOauthService.requestKakaoAccount(accessToken);
+        log.info("Kakao User : {}", kakaoAccount);
+
+        TokenDto response = customerService.kakaoSignIn(kakaoAccount);
+        return ResponseEntity.ok(new BaseResponse<>(response));
+    }
+
+    /**
+     * [POST]
+     * 카카오 로그인 Oauth2.0 - 초기 사용자 회원가입 처리
+     * @header null
+     * @body KakaoAdditionalInfoRequestDTO
+     * @response TokenDTO
+     */
+    @PostMapping("/oauth/kakao/additional-info")
+    public ResponseEntity<BaseResponse<TokenDto>> kakaoAdditionalSignIn(
+            @Valid @RequestBody KakaoAdditionalInfoRequestDTO request) {
+        TokenDto response = customerService.kakaoAdditionalSignIn(request);
+        return ResponseEntity.ok(new BaseResponse<>(response));
     }
 
     /**

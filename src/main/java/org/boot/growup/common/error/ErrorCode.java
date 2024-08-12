@@ -25,7 +25,7 @@ public enum ErrorCode {
     NOT_FOUND_GOOGLE_ACCESS_TOKEN_RESPONSE(HttpStatus.INTERNAL_SERVER_ERROR, 500, false, "구글 액세스 토큰 요청에 실패했습니다."),
     NOT_FOUND_KAKAO_ACCESS_TOKEN_RESPONSE(HttpStatus.INTERNAL_SERVER_ERROR,500,false,"카카오 액세스 토큰 요청에 실패했습니다."),
     NOT_FOUND_NAVER_ACCESS_TOKEN_RESPONSE(HttpStatus.INTERNAL_SERVER_ERROR,500,false,"네이버 액세스 토큰 요청에 실패했습니다."),
-    NEED_TO_GIVE_ADDITIONAL_INFORMATION(HttpStatus.CREATED,201,true,"구글 초기 사용자입니다. 추가 정보를 입력해주세요."),
+    NEED_TO_GIVE_ADDITIONAL_INFORMATION(HttpStatus.CREATED,201,true,"소셜 로그인 초기 사용자입니다. 추가 정보를 입력해주세요."),
     /* Session 관련 오류 */
     SESSION_EXPIRED(HttpStatus.BAD_REQUEST, 400, false, "세션이 만료되었습니다. 다시 로그인 해주세요."),
     SESSION_NOT_FOUND(HttpStatus.BAD_REQUEST, 400, false, "세션 정보를 찾을 수 없습니다."),

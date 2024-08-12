@@ -9,9 +9,11 @@ import org.boot.growup.common.enumerate.Gender;
 import org.boot.growup.common.enumerate.Role;
 import org.boot.growup.common.oauth2.Provider;
 import org.boot.growup.common.oauth2.google.dto.GoogleAccountResponseDTO;
+import org.boot.growup.common.oauth2.kakao.dto.KakaoAccountResponseDTO;
 import org.boot.growup.common.userdetail.CustomUserDetails;
 import org.boot.growup.source.customer.dto.request.CustomerSignUpRequestDTO;
 import org.boot.growup.source.customer.dto.request.GoogleAdditionalInfoRequestDTO;
+import org.boot.growup.source.customer.dto.request.KakaoAdditionalInfoRequestDTO;
 import org.hibernate.validator.constraints.br.CPF;
 
 @Entity
@@ -64,6 +66,8 @@ public class Customer {
 
     private String profileUrl;
 
+
+
     public CustomUserDetails toUserDetails() {
         return new CustomUserDetails(email, password, role);
     }
@@ -97,6 +101,21 @@ public class Customer {
                 .nickname(googleAccount.getGivenName())
                 .name(googleAccount.getName())
                 .provider(Provider.GOOGLE)
+                .role(Role.CUSTOMER)
+                .build();
+    }
+    /* 카카오 유저 회원가입 */
+    public static Customer of(KakaoAdditionalInfoRequestDTO request, KakaoAccountResponseDTO kakaoAccount) {
+        return Customer.builder()
+                .email(kakaoAccount.getKakaoAccount().getEmail())
+                .phoneNumber(request.getPhoneNumber())
+                .birthday(request.getBirthday())
+                .gender(Gender.valueOf(request.getGender().name()))
+                .address(request.getAddress())
+                .postCode(request.getPostCode())
+                .nickname(kakaoAccount.getProperties().get("nickname"))
+                .name(request.getName())
+                .provider(Provider.KAKAO)
                 .role(Role.CUSTOMER)
                 .build();
     }

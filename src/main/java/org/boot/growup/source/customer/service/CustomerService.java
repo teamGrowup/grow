@@ -7,19 +7,15 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.boot.growup.common.email.EmailMessageDTO;
 import org.boot.growup.common.email.EmailService;
-import org.boot.growup.common.enumerate.Gender;
-import org.boot.growup.common.enumerate.Role;
 import org.boot.growup.common.constant.BaseException;
 import org.boot.growup.common.error.ErrorCode;
 import org.boot.growup.common.jwt.JwtTokenProvider;
 import org.boot.growup.common.jwt.TokenDto;
 import org.boot.growup.common.oauth2.Provider;
 import org.boot.growup.common.oauth2.google.dto.GoogleAccountResponseDTO;
+import org.boot.growup.common.oauth2.kakao.dto.KakaoAccountResponseDTO;
 import org.boot.growup.common.userdetail.CustomUserDetailService;
-import org.boot.growup.source.customer.dto.request.CustomerSignInRequestDTO;
-import org.boot.growup.source.customer.dto.request.CustomerSignUpRequestDTO;
-import org.boot.growup.source.customer.dto.request.EmailCheckRequestDTO;
-import org.boot.growup.source.customer.dto.request.GoogleAdditionalInfoRequestDTO;
+import org.boot.growup.source.customer.dto.request.*;
 import org.boot.growup.source.customer.dto.response.EmailCheckResponseDTO;
 import org.boot.growup.source.customer.persist.entity.Customer;
 import org.boot.growup.source.customer.persist.repository.CustomerRepository;
@@ -30,8 +26,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 import static org.boot.growup.common.error.ErrorCode.*;
 
@@ -108,7 +102,7 @@ public class CustomerService {
     }
 
     @Transactional
-    public TokenDto signUpByGoogle(GoogleAdditionalInfoRequestDTO request) {
+    public TokenDto googleAdditionalSignIn(GoogleAdditionalInfoRequestDTO request) {
         GoogleAccountResponseDTO googleAccount = (GoogleAccountResponseDTO) session.getAttribute("googleAccount");
         if(googleAccount == null) {
             throw new BaseException(SESSION_NOT_FOUND);
@@ -118,6 +112,42 @@ public class CustomerService {
         customerRepository.save(newCustomer);
 
         UserDetails userDetails = customUserDetailService.loadUserByUsername(googleAccount.getEmail());
+
+        return jwtTokenProvider.generateToken(userDetails.getUsername(),userDetails.getAuthorities());
+    }
+
+    @Transactional
+    public TokenDto kakaoSignIn(KakaoAccountResponseDTO kakaoAccount) {
+        return customerRepository
+                .findByEmailAndProvider(kakaoAccount.getKakaoAccount().getEmail(), Provider.KAKAO)
+                .map(customer -> { // 고객이 존재하는 경우
+                    UserDetails userDetails = customUserDetailService
+                                .loadUserByUsername(kakaoAccount.getKakaoAccount().getEmail());
+                    return jwtTokenProvider.generateToken(userDetails.getUsername(), userDetails.getAuthorities());
+                })
+                .orElseGet(() -> { // 고객이 존재하지 않는 경우
+                    try{
+                        session.setAttribute("kakaoAccount", kakaoAccount); // 세션에 카카오 사용자 정보 저장
+                        log.info("KakaoAccount saved in session: {}", session.getAttribute("kakaoAccount"));
+                    }catch (Exception e) {
+                        log.error("Session 저장 Error : ", e);
+                        throw new BaseException(SESSION_SAVE_FAILED);
+                    }
+                    throw new BaseException(NEED_TO_GIVE_ADDITIONAL_INFORMATION);
+                });
+    }
+
+    @Transactional
+    public TokenDto kakaoAdditionalSignIn(KakaoAdditionalInfoRequestDTO request) {
+        KakaoAccountResponseDTO kakaoAccount = (KakaoAccountResponseDTO) session.getAttribute("kakaoAccount");
+        if(kakaoAccount == null) {
+            throw new BaseException(SESSION_NOT_FOUND);
+        }
+        /* 데이터 삽입 */
+        Customer newCustomer = Customer.of(request, kakaoAccount);
+        customerRepository.save(newCustomer);
+
+        UserDetails userDetails = customUserDetailService.loadUserByUsername(kakaoAccount.getKakaoAccount().getEmail());
 
         return jwtTokenProvider.generateToken(userDetails.getUsername(),userDetails.getAuthorities());
     }
