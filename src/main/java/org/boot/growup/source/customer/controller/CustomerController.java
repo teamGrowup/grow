@@ -1,6 +1,7 @@
 package org.boot.growup.source.customer.controller;
 
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -75,16 +76,24 @@ public class CustomerController {
      * 구글 로그인 Oauth2.0
      * @header null
      * @body GoogleSignInRequestDTO
-     * @response GoogleSignInResponseDTO
+     * @response TokenDto
      */
     @PostMapping("/oauth/google")
     public ResponseEntity<BaseResponse<TokenDto>> googleSignIn(@RequestBody GoogleSignInRequestDTO request) {
         /* 인가코드를 받아서 Google에 AccessToken 요청 -> 받은 AccessToken으로 Google 사용자 정보 요청 */
         String accessToken = googleOauthService.requestGoogleAccessToken(request.getAuthCode());
-        GoogleAccountResponseDTO googleUser = googleOauthService.requestGoogleAccount(accessToken);
-        log.info("Google User : {}", googleUser);
+        GoogleAccountResponseDTO googleAccount = googleOauthService.requestGoogleAccount(accessToken);
+        log.info("Google User : {}", googleAccount);
         /* Google 사용자 정보를 userService에서 회원가입 및 로그인 처리 */
-        return null;
+        TokenDto response = customerService.googleSignIn(googleAccount);
+        return ResponseEntity.ok(new BaseResponse<>(response));
+    }
+
+    @PostMapping("/oauth/google/additional-info")
+    public ResponseEntity<BaseResponse<TokenDto>> signUpByGoogle(
+                @Valid @RequestBody GoogleAdditionalInfoRequestDTO request) {
+        TokenDto response = customerService.signUpByGoogle(request);
+        return ResponseEntity.ok(new BaseResponse<>(response));
     }
 
     /**

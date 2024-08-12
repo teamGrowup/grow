@@ -8,7 +8,10 @@ import lombok.NoArgsConstructor;
 import org.boot.growup.common.enumerate.Gender;
 import org.boot.growup.common.enumerate.Role;
 import org.boot.growup.common.oauth2.Provider;
+import org.boot.growup.common.oauth2.google.dto.GoogleAccountResponseDTO;
 import org.boot.growup.common.userdetail.CustomUserDetails;
+import org.boot.growup.source.customer.dto.request.CustomerSignUpRequestDTO;
+import org.boot.growup.source.customer.dto.request.GoogleAdditionalInfoRequestDTO;
 import org.hibernate.validator.constraints.br.CPF;
 
 @Entity
@@ -42,6 +45,9 @@ public class Customer {
     @Column(nullable = false, length = 100)
     private String address;
 
+    @Column(nullable = false, length = 5)
+    private String postCode;
+
     @Column(nullable = false, length = 20)
     private String nickname;
 
@@ -60,5 +66,38 @@ public class Customer {
 
     public CustomUserDetails toUserDetails() {
         return new CustomUserDetails(email, password, role);
+    }
+
+    /* 이메일 유저 회원가입 */
+    public static Customer of(CustomerSignUpRequestDTO request, String encodedPassword) {
+        return Customer.builder()
+                .email(request.getEmail())
+                .password(encodedPassword)
+                .phoneNumber(request.getPhoneNumber())
+                .birthday(request.getBirthday())
+                .gender(Gender.valueOf(request.getGender().name()))
+                .address(request.getAddress())
+                .postCode(request.getPostCode())
+                .nickname(request.getNickname())
+                .name(request.getName())
+                .provider(Provider.EMAIL)
+                .role(Role.CUSTOMER)
+                .build();
+    }
+
+    /* 구글 유저 회원가입 */
+    public static Customer of(GoogleAdditionalInfoRequestDTO request, GoogleAccountResponseDTO googleAccount) {
+        return Customer.builder()
+                .email(googleAccount.getEmail())
+                .phoneNumber(request.getPhoneNumber())
+                .birthday(request.getBirthday())
+                .gender(Gender.valueOf(request.getGender().name()))
+                .address(request.getAddress())
+                .postCode(request.getPostCode())
+                .nickname(googleAccount.getGivenName())
+                .name(googleAccount.getName())
+                .provider(Provider.GOOGLE)
+                .role(Role.CUSTOMER)
+                .build();
     }
 }
