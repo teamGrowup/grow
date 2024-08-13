@@ -30,7 +30,7 @@ public class RequestMatcherHolder {
             RequestInfo.of(POST, "/v3/**", null),
             RequestInfo.of(POST, "/swagger-ui/**", null),
             RequestInfo.of(GET, "/*.ico", null),
-            RequestInfo.of(GET, "/resources/**", null)
+            RequestInfo.of(GET, "/images/**", null)
     );
     private final ConcurrentHashMap<String, RequestMatcher> reqMatcherCacheMap = new ConcurrentHashMap<>();
 
