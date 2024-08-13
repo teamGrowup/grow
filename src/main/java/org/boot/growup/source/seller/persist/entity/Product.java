@@ -53,6 +53,10 @@ public class Product {
     @Builder.Default
     private List<ProductImage> productImages = new ArrayList<>();
 
+    @ManyToOne
+    @JoinColumn(name = "brand_id", nullable = false)
+    private Brand brand;
+
     public static Product from(ProductRequestDTO productRequestDto) {
         return Product.builder()
                 .name(productRequestDto.getName())
