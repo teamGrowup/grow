@@ -31,6 +31,7 @@ public class PostNoticeRequestDTO {
         .content(notice.getContent())
         .build();
   }
+
 }
 
 

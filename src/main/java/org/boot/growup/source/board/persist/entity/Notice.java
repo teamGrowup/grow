@@ -11,6 +11,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.boot.growup.source.board.dto.request.PostNoticeRequestDTO;
+import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.data.domain.Page;
 
 @Entity
 @Getter
@@ -18,6 +20,7 @@ import org.boot.growup.source.board.dto.request.PostNoticeRequestDTO;
 @Table(name = "notice")
 @NoArgsConstructor
 @AllArgsConstructor
+@DynamicUpdate  // 변경된 필드만 수정
 public class Notice {
 
   @Id
@@ -40,6 +43,14 @@ public class Notice {
         .admin("admin")
         .build();
   }
+
+  /* 공지사항 데이터 수정 */
+  public void changeData(PostNoticeRequestDTO postNoticeRequestDTO, String admin) {
+    this.title = postNoticeRequestDTO.getTitle();
+    this.content = postNoticeRequestDTO.getContent();
+    this.admin = admin;
+  }
+
 }
 
 
