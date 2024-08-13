@@ -2,13 +2,19 @@ package org.boot.growup.source.seller.service;
 
 import lombok.RequiredArgsConstructor;
 import org.boot.growup.common.constant.BaseException;
+import org.boot.growup.common.enumerate.AuthorityStatus;
 import org.boot.growup.common.error.ErrorCode;
 import org.boot.growup.source.seller.dto.request.RegisterBrandRequestDTO;
 import org.boot.growup.source.seller.persist.entity.Brand;
 import org.boot.growup.source.seller.persist.entity.Seller;
 import org.boot.growup.source.seller.persist.repository.BrandRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -53,5 +59,29 @@ public class BrandServiceImpl implements BrandService {
         brand.updateBrandInfo(registerBrandRequestDTO.getName(), registerBrandRequestDTO.getDescription());
 
         return brand;
+    }
+
+    @Override
+    public void changeBrandAuthority(Long brandId, AuthorityStatus status) {
+        Brand brand = brandRepository.findById(brandId).orElseThrow(
+                () -> new BaseException(ErrorCode.BRAND_BY_SELLER_NOT_FOUND)
+        );
+
+        switch (status) {
+            case DENIED -> brand.deny();
+            case PENDING -> brand.pending();
+            case APPROVED -> brand.approve();
+        }
+    }
+
+    @Override
+    public List<Brand> readBrandRequestsByStatus(AuthorityStatus authorityStatus, int pageNo) {
+        Pageable pageable = PageRequest.of(pageNo, 10);
+
+        if (ObjectUtils.isEmpty(authorityStatus)){
+            return brandRepository.findAll(pageable).stream().toList();
+        }
+
+        return brandRepository.findByAuthorityStatus(authorityStatus, pageable);
     }
 }

@@ -31,7 +31,7 @@ public class Brand {
     private AuthorityStatus authorityStatus;
 
     @Column(nullable = false)
-    private int likes;
+    private int likeCount;
 
     @OneToOne
     @JoinColumn(name = "seller_id")
@@ -73,7 +73,7 @@ public class Brand {
      */
 
     public void initLikesCnt(){
-        this.likes = 0;
+        this.likeCount = 0;
     }
 
     /*
