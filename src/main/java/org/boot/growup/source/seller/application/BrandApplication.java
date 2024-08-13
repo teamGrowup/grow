@@ -1,7 +1,10 @@
 package org.boot.growup.source.seller.application;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.boot.growup.common.enumerate.AuthorityStatus;
 import org.boot.growup.source.seller.dto.request.RegisterBrandRequestDTO;
+import org.boot.growup.source.seller.dto.response.ReadBrandRequestByStatusResponseDTO;
 import org.boot.growup.source.seller.dto.response.ReadSellerBrandResponseDTO;
 import org.boot.growup.source.seller.persist.entity.Brand;
 import org.boot.growup.source.seller.persist.entity.BrandImage;
@@ -15,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -69,5 +73,33 @@ public class BrandApplication {
 
         Brand brand = brandService.updateBrand(registerBrandRequestDTO, seller);
         brandImageService.updateBrandImages(brandImageFiles, brand);
+    }
+
+
+    @Transactional
+    public void denyBrandRegister(Long brandId){
+        // 브랜드가 거부될 시.
+        brandService.changeBrandAuthority(brandId, AuthorityStatus.DENIED);
+
+        // TODO : 1. 해당 브랜드가 판매하는 모든 등록된 상품들 deny
+    }
+
+    @Transactional
+    public void approveBrandRegister(Long brandId) {
+        // 브랜드 승인될 시
+        brandService.changeBrandAuthority(brandId, AuthorityStatus.APPROVED);
+    }
+
+    @Transactional
+    public void pendingBrandRegister(Long brandId) {
+        // 브랜드 허가대기중 상태로 임의로 변경
+        brandService.changeBrandAuthority(brandId, AuthorityStatus.PENDING);
+    }
+
+    public List<ReadBrandRequestByStatusResponseDTO> readBrandRequestByStatus(AuthorityStatus authorityStatus, int pageNo) {
+        List<Brand> brandList = brandService.readBrandRequestsByStatus(authorityStatus, pageNo);
+        return brandList.stream()
+                .map(ReadBrandRequestByStatusResponseDTO::from)
+                .toList();
     }
 }

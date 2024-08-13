@@ -1,81 +1,75 @@
 package org.boot.growup.source.seller.service;
 
-import org.boot.growup.source.seller.dto.request.ProductRequestDTO;
+import lombok.RequiredArgsConstructor;
+import org.boot.growup.common.constant.BaseException;
+import org.boot.growup.common.error.ErrorCode;
+import org.boot.growup.source.seller.dto.request.ProductRequestDTO; // ProductRequestDTO 임포트
 import org.boot.growup.source.seller.dto.response.ProductResponseDTO;
-import org.boot.growup.source.seller.persist.entity.Product;
-import org.boot.growup.source.seller.persist.entity.ProductImage; // ProductImage 엔티티 임포트
-import org.boot.growup.source.seller.persist.entity.ProductOption;
-import org.boot.growup.source.seller.persist.entity.SubCategory;
+import org.boot.growup.source.seller.persist.entity.*;
 import org.boot.growup.source.seller.persist.repository.ProductRepository;
 import org.boot.growup.source.seller.persist.repository.SubCategoryRepository;
-import org.boot.growup.source.seller.persist.repository.ProductImageRepository; // ProductImageRepository 임포트
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import lombok.RequiredArgsConstructor;
 
 import jakarta.transaction.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
+
+import static org.boot.growup.source.seller.persist.entity.QProduct.product;
 
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
-    @Autowired
     private final ProductRepository productRepository;
-
-    @Autowired
     private final SubCategoryRepository subCategoryRepository;
 
-    @Autowired
-    private final ProductImageRepository productImageRepository; // ProductImageRepository 추가
-
+    @Override
     @Transactional
-    public ProductResponseDTO registerProduct(ProductRequestDTO productRequestDto, List<MultipartFile> images) {
-
+    public Product registerProduct(ProductRequestDTO productRequestDto, Seller seller) {
+        // 서브 카테고리 가져오기
         SubCategory subCategory = subCategoryRepository.findById(productRequestDto.getSubCategoryId())
                 .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 서브 카테고리 ID입니다."));
 
-        Product product = Product.builder()
-                .productName(productRequestDto.getProductName())
-                .productDescription(productRequestDto.getProductDescription())
-                .subCategory(subCategory)
-                .authorityStatus("대기")
-                .productOptions(mapToProductOptions(productRequestDto.getProductOptions()))
-                .build();
+        Product product = Product.from(productRequestDto);
+
+        // 상품 옵션 설정
+        List<ProductOption> productOptions = convertToProductOptions(productRequestDto.getProductOptions(), product);
+        product.initProductOptions(productOptions); // 상품 옵션 초기화 메서드 사용
+
+        product.setSubCategory(subCategory); // 서브 카테고리 설정
+        product.pending();
+        product.initAverageRating();
+        product.initLikeCount();
+        product.designateSeller(seller); // 판매자 설정.
 
         productRepository.save(product);
-
-        if (images != null) {
-            for (MultipartFile image : images) {
-                if (!image.isEmpty()) {
-                    ProductImage productImage = ProductImage.builder()
-                            .originalImageName(image.getOriginalFilename())
-                            .path("your/image/path/" + image.getOriginalFilename()) // 실제 이미지 저장 경로
-                            .createdAt(LocalDateTime.now())
-                            .modifiedAt(LocalDateTime.now())
-                            .status("ACTIVE") // 상태 설정
-                            .product(product) // 상품과 연결
-                            .build();
-                    product.getProductImages().add(productImage);
-                }
-            }
-        }
-
-        productRepository.save(product);
-
-        return new ProductResponseDTO("등록 성공", product.getProductId());
+        return product;
     }
 
-    private List<ProductOption> mapToProductOptions(List<ProductRequestDTO.ProductOptionDto> optionDtos) {
-        return optionDtos.stream()
-                .map(optionDto -> ProductOption.builder()
-                        .productOptionName(optionDto.getProductOptionName())
-                        .productOptionStock(optionDto.getProductOptionStock())
-                        .productOptionPrice(optionDto.getProductOptionPrice())
+
+    // ProductRequestDTO의 ProductOptionDTO를 ProductOption으로 변환하는 메서드
+    private List<ProductOption> convertToProductOptions(List<ProductRequestDTO.ProductOptionDTO> productOptionDTOs, Product product) {
+        return productOptionDTOs.stream()
+                .map(dto -> ProductOption.builder()
+                        .optionName(dto.getOptionName())
+                        .optionStock(dto.getOptionStock())
+                        .optionPrice(dto.getOptionPrice())
+                        .product(product) // Product 설정 추가
                         .build())
                 .toList();
     }
+    @Transactional
+    @Override
+    public Product updateProduct(ProductRequestDTO productRequestDto, Seller seller) {
+        Product product = productRepository.findBySeller_Id(seller.getId()).orElseThrow(
+                () -> new BaseException(ErrorCode.PRODUCT_BY_SELLER_NOT_FOUND)
+        );
+
+        product.pending(); // 대기 상태로 변경.
+        product.updateProductInfo(productRequestDto.getName(), productRequestDto.getDescription());
+
+        productRepository.save(product);
+        return product;
+    }
+
 }

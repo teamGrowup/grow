@@ -42,7 +42,7 @@ class BrandImageRepositoryTest {
                 .name("라퍼지스토어")
                 .description("라퍼지스토어(LAFUDGESTORE)는 다양한 사람들이 일상에서 편안하게 사용할 수 있는 제품을 전개합니다. 새롭게 변화되는 소재와 실루엣, 일상에 자연스레 스며드는 제품을 제작하여 지속적인 실속형 소비의 가치를 실천합니다.")
                 .authorityStatus(AuthorityStatus.PENDING)
-                .likes(0)
+                .likeCount(0)
                 .build();
 
         brandRepository.save(brand);
