@@ -23,6 +23,7 @@ public class RequestMatcherHolder {
             // auth
             RequestInfo.of(POST,"/customers/email/**", null),
             RequestInfo.of(POST,"/customers/oauth/**", null),
+            RequestInfo.of(POST,"/sellers/email/**", null),
             RequestInfo.of(GET, "/login/**", null),
             RequestInfo.of(POST, "/customers/**", Role.CUSTOMER),
 
