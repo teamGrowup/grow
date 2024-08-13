@@ -14,8 +14,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.*;
 
 @Component
 public class RequestMatcherHolder {
@@ -25,9 +24,19 @@ public class RequestMatcherHolder {
             RequestInfo.of(POST,"/customers/oauth/**", null),
             RequestInfo.of(POST,"/sellers/email/**", null),
             RequestInfo.of(GET, "/login/**", null),
+
+            RequestInfo.of(GET, "/customers/**", Role.CUSTOMER),
             RequestInfo.of(POST, "/customers/**", Role.CUSTOMER),
+            RequestInfo.of(PATCH, "/customers/**", Role.CUSTOMER),
+            RequestInfo.of(DELETE, "/customers/**", Role.CUSTOMER),
+
+            RequestInfo.of(GET, "/sellers/**", Role.SELLER),
+            RequestInfo.of(POST, "/sellers/**", Role.SELLER),
+            RequestInfo.of(PATCH, "/sellers/**", Role.SELLER),
+            RequestInfo.of(DELETE, "/sellers/**", Role.SELLER),
 
             // static resources
+            RequestInfo.of(GET, "/error", null),
             RequestInfo.of(POST, "/v3/**", null),
             RequestInfo.of(POST, "/swagger-ui/**", null),
             RequestInfo.of(GET, "/*.ico", null),

@@ -4,10 +4,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 import lombok.Data;
 import org.boot.growup.common.Regex;
 import org.boot.growup.common.enumerate.Gender;
 @Data
+@Builder
 public class KakaoAdditionalInfoRequestDTO {
     @NotBlank(message = "전화번호는 필수 입력 값입니다")
     @Pattern(regexp = Regex.PHONE_NUMBER, message = "전화번호는 000-0000-0000 형식이어야 합니다")

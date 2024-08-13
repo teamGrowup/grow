@@ -5,13 +5,13 @@ import lombok.Data;
 
 @Data
 @Builder
-public class TokenDto {
+public class TokenDTO {
     private final String grantType;
     private final String accessToken;
     private final String refreshToken;
 
-    public static TokenDto of(String accessToken, String refreshToken) {
-        return TokenDto.builder()
+    public static TokenDTO of(String accessToken, String refreshToken) {
+        return TokenDTO.builder()
                 .grantType("Bearer")
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)

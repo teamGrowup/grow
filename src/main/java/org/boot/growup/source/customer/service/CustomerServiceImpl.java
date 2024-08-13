@@ -10,7 +10,7 @@ import org.boot.growup.common.email.EmailService;
 import org.boot.growup.common.constant.BaseException;
 import org.boot.growup.common.error.ErrorCode;
 import org.boot.growup.common.jwt.JwtTokenProvider;
-import org.boot.growup.common.jwt.TokenDto;
+import org.boot.growup.common.jwt.TokenDTO;
 import org.boot.growup.common.oauth2.Provider;
 import org.boot.growup.common.oauth2.google.dto.GoogleAccountResponseDTO;
 import org.boot.growup.common.oauth2.kakao.dto.KakaoAccountResponseDTO;
@@ -33,7 +33,7 @@ import static org.boot.growup.common.error.ErrorCode.*;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class CustomerServiceImpl implements CustomerService{
+public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository customerRepository;
     private final PasswordEncoder passwordEncoder;
     private final CustomUserDetailService customUserDetailService;
@@ -41,6 +41,7 @@ public class CustomerServiceImpl implements CustomerService{
     private final EmailService emailService;
     private final HttpSession session;
 
+    @Override
     @Transactional
     public void signUp(CustomerSignUpRequestDTO request) {
         /* 비밀번호 암호화 */
@@ -57,9 +58,10 @@ public class CustomerServiceImpl implements CustomerService{
         return passwordEncoder.encode(request.getPassword());
     }
 
+    @Override
     @Transactional
-    public TokenDto signIn(CustomerSignInRequestDTO request) {
-        UserDetails userDetails = customUserDetailService.loadUserByUsername(request.getEmail());
+    public TokenDTO signIn(CustomerSignInRequestDTO request) {
+        UserDetails userDetails = customUserDetailService.loadUserByUsernameAndProvider(request.getEmail(), Provider.EMAIL);
 
         if(!checkPassword(request.getPassword(), userDetails.getPassword())){ // 비밀번호 비교
             throw new BaseException(ErrorCode.BAD_REQUEST, "비밀번호가 일치하지 않습니다.");
@@ -72,6 +74,7 @@ public class CustomerServiceImpl implements CustomerService{
         return passwordEncoder.matches(rawPassword, encodedPassword);
     }
 
+    @Override
     @Transactional
     public EmailCheckResponseDTO emailCheck(EmailCheckRequestDTO request) throws MessagingException {
         EmailMessageDTO emailMessage = EmailMessageDTO.from(request);
@@ -81,12 +84,14 @@ public class CustomerServiceImpl implements CustomerService{
                 .build();
     }
 
+    @Override
     @Transactional
-    public TokenDto signInGoogle(GoogleAccountResponseDTO googleAccount) {
+    public TokenDTO signInGoogle(GoogleAccountResponseDTO googleAccount) {
         return customerRepository
                 .findByEmailAndProvider(googleAccount.getEmail(), Provider.GOOGLE)
                 .map(customer -> { // 고객이 존재하는 경우
-                    UserDetails userDetails = customUserDetailService.loadUserByUsername(googleAccount.getEmail());
+                    UserDetails userDetails = customUserDetailService.loadUserByUsernameAndProvider(
+                                googleAccount.getEmail(), Provider.GOOGLE);
                     return jwtTokenProvider.generateToken(userDetails.getUsername(), userDetails.getAuthorities());
                 })
                 .orElseGet(() -> { // 고객이 존재하지 않는 경우
@@ -102,8 +107,9 @@ public class CustomerServiceImpl implements CustomerService{
 
     }
 
+    @Override
     @Transactional
-    public TokenDto signInGoogleAdditional(GoogleAdditionalInfoRequestDTO request) {
+    public TokenDTO signInGoogleAdditional(GoogleAdditionalInfoRequestDTO request) {
         GoogleAccountResponseDTO googleAccount = (GoogleAccountResponseDTO) session.getAttribute("googleAccount");
         if(googleAccount == null) {
             throw new BaseException(SESSION_NOT_FOUND);
@@ -112,18 +118,21 @@ public class CustomerServiceImpl implements CustomerService{
         Customer newCustomer = Customer.of(request, googleAccount);
         customerRepository.save(newCustomer);
 
-        UserDetails userDetails = customUserDetailService.loadUserByUsername(googleAccount.getEmail());
+        UserDetails userDetails = customUserDetailService.loadUserByUsernameAndProvider(
+                    googleAccount.getEmail(), Provider.GOOGLE);
 
         return jwtTokenProvider.generateToken(userDetails.getUsername(),userDetails.getAuthorities());
     }
 
+    @Override
     @Transactional
-    public TokenDto signInKakao(KakaoAccountResponseDTO kakaoAccount) {
+    public TokenDTO signInKakao(KakaoAccountResponseDTO kakaoAccount) {
         return customerRepository
                 .findByEmailAndProvider(kakaoAccount.getKakaoAccount().getEmail(), Provider.KAKAO)
                 .map(customer -> { // 고객이 존재하는 경우
                     UserDetails userDetails = customUserDetailService
-                                .loadUserByUsername(kakaoAccount.getKakaoAccount().getEmail());
+                                .loadUserByUsernameAndProvider(
+                                            kakaoAccount.getKakaoAccount().getEmail(), Provider.KAKAO);
                     return jwtTokenProvider.generateToken(userDetails.getUsername(), userDetails.getAuthorities());
                 })
                 .orElseGet(() -> { // 고객이 존재하지 않는 경우
@@ -138,8 +147,9 @@ public class CustomerServiceImpl implements CustomerService{
                 });
     }
 
+    @Override
     @Transactional
-    public TokenDto signInKakaoAdditional(KakaoAdditionalInfoRequestDTO request) {
+    public TokenDTO signInKakaoAdditional(KakaoAdditionalInfoRequestDTO request) {
         KakaoAccountResponseDTO kakaoAccount = (KakaoAccountResponseDTO) session.getAttribute("kakaoAccount");
         if(kakaoAccount == null) {
             throw new BaseException(SESSION_NOT_FOUND);
@@ -148,18 +158,20 @@ public class CustomerServiceImpl implements CustomerService{
         Customer newCustomer = Customer.of(request, kakaoAccount);
         customerRepository.save(newCustomer);
 
-        UserDetails userDetails = customUserDetailService.loadUserByUsername(kakaoAccount.getKakaoAccount().getEmail());
+        UserDetails userDetails = customUserDetailService.loadUserByUsernameAndProvider(
+                    kakaoAccount.getKakaoAccount().getEmail(), Provider.KAKAO);
 
         return jwtTokenProvider.generateToken(userDetails.getUsername(),userDetails.getAuthorities());
     }
 
+    @Override
     @Transactional
-    public TokenDto signInNaver(NaverAccountResponseDTO naverAccount) {
+    public TokenDTO signInNaver(NaverAccountResponseDTO naverAccount) {
         return customerRepository
                 .findByEmailAndProvider(naverAccount.getResponse().getEmail(), Provider.NAVER)
                 .map(customer -> { // 고객이 존재하는 경우
                     UserDetails userDetails = customUserDetailService
-                            .loadUserByUsername(naverAccount.getResponse().getEmail());
+                            .loadUserByUsernameAndProvider(naverAccount.getResponse().getEmail(), Provider.NAVER);
                     return jwtTokenProvider.generateToken(userDetails.getUsername(), userDetails.getAuthorities());
                 })
                 .orElseGet(() -> { // 고객이 존재하지 않는 경우
@@ -174,8 +186,9 @@ public class CustomerServiceImpl implements CustomerService{
                 });
     }
 
+    @Override
     @Transactional
-    public TokenDto signInNaverAdditional(NaverAdditionalInfoRequestDTO request) {
+    public TokenDTO signInNaverAdditional(NaverAdditionalInfoRequestDTO request) {
         NaverAccountResponseDTO naverAccount = (NaverAccountResponseDTO) session.getAttribute("naverAccount");
         if(naverAccount == null) {
             throw new BaseException(SESSION_NOT_FOUND);
@@ -184,7 +197,8 @@ public class CustomerServiceImpl implements CustomerService{
         Customer newCustomer = Customer.of(request, naverAccount);
         customerRepository.save(newCustomer);
 
-        UserDetails userDetails = customUserDetailService.loadUserByUsername(naverAccount.getResponse().getEmail());
+        UserDetails userDetails = customUserDetailService.loadUserByUsernameAndProvider(
+                naverAccount.getResponse().getEmail(), Provider.NAVER);
 
         return jwtTokenProvider.generateToken(userDetails.getUsername(),userDetails.getAuthorities());
     }

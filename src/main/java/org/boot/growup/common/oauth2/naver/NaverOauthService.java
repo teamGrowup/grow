@@ -16,11 +16,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 import static org.boot.growup.common.error.ErrorCode.NOT_FOUND_NAVER_ACCESS_TOKEN_RESPONSE;
-
-@Component
 @Slf4j
-@RequiredArgsConstructor
 @Getter
+@Component
+@RequiredArgsConstructor
 public class NaverOauthService {
     @Value("${oauth2.naver.client-id}")
     private String clientId;
