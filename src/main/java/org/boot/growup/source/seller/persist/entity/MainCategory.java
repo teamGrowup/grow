@@ -17,6 +17,7 @@ public class MainCategory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "main_category_id", nullable = false)
     private Long id;
 
     @Column(name = "name", nullable = false, length = 50) // 추가된 어노테이션

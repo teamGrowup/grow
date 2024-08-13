@@ -10,7 +10,5 @@ import java.util.List;
 public interface ProductImageService {
 
     void saveProductImages(List<MultipartFile> productImageFiles, Product product, Section section);
-    ProductImage storeImage(MultipartFile multipartFile, Section section);
-    String getFullPath(String filename);
     void updateProductImages(List<MultipartFile> productImages, Product product, Section section);
 }

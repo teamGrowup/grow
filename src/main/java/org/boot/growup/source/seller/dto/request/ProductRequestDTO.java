@@ -28,8 +28,6 @@ public class ProductRequestDTO {
     private Long sellerId; // 판매자 ID 필드 추가
     @Data
     @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
     public static class ProductOptionDTO {
         @NotBlank(message = "옵션 이름은 필수입니다.")
         private String optionName;

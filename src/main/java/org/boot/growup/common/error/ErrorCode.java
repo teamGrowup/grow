@@ -23,12 +23,16 @@ public enum ErrorCode {
     USER_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, 500, false, "유저를 찾지 못했습니다."),
 
     /* Product 관련 */
+    PRODUCT_NOT_FOUND(HttpStatus.BAD_REQUEST,404, false, "상품을 찾을 수 없습니다."),
     PRODUCT_NAME_ALREADY_EXISTS(HttpStatus.BAD_REQUEST,404, false, "해당 상품명은 이미 존재합니다."),
     PRODUCT_BY_SELLER_NOT_FOUND(HttpStatus.BAD_REQUEST, 404, false, "해당 셀러ID의 상품은 존재하지 않습니다."),
 
     /* Brand 관련 */
     BRAND_NAME_ALREADY_EXISTS(HttpStatus.BAD_REQUEST,404, false, "해당 브랜드명은 이미 존재합니다."),
-    BRAND_BY_SELLER_NOT_FOUND(HttpStatus.BAD_REQUEST, 404, false, "해당 셀러ID의 브랜드는 존재하지 않습니다.");
+    BRAND_BY_SELLER_NOT_FOUND(HttpStatus.BAD_REQUEST, 404, false, "해당 셀러ID의 브랜드는 존재하지 않습니다."),
+
+    /* Seller 관련 */
+    SELLER_NOT_FOUND(HttpStatus.BAD_REQUEST,404, false, "해당 판매자를 찾을 수 없습니다.");
 
 
     private final HttpStatus httpStatus;

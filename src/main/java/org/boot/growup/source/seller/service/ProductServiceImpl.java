@@ -68,7 +68,6 @@ public class ProductServiceImpl implements ProductService {
         product.pending(); // 대기 상태로 변경.
         product.updateProductInfo(productRequestDto.getName(), productRequestDto.getDescription());
 
-        // 상품 저장 (optional, if not already handled by ProductApplication)
         productRepository.save(product);
         return product;
     }

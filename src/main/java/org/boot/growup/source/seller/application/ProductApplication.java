@@ -1,11 +1,11 @@
 package org.boot.growup.source.seller.application;
 
-import jakarta.persistence.Id;
 import lombok.RequiredArgsConstructor;
+import org.boot.growup.common.constant.BaseException;
+import org.boot.growup.common.error.ErrorCode;
 import org.boot.growup.common.enumerate.Section;
 import org.boot.growup.source.seller.dto.request.ProductRequestDTO;
 import org.boot.growup.source.seller.dto.response.ProductDetailResponseDTO;
-import org.boot.growup.source.seller.dto.response.ProductResponseDTO;
 import org.boot.growup.source.seller.persist.entity.*;
 import org.boot.growup.source.seller.persist.repository.ProductRepository;
 import org.boot.growup.source.seller.persist.repository.SellerRepository;
@@ -36,7 +36,7 @@ public class ProductApplication {
         Long sellerId = 1L; // 예시: 실제 판매자 ID를 가져오는 로직을 작성해야 함.
 
         Seller seller = sellerRepository.findById(sellerId)
-                .orElseThrow(() -> new IllegalArgumentException("판매자를 찾을 수 없습니다."));
+                .orElseThrow(()->new BaseException(ErrorCode.SELLER_NOT_FOUND));
 
         // 상품 등록 요청 DTO에 판매자 ID 설정
         productRequestDto.setSellerId(seller.getId());
@@ -53,7 +53,7 @@ public class ProductApplication {
      */
     public ProductDetailResponseDTO getProductDetail(Long productId) {
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new IllegalArgumentException("상품을 찾을 수 없습니다."));
+                .orElseThrow(() -> new BaseException(ErrorCode.PRODUCT_NOT_FOUND));
 
         // 상품의 상세 정보를 DTO로 변환하여 반환
         return ProductDetailResponseDTO.builder()
@@ -73,11 +73,7 @@ public class ProductApplication {
     // 상품 이미지 리스트를 DTO로 변환하는 메서드
     private List<ProductDetailResponseDTO.ProductImageDTO> convertToProductImageDTOs(List<ProductImage> productImages) {
         return productImages.stream()
-                .map(image -> ProductDetailResponseDTO.ProductImageDTO.builder()
-                        .path(image.getPath())
-                        .originalImageName(image.getOriginalImageName())
-                        .section(image.getSection().name())
-                        .build())
+                .map(ProductDetailResponseDTO.ProductImageDTO::from) // from 메서드 호출
                 .toList();
     }
 
@@ -94,7 +90,9 @@ public class ProductApplication {
     @Transactional
     public void updateProduct(ProductRequestDTO productRequestDto, List<MultipartFile> productImages) {
 
-        Seller seller = sellerRepository.findById(1L).get();
+        Long sellerId = 1L; // 실제 seller ID로 변경
+        Seller seller = sellerRepository.findById(sellerId)
+                .orElseThrow(()->new BaseException(ErrorCode.SELLER_NOT_FOUND));
         Section section = Section.PRODUCT_IMAGE;
 
         Product product = productService.updateProduct(productRequestDto, seller);

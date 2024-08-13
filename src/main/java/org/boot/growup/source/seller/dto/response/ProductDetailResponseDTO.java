@@ -3,6 +3,8 @@ package org.boot.growup.source.seller.dto.response;
 import lombok.Builder;
 import lombok.Getter;
 import org.boot.growup.common.enumerate.AuthorityStatus;
+import org.boot.growup.common.enumerate.Section;
+import org.boot.growup.source.seller.persist.entity.ProductImage;
 
 import java.util.List;
 
@@ -42,7 +44,14 @@ public class ProductDetailResponseDTO {
     public static class ProductImageDTO {
         private String path;
         private String originalImageName;
-        private String section;
+        private Section section;
+        public static ProductImageDTO from(ProductImage productImage) {
+            return ProductImageDTO.builder()
+                    .path(productImage.getPath())
+                    .originalImageName(productImage.getOriginalImageName())
+                    .section(productImage.getSection())
+                    .build();
+        }
     }
 
     @Getter

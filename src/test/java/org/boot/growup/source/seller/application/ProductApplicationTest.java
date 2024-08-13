@@ -96,8 +96,16 @@ class ProductApplicationTest {
                 .subCategoryId(subCategoryDTO.getId()) // 서브 카테고리 ID 추가
                 .sellerId(seller.getId()) // 판매자 ID 추가
                 .productOptions(Arrays.asList(
-                        new ProductOptionDTO("테스트 옵션", 10, 10000),
-                        new ProductOptionDTO("테스트 옵션2", 5, 15000)
+                        ProductOptionDTO.builder()
+                                .optionName("테스트 옵션")
+                                .optionStock(10)
+                                .optionPrice(10000)
+                                .build(),
+                        ProductOptionDTO.builder()
+                                .optionName("테스트 옵션2")
+                                .optionStock(5)
+                                .optionPrice(15000)
+                                .build()
                 ))
                 .build();
 
@@ -141,7 +149,7 @@ class ProductApplicationTest {
 
 
     @Test
-    void testGetProductDetail() {
+    void getProductDetail_Default_Success() {
         // Given
         when(productRepository.findById(product.getId())).thenReturn(Optional.of(product));
 
