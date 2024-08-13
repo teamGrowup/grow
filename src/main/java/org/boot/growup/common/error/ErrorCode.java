@@ -15,13 +15,44 @@ public enum ErrorCode {
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 500, false, "서버 내부에 오류가 발생했습니다."),
 
     /* jwt */
-    TOKEN_NOT_EXIST(HttpStatus.UNAUTHORIZED, 401, false, "JWT Token이 존재하지 않습니다."),
-    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, 401, false, "유효하지 않은 JWT Token 입니다."),
+    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, 401, false, "유효하지 않은 토큰입니다."),
+    EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, 401, false, "만료된 토큰입니다."),
+    UNSUPPORTED_TOKEN(HttpStatus.UNAUTHORIZED, 401, false, "지원되지 않는 토큰입니다."),
+    MALFORMED_TOKEN(HttpStatus.UNAUTHORIZED, 401, false, "잘못된 형식의 토큰입니다."),
+    EMPTY_TOKEN(HttpStatus.UNAUTHORIZED, 401, false, "JWT 토큰이 비어 있습니다."),
+    WRONG_TYPE_TOKEN(HttpStatus.UNAUTHORIZED, 401, false, "잘못된 JWT 서명입니다."),
+    ILLEGAL_ARGUMENT_TOKEN(HttpStatus.UNAUTHORIZED, 401, false, "JWT 토큰 처리 중 잘못된 인수가 전달되었습니다."),
+    UNKNOWN_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 500, false, "알 수 없는 서버 오류가 발생했습니다."),
+    ACCESS_DENIED(HttpStatus.UNAUTHORIZED, 401, false, "접근이 거부되었습니다."),
+    /* Email Send */
+    USER_EMAIL_SEND_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 500, false, "이메일 전송 중 오류가 발생했습니다."),
 
+    /* Oauth2.0 */
+    NOT_FOUND_GOOGLE_ACCESS_TOKEN_RESPONSE(HttpStatus.INTERNAL_SERVER_ERROR, 500, false, "구글 액세스 토큰 요청에 실패했습니다."),
+    NOT_FOUND_KAKAO_ACCESS_TOKEN_RESPONSE(HttpStatus.INTERNAL_SERVER_ERROR,500,false,"카카오 액세스 토큰 요청에 실패했습니다."),
+    NOT_FOUND_NAVER_ACCESS_TOKEN_RESPONSE(HttpStatus.INTERNAL_SERVER_ERROR,500,false,"네이버 액세스 토큰 요청에 실패했습니다."),
+    NEED_TO_GIVE_ADDITIONAL_INFORMATION(HttpStatus.CREATED,201,true,"소셜 로그인 초기 사용자입니다. 추가 정보를 입력해주세요."),
+    /* Session 관련 오류 */
+    SESSION_EXPIRED(HttpStatus.BAD_REQUEST, 400, false, "세션이 만료되었습니다. 다시 로그인 해주세요."),
+    SESSION_NOT_FOUND(HttpStatus.BAD_REQUEST, 400, false, "세션 정보를 찾을 수 없습니다."),
+    SESSION_SAVE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, 500, false, "세션에 데이터를 저장하는 데 실패했습니다."),
     /* Validation */
     INVALID_VALUE(HttpStatus.BAD_REQUEST, 400, false, "잘못된 입력값입니다."),
-    USER_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, 500, false, "유저를 찾지 못했습니다.");
+    USER_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, 500, false, "유저를 찾지 못했습니다."),
 
+    /* Product 관련 */
+    PRODUCT_NOT_FOUND(HttpStatus.BAD_REQUEST,404, false, "상품을 찾을 수 없습니다."),
+    PRODUCT_NAME_ALREADY_EXISTS(HttpStatus.BAD_REQUEST,404, false, "해당 상품명은 이미 존재합니다."),
+    PRODUCT_BY_SELLER_NOT_FOUND(HttpStatus.BAD_REQUEST, 404, false, "해당 셀러ID의 상품은 존재하지 않습니다."),
+
+    /* Brand 관련 */
+    BRAND_NAME_ALREADY_EXISTS(HttpStatus.BAD_REQUEST,404, false, "해당 브랜드명은 이미 존재합니다."),
+    BRAND_BY_SELLER_NOT_FOUND(HttpStatus.BAD_REQUEST, 404, false, "해당 셀러ID의 브랜드는 존재하지 않습니다."),
+    BRAND_BY_ID_NOT_FOUND(HttpStatus.BAD_REQUEST, 404, false, "해당 ID를 가진 BRAND는 존재하지 않습니다."),
+
+
+    /* Seller 관련 */
+    SELLER_NOT_FOUND(HttpStatus.BAD_REQUEST,404, false, "해당 판매자를 찾을 수 없습니다.");
 
     private final HttpStatus httpStatus;
     private final int code;

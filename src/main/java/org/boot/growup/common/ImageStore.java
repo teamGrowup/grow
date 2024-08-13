@@ -1,12 +1,14 @@
-package org.boot.growup.source.seller;
+package org.boot.growup.common;
 
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.UUID;
 
 @Component
 public class ImageStore {
-
     public String createStoreFileName(String originalFilename) {
         // 서버에 저장하는 파일명
         String uuid = UUID.randomUUID().toString(); // uuid만 하면 qwe-qwe-qwe-123 같이 생성됨.
@@ -20,4 +22,3 @@ public class ImageStore {
         return originalFilename.substring(pos+1); // 확장자명
     }
 }
-
