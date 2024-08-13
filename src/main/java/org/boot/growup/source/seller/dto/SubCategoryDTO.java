@@ -16,6 +16,6 @@ public class SubCategoryDTO {
     @NotBlank(message = "서브 카테고리 이름은 필수입니다.")
     private String name;
 
-    // 추가적인 필드가 필요하다면 여기에 추가할 수 있습니다.
+    private MainCategoryDTO mainCategory; // 메인 카테고리 정보 추가
 }
 

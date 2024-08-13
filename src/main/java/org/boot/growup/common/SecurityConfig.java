@@ -49,14 +49,14 @@ public class SecurityConfig {
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(requestMatcherHolder.getRequestMatchersByMinRole(null)).permitAll()
-                        .requestMatchers(requestMatcherHolder.getRequestMatchersByMinRole(Role.CUSTOMER)).hasRole("CUSTOMER")
+                                .requestMatchers(requestMatcherHolder.getRequestMatchersByMinRole(null)).permitAll()
+                                .requestMatchers(requestMatcherHolder.getRequestMatchersByMinRole(Role.CUSTOMER)).hasRole("CUSTOMER")
 //                        .requestMatchers("/customers/email/**", "/customers/oauth/**").permitAll()
 //                        .requestMatchers("/sellers/**").permitAll()
 //                        .requestMatchers("/v3/**", "/swagger-ui/**").permitAll() // swagger 설정
 //                        .requestMatchers("/login/**", "/images/**", "/favicon.ico").permitAll()
 //                        .requestMatchers("/customers/**").hasRole("CUSTOMER")
-                        .anyRequest().authenticated()
+                                .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();

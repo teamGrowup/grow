@@ -1,4 +1,5 @@
 package org.boot.growup.source.seller.persist.entity;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,8 +16,27 @@ public class SubCategory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "sub_category_id", nullable = false) // 추가된 어노테이션
     private Long id;
 
+    @Column(name = "name", nullable = false, length = 50) // 추가된 어노테이션
     private String name;
+
+    @ManyToOne
+    @JoinColumn(name = "main_category_id", nullable = false)
+    private MainCategory mainCategory; // 메인 카테고리와의 관계
+    // 메인 카테고리의 getter 메서드
+
+    public MainCategory getMainCategory() {
+
+        return mainCategory;
+    }
+    /*
+        상위 카테고리와의 관계 설정 (필요시)
+     */
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "category_id")
+//    private Category category;
+
     // 기타 필드 및 메서드
 }
