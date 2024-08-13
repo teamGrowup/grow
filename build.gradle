@@ -79,6 +79,9 @@ dependencies {
     //Open Feign
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
+    // NullPointerException
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
+
 }
 
 tasks.named('test') {
