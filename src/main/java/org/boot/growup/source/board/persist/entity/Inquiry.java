@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.boot.growup.common.enumerate.InquiryCategory;
 import org.boot.growup.source.board.dto.request.PostInquiryRequestDTO;
 import org.hibernate.annotations.DynamicUpdate;
 

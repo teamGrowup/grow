@@ -8,6 +8,7 @@ import org.boot.growup.common.constant.BaseResponse;
 import org.boot.growup.source.board.dto.request.PostInquiryRequestDTO;
 import org.boot.growup.source.board.dto.request.PostReplyRequestDTO;
 import org.boot.growup.source.board.dto.response.GetInquiryResponseDTO;
+import org.boot.growup.source.board.persist.entity.Inquiry;
 import org.boot.growup.source.board.service.InquiryService;
 import org.boot.growup.source.board.service.ReplyService;
 import org.springframework.data.domain.Page;
@@ -78,8 +79,11 @@ public class InquiryController {
     // 관리자 확인
     Long admin = 1L;
 
+    // 문의 데이터 조회
+    Inquiry inquiry = inquiryService.getOneInquiry(inquiryId);
+
     // 문의 답변 등록
-    Long id = replyService.postReply(input, admin, inquiryId);
+    Long id = replyService.postReply(input, admin, inquiry);
 
     return new BaseResponse<>("문의 사항 등록 성공. 문의사항 ID : " + id.toString());
   }

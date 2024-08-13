@@ -3,7 +3,7 @@ package org.boot.growup.source.board.dto.request;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Data;
-import org.boot.growup.source.board.persist.entity.InquiryCategory;
+import org.boot.growup.common.enumerate.InquiryCategory;
 
 @Data
 @Builder

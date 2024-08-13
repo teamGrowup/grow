@@ -30,12 +30,11 @@ public class Reply {
 //    private Admin admin;
     private Long admin;
 
-//    @OneToOne
-//    @JoinColumn(name = "inquiry_id")
-//    private Inquiry inquiry;
-    private Long inquiry;
+    @OneToOne
+    @JoinColumn(name = "inquiry_id")
+    private Inquiry inquiry;
 
-    public static Reply of(PostReplyRequestDTO input, Long admin, Long inquiry) {
+    public static Reply of(PostReplyRequestDTO input, Long admin, Inquiry inquiry) {
         return Reply.builder()
                 .title(input.getTitle())
                 .content(input.getContent())

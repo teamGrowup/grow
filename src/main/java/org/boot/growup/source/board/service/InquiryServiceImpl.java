@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.boot.growup.common.constant.BaseException;
+import org.boot.growup.common.error.ErrorCode;
 import org.boot.growup.source.board.dto.request.PostInquiryRequestDTO;
 import org.boot.growup.source.board.dto.request.PostReplyRequestDTO;
 import org.boot.growup.source.board.dto.response.GetInquiryResponseDTO;
@@ -25,8 +27,8 @@ public class InquiryServiceImpl implements InquiryService {
 
   private final InquiryRepository inquiryRepository;
 
-  @Override
   @Transactional
+  @Override
   public Long postInquiry(PostInquiryRequestDTO input, long customer) {
     // DTO -> Entity
     Inquiry inquiry = Inquiry.of(input, customer);
@@ -61,5 +63,11 @@ public class InquiryServiceImpl implements InquiryService {
     Page<Inquiry> inquiryList = inquiryRepository.findByIsAnswered(false, pageable);
 
     return GetInquiryResponseDTO.pageFrom(inquiryList);
+  }
+
+  @Override
+  public Inquiry getOneInquiry(long id) {
+    return inquiryRepository.findById(id)
+            .orElseThrow(() -> new BaseException(ErrorCode.INQUIRY_NOT_FOUND));
   }
 }

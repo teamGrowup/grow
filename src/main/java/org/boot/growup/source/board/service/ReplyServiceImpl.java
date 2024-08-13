@@ -24,9 +24,9 @@ public class ReplyServiceImpl implements ReplyService {
     /**
      * [관리자] 문의 답변 등록
      */
-    @Override
     @Transactional
-    public Long postReply(PostReplyRequestDTO input, Long admin, Long inquiry) {
+    @Override
+    public Long postReply(PostReplyRequestDTO input, Long admin,Inquiry inquiry) {
         // DTO -> Entity
         Reply reply = Reply.of(input, admin, inquiry);
 
@@ -34,7 +34,7 @@ public class ReplyServiceImpl implements ReplyService {
         Long id = replyRepository.save(reply).getId();
 
         // 답변 등록 컬럼 true 로 변경 (inquiry 테이블)
-        Inquiry beforeInquiry = inquiryRepository.findById(inquiry)
+        Inquiry beforeInquiry = inquiryRepository.findById(inquiry.getId())
                 .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND));
         beforeInquiry.completeReply();
 

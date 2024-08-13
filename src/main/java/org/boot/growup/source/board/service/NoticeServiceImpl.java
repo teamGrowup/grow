@@ -29,8 +29,8 @@ public class NoticeServiceImpl implements NoticeService {
   /**
    * 공지사항 등록
    */
-  @Override
   @Transactional
+  @Override
   public Long postNotice(PostNoticeRequestDTO postNoticeRequestDTO, String admin) {
 
     Notice notice = Notice.of(postNoticeRequestDTO, admin);
@@ -60,8 +60,8 @@ public class NoticeServiceImpl implements NoticeService {
   /**
    * 공지사항 수정
    */
-  @Override
   @Transactional
+  @Override
   public Long updateNotice(Long noticeId, PostNoticeRequestDTO postNoticeRequestDTO, String admin) {
 
     // 1. 수정할 데이터 가져오기
@@ -78,18 +78,18 @@ public class NoticeServiceImpl implements NoticeService {
   public GetNoticeResponseDTO getNoticeDetail(long noticeId) {
 
     Notice notice = noticeRepository.findById(noticeId)
-        .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND));
+        .orElseThrow(() -> new BaseException(ErrorCode.NOTICE_NOT_FOUND));
 
     return GetNoticeResponseDTO.from(notice);
   }
 
-  @Override
   @Transactional
+  @Override
   public Long deleteNotice(Long noticeId) {
 
     // 존재 여부 확인
     if (!noticeRepository.existsById(noticeId)) {
-      throw new BaseException(ErrorCode.NOT_FOUND);
+      throw new BaseException(ErrorCode.NOTICE_NOT_FOUND);
     }
 
     noticeRepository.deleteById(noticeId);
