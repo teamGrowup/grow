@@ -2,10 +2,12 @@ package org.boot.growup.source.seller.application;
 
 import org.boot.growup.common.enumerate.AuthorityStatus;
 import org.boot.growup.source.seller.dto.request.RegisterBrandRequestDTO;
+import org.boot.growup.source.seller.dto.response.ReadBrandRequestByStatusResponseDTO;
 import org.boot.growup.source.seller.dto.response.ReadSellerBrandResponseDTO;
 import org.boot.growup.source.seller.persist.entity.Brand;
 import org.boot.growup.source.seller.persist.entity.BrandImage;
 import org.boot.growup.source.seller.persist.entity.Seller;
+import org.boot.growup.source.seller.persist.repository.BrandRepository;
 import org.boot.growup.source.seller.persist.repository.SellerRepository;
 import org.boot.growup.source.seller.service.BrandImageService;
 import org.boot.growup.source.seller.service.BrandServiceImpl;
@@ -13,17 +15,20 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 @SpringBootTest
@@ -51,10 +56,12 @@ class BrandApplicationTest {
     BrandImage brandImage1;
     BrandImage brandImage2;
     Seller seller;
-
+    @Autowired
+    private BrandRepository brandRepository;
 
     @BeforeEach
     void setUp() {
+        brandRepository.deleteAll();
         registerBrandRequestDTO1 = RegisterBrandRequestDTO.builder()
                 .name("라퍼지스토어")
                 .description("라퍼지스토어(LAFUDGESTORE)는 다양한 사람들이 일상에서 편안하게 사용할 수 있는 제품을 전개합니다. 새롭게 변화되는 소재와 실루엣, 일상에 자연스레 스며드는 제품을 제작하여 지속적인 실속형 소비의 가치를 실천합니다.")
@@ -68,7 +75,7 @@ class BrandApplicationTest {
                 .name("라퍼지스토어")
                 .description("라퍼지스토어(LAFUDGESTORE)는 다양한 사람들이 일상에서 편안하게 사용할 수 있는 제품을 전개합니다. 새롭게 변화되는 소재와 실루엣, 일상에 자연스레 스며드는 제품을 제작하여 지속적인 실속형 소비의 가치를 실천합니다.")
                 .authorityStatus(AuthorityStatus.PENDING)
-                .likes(0)
+                .likeCount(0)
                 .build();
 
         brandImage1 = BrandImage.builder()
@@ -147,4 +154,80 @@ class BrandApplicationTest {
         verify(brandService).updateBrand(registerBrandRequestDTO2, seller);
         verify(brandImageService).updateBrandImages(mockFiles, brand1);
     }
+
+    @Test
+    public void denyBrandRegister_Default_Success(){
+        //given
+        brandRepository.save(brand1);
+
+        //when
+        brandApplication.denyBrandRegister(1L);
+
+        //then
+        verify(brandService).changeBrandAuthority(1L, AuthorityStatus.DENIED);
+    }
+
+    @Test
+    public void approveBrandRegister_Default_Success() {
+        //given
+        brandRepository.save(brand1);
+
+        //when
+        brandApplication.approveBrandRegister(1L);
+
+        //then
+        verify(brandService).changeBrandAuthority(1L, AuthorityStatus.APPROVED);
+    }
+
+    @Test
+    public void pendingBrandRegister_Default_Success() {
+        //given
+        brandRepository.save(brand1);
+
+        //when
+        brandApplication.pendingBrandRegister(1L);
+
+        //then
+        verify(brandService).changeBrandAuthority(1L, AuthorityStatus.PENDING);
+
+    }
+
+    @Test
+    public void readBrandRequestByStatus_Default_Success() {
+        //given
+        Brand mockBrand = mock(Brand.class);
+        given(mockBrand.getId()).willReturn(1L);
+        given(mockBrand.getName()).willReturn("Test Brand");
+        given(mockBrand.getAuthorityStatus()).willReturn(AuthorityStatus.PENDING);  // 올바른 타입 반환
+
+        given(brandService.readBrandRequestsByStatus(AuthorityStatus.PENDING, 0))
+                .willReturn(Collections.nCopies(10, mockBrand));
+
+        //when
+        var res = brandApplication.readBrandRequestByStatus(AuthorityStatus.PENDING, 0);
+
+        //then
+        assertEquals(10, res.size());
+        assertEquals(res.get(0).getClass(), ReadBrandRequestByStatusResponseDTO.class);
+    }
+
+    @Test
+    public void readBrandRequestByStatus_NoStatus_Success() {
+        //given
+        Brand mockBrand = mock(Brand.class);
+        given(mockBrand.getId()).willReturn(1L);
+        given(mockBrand.getName()).willReturn("Test Brand");
+        given(mockBrand.getAuthorityStatus()).willReturn(AuthorityStatus.PENDING);  // 올바른 타입 반환
+
+        given(brandService.readBrandRequestsByStatus(null, 0))
+                .willReturn(Collections.nCopies(10, mockBrand));
+
+        //when
+        var res = brandApplication.readBrandRequestByStatus(null, 0);
+
+        //then
+        assertEquals(10, res.size());
+        assertEquals(res.get(0).getClass(), ReadBrandRequestByStatusResponseDTO.class);
+    }
+
 }
