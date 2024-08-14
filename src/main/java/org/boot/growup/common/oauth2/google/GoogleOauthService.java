@@ -18,10 +18,10 @@ import java.util.Optional;
 
 import static org.boot.growup.common.error.ErrorCode.NOT_FOUND_GOOGLE_ACCESS_TOKEN_RESPONSE;
 
-@Component
 @Slf4j
-@RequiredArgsConstructor
 @Getter
+@Component
+@RequiredArgsConstructor
 public class GoogleOauthService {
     @Value("${oauth2.google.client.id}")
     private String googleClientId;

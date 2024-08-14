@@ -16,11 +16,10 @@ import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Duration;
-
-@RequiredArgsConstructor
 @Configuration
-@EnableRedisRepositories
 @EnableCaching
+@RequiredArgsConstructor
+@EnableRedisRepositories
 public class RedisRepositoryConfig {
     private final RedisProperties redisProperties;
 

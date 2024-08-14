@@ -18,10 +18,10 @@ import java.util.Optional;
 
 import static org.boot.growup.common.error.ErrorCode.NOT_FOUND_KAKAO_ACCESS_TOKEN_RESPONSE;
 
-@Component
 @Slf4j
-@RequiredArgsConstructor
 @Getter
+@Component
+@RequiredArgsConstructor
 public class KakaoOauthService {
     @Value("${oauth2.kakao.client-id}")
     private String clientId;

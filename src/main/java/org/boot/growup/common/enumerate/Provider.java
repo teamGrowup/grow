@@ -1,4 +1,4 @@
-package org.boot.growup.common.oauth2;
+package org.boot.growup.common.enumerate;
 
 public enum Provider {
     EMAIL, GOOGLE, KAKAO, NAVER

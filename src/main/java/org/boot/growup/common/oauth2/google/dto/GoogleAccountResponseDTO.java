@@ -1,9 +1,11 @@
 package org.boot.growup.common.oauth2.google.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class GoogleAccountResponseDTO {
     private final String id;
 
