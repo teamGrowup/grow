@@ -45,10 +45,4 @@ public class SellerController {
         TokenDTO response = sellerService.signIn(request);
         return new BaseResponse<>(response);
     }
-
-    @GetMapping("/role")
-    public void roleTest() {
-        Collection<? extends GrantedAuthority> role = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
-        log.info("Role : {}",role);
-    }
 }

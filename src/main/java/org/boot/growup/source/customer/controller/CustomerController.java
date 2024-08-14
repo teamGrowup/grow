@@ -164,10 +164,4 @@ public class CustomerController {
         TokenDTO response = customerService.signInNaverAdditional(request);
         return new BaseResponse<>(response);
     }
-
-    @GetMapping("/role")
-    public void roleTest() {
-        Collection<? extends GrantedAuthority> role = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
-        log.info("Role : {}",role);
-    }
 }
