@@ -57,13 +57,13 @@ public class Product {
     @JoinColumn(name = "brand_id", nullable = false)
     private Brand brand;
 
-    public static Product from(ProductRequestDTO productRequestDto) {
+    public static Product of(ProductRequestDTO productRequestDto, Brand brand, SubCategory subCategory) {
         return Product.builder()
                 .name(productRequestDto.getName())
                 .description(productRequestDto.getDescription())
                 .authorityStatus(AuthorityStatus.PENDING) // 기본 상태를 PENDING으로 설정
-                .subCategory(SubCategory.builder().build())
-                .brand(Brand.builder().build())
+                .subCategory(subCategory)
+                .brand(brand)
                 .averageRating(0.0) // 초기 평균 평점
                 .likeCount(0) // 초기 좋아요 수
                 .build();

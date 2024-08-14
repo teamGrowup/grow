@@ -9,6 +9,7 @@ import org.boot.growup.source.seller.dto.request.ProductRequestDTO;
 import org.boot.growup.source.seller.dto.response.ProductDetailResponseDTO;
 import org.boot.growup.source.seller.dto.response.ReadProductRequestByStatusResponseDTO;
 import org.boot.growup.source.seller.persist.entity.*;
+import org.boot.growup.source.seller.persist.repository.BrandRepository;
 import org.boot.growup.source.seller.persist.repository.ProductRepository;
 import org.boot.growup.source.seller.persist.repository.SellerRepository;
 import org.boot.growup.source.seller.service.ProductImageServiceImpl;
@@ -28,6 +29,7 @@ public class ProductApplication {
     private final ProductImageServiceImpl productImageService;
     private final ProductRepository productRepository;
     private final SellerRepository sellerRepository;
+    private final BrandRepository brandRepository;
 
     /**
      * 상품 등록 및 이미지 저장
@@ -90,13 +92,23 @@ public class ProductApplication {
                               Long productId) {
 
         Seller seller = sellerRepository.findById(sellerId)
-                .orElseThrow(()->new BaseException(ErrorCode.SELLER_NOT_FOUND));
-        Section section = Section.PRODUCT_IMAGE;
+                .orElseThrow(() -> new BaseException(ErrorCode.SELLER_NOT_FOUND));
 
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new BaseException(ErrorCode.PRODUCT_NOT_FOUND));
 
-        productService.updateProduct(productRequestDto, seller);
+        Brand brand = brandRepository.findById(productRequestDto.getBrandId())
+                .orElseThrow(() -> new BaseException(ErrorCode.BRAND_BY_ID_NOT_FOUND));
+
+        product.pending(); // 대기 상태로 변경.
+        product.updateProductInfo(productRequestDto.getName(), productRequestDto.getDescription());
+        product.setBrand(brand); // Brand 정보 업데이트
+
+        // 상품 저장
+        productRepository.save(product);
+
+        // 이미지 처리
+        Section section = Section.PRODUCT_IMAGE;
 
         if (productImages != null && !productImages.isEmpty()) {
             productImageService.updateProductImages(productImages, product, section);
@@ -105,6 +117,7 @@ public class ProductApplication {
             // 기존 이미지를 유지하는 로직 추가 가능
         }
     }
+
 
     /**
      * 상품 거부

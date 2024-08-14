@@ -34,7 +34,7 @@ public class ProductServiceImpl implements ProductService {
 // 브랜드 가져오기
         Brand brand = brandRepository.findById(productRequestDto.getBrandId())
                 .orElseThrow(() -> new BaseException(ErrorCode.BRAND_BY_ID_NOT_FOUND));
-        Product product = Product.from(productRequestDto);
+        Product product = Product.of(productRequestDto, brand, subCategory);
 
         // 상품 옵션 설정
         List<ProductOption> productOptions = convertToProductOptions(productRequestDto.getProductOptions(), product);
@@ -66,18 +66,27 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     @Override
     public Product updateProduct(ProductRequestDTO productRequestDto, Seller seller) {
+        // 판매자에 해당하는 상품 조회
         Product product = productRepository.findBySeller_Id(seller.getId()).orElseThrow(
                 () -> new BaseException(ErrorCode.PRODUCT_BY_SELLER_NOT_FOUND)
         );
 
+        // Brand 조회
+        Brand brand = brandRepository.findById(productRequestDto.getBrandId())
+                .orElseThrow(() -> new BaseException(ErrorCode.BRAND_BY_ID_NOT_FOUND));
+
+        // 상태 변경 및 정보 업데이트
         product.pending(); // 대기 상태로 변경.
         product.updateProductInfo(productRequestDto.getName(), productRequestDto.getDescription());
+        product.setBrand(brand); // Brand 정보 업데이트
 
+        // 상품 저장
         productRepository.save(product);
         return product;
     }
 
     @Override
+    @Transactional
     public void changeProductAuthority(Long productId, AuthorityStatus status) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new BaseException(ErrorCode.PRODUCT_NOT_FOUND));
@@ -88,8 +97,6 @@ public class ProductServiceImpl implements ProductService {
             case APPROVED -> product.approve();
         }
 
-        // 상품 상태 변경 후 저장
-        productRepository.save(product);
     }
 
     @Override

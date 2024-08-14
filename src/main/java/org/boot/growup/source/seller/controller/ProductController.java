@@ -41,7 +41,7 @@ public class ProductController {
      * @return BaseResponse<ProductDetailResponseDTO>
      */
     @GetMapping("/sellers/products/{productId}")
-    public BaseResponse<ProductDetailResponseDTO> readProductDetail(@PathVariable Long productId) {
+    public BaseResponse<ProductDetailResponseDTO> getProductDetail(@PathVariable Long productId) {
         ProductDetailResponseDTO productDetail = productApplication.getProductDetail(productId);
         return new BaseResponse<>(productDetail);
     }
