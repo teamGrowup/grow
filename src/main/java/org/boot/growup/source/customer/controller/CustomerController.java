@@ -15,12 +15,7 @@ import org.boot.growup.common.oauth2.naver.dto.NaverAccountResponseDTO;
 import org.boot.growup.source.customer.dto.request.*;
 import org.boot.growup.source.customer.dto.response.EmailCheckResponseDTO;
 import org.boot.growup.source.customer.service.CustomerService;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Collection;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -66,7 +61,7 @@ public class CustomerController {
     @PostMapping("/email/validation")
     public BaseResponse<EmailCheckResponseDTO> checkEmail(
                 @Valid @RequestBody EmailCheckRequestDTO request) throws MessagingException {
-        EmailCheckResponseDTO response = customerService.emailCheck(request);
+        EmailCheckResponseDTO response = customerService.checkEmail(request);
         return new BaseResponse<>(response);
     }
 

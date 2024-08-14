@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 public interface CustomerService {
     void signUp(CustomerSignUpRequestDTO request);
     TokenDTO signIn(CustomerSignInRequestDTO request);
-    EmailCheckResponseDTO emailCheck(EmailCheckRequestDTO request) throws MessagingException;
+    EmailCheckResponseDTO checkEmail(EmailCheckRequestDTO request) throws MessagingException;
     TokenDTO signInGoogle(GoogleAccountResponseDTO googleAccount);
     TokenDTO signInGoogleAdditional(GoogleAdditionalInfoRequestDTO request);
     TokenDTO signInKakao(KakaoAccountResponseDTO kakaoAccount);

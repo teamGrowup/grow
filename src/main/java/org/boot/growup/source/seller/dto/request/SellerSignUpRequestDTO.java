@@ -1,19 +1,9 @@
 package org.boot.growup.source.seller.dto.request;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.*;
 import lombok.Builder;
 import lombok.Data;
 import org.boot.growup.common.Regex;
-import org.boot.growup.common.enumerate.Gender;
-import org.boot.growup.common.enumerate.Role;
-import org.boot.growup.common.oauth2.Provider;
-import org.boot.growup.common.userdetail.CustomUserDetails;
-import org.boot.growup.source.customer.dto.request.CustomerSignUpRequestDTO;
-import org.boot.growup.source.customer.persist.entity.Customer;
-import org.boot.growup.source.seller.persist.entity.Seller;
 
 @Data
 @Builder

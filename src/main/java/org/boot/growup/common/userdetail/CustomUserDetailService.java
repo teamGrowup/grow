@@ -2,7 +2,7 @@ package org.boot.growup.common.userdetail;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.boot.growup.common.oauth2.Provider;
+import org.boot.growup.common.enumerate.Provider;
 import org.boot.growup.source.customer.persist.entity.Customer;
 import org.boot.growup.source.customer.persist.repository.CustomerRepository;
 import org.boot.growup.source.seller.persist.entity.Seller;
@@ -11,9 +11,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class CustomUserDetailService implements UserDetailsService {
     private final CustomerRepository customerRepository;
     private final SellerRepository sellerRepository;

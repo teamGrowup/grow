@@ -11,7 +11,7 @@ import org.boot.growup.common.constant.BaseException;
 import org.boot.growup.common.error.ErrorCode;
 import org.boot.growup.common.jwt.JwtTokenProvider;
 import org.boot.growup.common.jwt.TokenDTO;
-import org.boot.growup.common.oauth2.Provider;
+import org.boot.growup.common.enumerate.Provider;
 import org.boot.growup.common.oauth2.google.dto.GoogleAccountResponseDTO;
 import org.boot.growup.common.oauth2.kakao.dto.KakaoAccountResponseDTO;
 import org.boot.growup.common.oauth2.naver.dto.NaverAccountResponseDTO;
@@ -75,7 +75,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Transactional
     @Override
-    public EmailCheckResponseDTO emailCheck(EmailCheckRequestDTO request) throws MessagingException {
+    public EmailCheckResponseDTO checkEmail(EmailCheckRequestDTO request) throws MessagingException {
         EmailMessageDTO emailMessage = EmailMessageDTO.from(request);
         String validationCode = emailService.sendMail(emailMessage);
         return EmailCheckResponseDTO.builder()

@@ -29,10 +29,6 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(); // 단방향 해쉬
     }
-    @Bean
-    public RestTemplate restTemplate() {
-        return new RestTemplate();
-    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -48,9 +44,12 @@ public class SecurityConfig {
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(requestMatcherHolder.getRequestMatchersByMinRole(null)).permitAll()
-                        .requestMatchers(requestMatcherHolder.getRequestMatchersByMinRole(Role.CUSTOMER)).hasRole("CUSTOMER")
-                        .requestMatchers(requestMatcherHolder.getRequestMatchersByMinRole(Role.SELLER)).hasRole("SELLER")
+                        .requestMatchers(
+                                    requestMatcherHolder.getRequestMatchersByMinRole(null)).permitAll()
+                        .requestMatchers(
+                                    requestMatcherHolder.getRequestMatchersByMinRole(Role.CUSTOMER)).hasRole("CUSTOMER")
+                        .requestMatchers(
+                                    requestMatcherHolder.getRequestMatchersByMinRole(Role.SELLER)).hasRole("SELLER")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
