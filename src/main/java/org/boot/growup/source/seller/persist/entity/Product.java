@@ -63,6 +63,7 @@ public class Product {
                 .description(productRequestDto.getDescription())
                 .authorityStatus(AuthorityStatus.PENDING) // 기본 상태를 PENDING으로 설정
                 .subCategory(SubCategory.builder().build())
+                .brand(Brand.builder().build())
                 .averageRating(0.0) // 초기 평균 평점
                 .likeCount(0) // 초기 좋아요 수
                 .build();

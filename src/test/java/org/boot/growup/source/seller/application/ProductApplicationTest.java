@@ -66,12 +66,10 @@ class ProductApplicationTest {
         subCategoryDTO = new SubCategoryDTO(1L, "반팔", mainCategoryDTO);
 
         mainCategory = MainCategory.builder()
-                .id(1L)
                 .name("상의")
                 .build();
 
         subCategory = SubCategory.builder()
-                .id(1L)
                 .name("반팔")
                 .mainCategory(mainCategory)
                 .build();
@@ -93,7 +91,7 @@ class ProductApplicationTest {
         productRequestDTO = ProductRequestDTO.builder()
                 .name("테스트 상품")
                 .description("테스트 상품 설명입니다.")
-                .subCategoryId(subCategoryDTO.getId()) // 서브 카테고리 ID 추가
+                .subCategoryId(subCategory.getId()) // 서브 카테고리 ID 추가
                 .sellerId(seller.getId()) // 판매자 ID 추가
                 .productOptions(Arrays.asList(
                         ProductOptionDTO.builder()
@@ -111,7 +109,6 @@ class ProductApplicationTest {
 
         // Product 초기화
         product = Product.builder()
-                .id(1L) // ID 추가
                 .name("진짜 반팔")
                 .description("순도 100%의 반팔입니다. 긴팔도 아니고 나시도 아니고 진짜 반팔이에요.")
                 .authorityStatus(AuthorityStatus.PENDING)
@@ -163,19 +160,30 @@ class ProductApplicationTest {
 
     @Test
     void testUpdateProduct() {
-        //given
+        // given
         MockMultipartFile file1 = new MockMultipartFile("file", "test1.jpg", "image/jpeg", "test image content 1".getBytes());
         MockMultipartFile file2 = new MockMultipartFile("file", "test2.jpg", "image/jpeg", "test image content 2".getBytes());
+
+        // Seller를 Mock으로 설정
+        given(sellerRepository.findById(seller.getId())).willReturn(Optional.of(seller));
+
+        // Product Repository에서 ID로 상품을 찾을 수 있도록 Mock 설정
+        given(productRepository.findById(product.getId())).willReturn(Optional.of(product));
+
+        // Product 객체가 업데이트된 후 반환될 것임을 Mock으로 설정
         given(productService.updateProduct(productRequestDTO, seller)).willReturn(product);
-        given(sellerRepository.findById(1L)).willReturn(Optional.of(seller));
+
         List<MultipartFile> mockFiles = List.of(file1, file2);
 
-        //when
-        productApplication.updateProduct(productRequestDTO, mockFiles);
+        // when
+        productApplication.updateProduct(productRequestDTO, mockFiles, seller.getId(), product.getId());
 
-        // Then
+        // then
+        verify(sellerRepository).findById(seller.getId());
         verify(productService).updateProduct(productRequestDTO, seller);
         verify(productImageService).updateProductImages(mockFiles, product, Section.PRODUCT_IMAGE);
     }
+
+
 
 }
