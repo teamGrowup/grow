@@ -51,9 +51,9 @@ public class CustomerController {
      * @response TokenDTO
      */
     @PostMapping("/email/login")
-    public ResponseEntity<BaseResponse<TokenDTO>> signIn(@Valid @RequestBody CustomerSignInRequestDTO request) {
+    public BaseResponse<TokenDTO> signIn(@Valid @RequestBody CustomerSignInRequestDTO request) {
         TokenDTO loginResponse = customerService.signIn(request);
-        return ResponseEntity.ok(new BaseResponse<>(loginResponse));
+        return new BaseResponse<>(loginResponse);
     }
 
     /**
@@ -64,10 +64,10 @@ public class CustomerController {
      * @response String
      */
     @PostMapping("/email/validation")
-    public ResponseEntity<BaseResponse<EmailCheckResponseDTO>> checkEmail(
+    public BaseResponse<EmailCheckResponseDTO> checkEmail(
                 @Valid @RequestBody EmailCheckRequestDTO request) throws MessagingException {
         EmailCheckResponseDTO response = customerService.emailCheck(request);
-        return ResponseEntity.ok(new BaseResponse<>(response));
+        return new BaseResponse<>(response);
     }
 
     /**
@@ -78,7 +78,7 @@ public class CustomerController {
      * @response TokenDTO
      */
     @PostMapping("/oauth/google")
-    public ResponseEntity<BaseResponse<TokenDTO>> signInGoogle(@Valid @RequestBody OauthSignInRequestDTO request) {
+    public BaseResponse<TokenDTO> signInGoogle(@Valid @RequestBody OauthSignInRequestDTO request) {
         /* 인가코드를 받아서 Google에 AccessToken 요청 -> 받은 AccessToken으로 Google 사용자 정보 요청 */
         String accessToken = googleOauthService.requestGoogleAccessToken(request.getAuthCode());
         GoogleAccountResponseDTO googleAccount = googleOauthService.requestGoogleAccount(accessToken);
@@ -86,7 +86,7 @@ public class CustomerController {
 
         /* Google 사용자 정보를 userService에서 회원가입 및 로그인 처리 */
         TokenDTO response = customerService.signInGoogle(googleAccount);
-        return ResponseEntity.ok(new BaseResponse<>(response));
+        return new BaseResponse<>(response);
     }
 
     /**
@@ -97,10 +97,10 @@ public class CustomerController {
      * @response TokenDTO
      */
     @PostMapping("/oauth/google/additional-info")
-    public ResponseEntity<BaseResponse<TokenDTO>> signInGoogleAdditional(
+    public BaseResponse<TokenDTO> signInGoogleAdditional(
                 @Valid @RequestBody GoogleAdditionalInfoRequestDTO request) {
         TokenDTO response = customerService.signInGoogleAdditional(request);
-        return ResponseEntity.ok(new BaseResponse<>(response));
+        return new BaseResponse<>(response);
     }
 
     /**
@@ -111,13 +111,13 @@ public class CustomerController {
      * @response TokenDTO
      */
     @PostMapping("/oauth/kakao")
-    public ResponseEntity<BaseResponse<TokenDTO>> signInKakao(@Valid @RequestBody OauthSignInRequestDTO request) {
+    public BaseResponse<TokenDTO> signInKakao(@Valid @RequestBody OauthSignInRequestDTO request) {
         String accessToken = kakaoOauthService.requestKakaoAccessToken(request.getAuthCode());
         KakaoAccountResponseDTO kakaoAccount = kakaoOauthService.requestKakaoAccount(accessToken);
         log.info("Kakao User : {}", kakaoAccount);
 
         TokenDTO response = customerService.signInKakao(kakaoAccount);
-        return ResponseEntity.ok(new BaseResponse<>(response));
+        return new BaseResponse<>(response);
     }
 
     /**
@@ -128,10 +128,10 @@ public class CustomerController {
      * @response TokenDTO
      */
     @PostMapping("/oauth/kakao/additional-info")
-    public ResponseEntity<BaseResponse<TokenDTO>> signInKakaoAdditional(
+    public BaseResponse<TokenDTO> signInKakaoAdditional(
             @Valid @RequestBody KakaoAdditionalInfoRequestDTO request) {
         TokenDTO response = customerService.signInKakaoAdditional(request);
-        return ResponseEntity.ok(new BaseResponse<>(response));
+        return new BaseResponse<>(response);
     }
 
     /**
@@ -142,13 +142,13 @@ public class CustomerController {
      * @response TokenDTO
      */
     @PostMapping("/oauth/naver")
-    public ResponseEntity<BaseResponse<TokenDTO>> signInNaver(@Valid @RequestBody OauthSignInRequestDTO request) {
+    public BaseResponse<TokenDTO> signInNaver(@Valid @RequestBody OauthSignInRequestDTO request) {
         String accessToken = naverOauthService.requestNaverAccessToken(request.getAuthCode());
         NaverAccountResponseDTO naverAccount = naverOauthService.requestNaverAccount(accessToken);
         log.info("Naver User : {}", naverAccount);
 
         TokenDTO response = customerService.signInNaver(naverAccount);
-        return ResponseEntity.ok(new BaseResponse<>(response));
+        return new BaseResponse<>(response);
     }
 
     /**
@@ -159,10 +159,10 @@ public class CustomerController {
      * @response TokenDTO
      */
     @PostMapping("/oauth/naver/additional-info")
-    public ResponseEntity<BaseResponse<TokenDTO>> signInNaverAdditional(
+    public BaseResponse<TokenDTO> signInNaverAdditional(
                 @Valid @RequestBody NaverAdditionalInfoRequestDTO request) {
         TokenDTO response = customerService.signInNaverAdditional(request);
-        return ResponseEntity.ok(new BaseResponse<>(response));
+        return new BaseResponse<>(response);
     }
 
     @GetMapping("/role")

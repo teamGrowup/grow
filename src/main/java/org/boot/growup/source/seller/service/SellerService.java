@@ -8,6 +8,5 @@ import org.springframework.stereotype.Service;
 @Service
 public interface SellerService {
     void signUp(SellerSignUpRequestDTO request);
-
     TokenDTO signIn(SellerSignInRequestDTO request);
 }

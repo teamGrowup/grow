@@ -25,8 +25,8 @@ public class SellerServiceImpl implements SellerService {
     private final CustomUserDetailService customUserDetailService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    @Override
     @Transactional
+    @Override
     public void signUp(SellerSignUpRequestDTO request) {
         /* 비밀번호 암호화 */
         String encodedPassword = encodingPassword(request);
@@ -42,8 +42,8 @@ public class SellerServiceImpl implements SellerService {
         return passwordEncoder.encode(request.getCpPassword());
     }
 
-    @Override
     @Transactional
+    @Override
     public TokenDTO signIn(SellerSignInRequestDTO request) {
         UserDetails userDetails = customUserDetailService.loadUserByUsername(request.getCpEmail());
 

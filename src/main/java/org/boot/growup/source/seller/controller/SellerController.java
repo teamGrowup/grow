@@ -41,9 +41,9 @@ public class SellerController {
      * @response TokenDTO
      */
     @PostMapping("/email/login")
-    public ResponseEntity<BaseResponse<TokenDTO>> signIn(@Valid @RequestBody SellerSignInRequestDTO request) {
+    public BaseResponse<TokenDTO> signIn(@Valid @RequestBody SellerSignInRequestDTO request) {
         TokenDTO response = sellerService.signIn(request);
-        return ResponseEntity.ok(new BaseResponse<>(response));
+        return new BaseResponse<>(response);
     }
 
     @GetMapping("/role")

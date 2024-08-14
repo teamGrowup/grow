@@ -40,9 +40,8 @@ public class CustomerServiceImpl implements CustomerService {
     private final JwtTokenProvider jwtTokenProvider;
     private final EmailService emailService;
     private final HttpSession session;
-
-    @Override
     @Transactional
+    @Override
     public void signUp(CustomerSignUpRequestDTO request) {
         /* 비밀번호 암호화 */
         String encodedPassword = encodingPassword(request);
@@ -58,8 +57,8 @@ public class CustomerServiceImpl implements CustomerService {
         return passwordEncoder.encode(request.getPassword());
     }
 
-    @Override
     @Transactional
+    @Override
     public TokenDTO signIn(CustomerSignInRequestDTO request) {
         UserDetails userDetails = customUserDetailService.loadUserByUsernameAndProvider(request.getEmail(), Provider.EMAIL);
 
@@ -74,8 +73,8 @@ public class CustomerServiceImpl implements CustomerService {
         return passwordEncoder.matches(rawPassword, encodedPassword);
     }
 
-    @Override
     @Transactional
+    @Override
     public EmailCheckResponseDTO emailCheck(EmailCheckRequestDTO request) throws MessagingException {
         EmailMessageDTO emailMessage = EmailMessageDTO.from(request);
         String validationCode = emailService.sendMail(emailMessage);
@@ -84,8 +83,8 @@ public class CustomerServiceImpl implements CustomerService {
                 .build();
     }
 
-    @Override
     @Transactional
+    @Override
     public TokenDTO signInGoogle(GoogleAccountResponseDTO googleAccount) {
         return customerRepository
                 .findByEmailAndProvider(googleAccount.getEmail(), Provider.GOOGLE)
@@ -107,8 +106,8 @@ public class CustomerServiceImpl implements CustomerService {
 
     }
 
-    @Override
     @Transactional
+    @Override
     public TokenDTO signInGoogleAdditional(GoogleAdditionalInfoRequestDTO request) {
         GoogleAccountResponseDTO googleAccount = (GoogleAccountResponseDTO) session.getAttribute("googleAccount");
         if(googleAccount == null) {
@@ -124,8 +123,8 @@ public class CustomerServiceImpl implements CustomerService {
         return jwtTokenProvider.generateToken(userDetails.getUsername(),userDetails.getAuthorities());
     }
 
-    @Override
     @Transactional
+    @Override
     public TokenDTO signInKakao(KakaoAccountResponseDTO kakaoAccount) {
         return customerRepository
                 .findByEmailAndProvider(kakaoAccount.getKakaoAccount().getEmail(), Provider.KAKAO)
@@ -147,8 +146,8 @@ public class CustomerServiceImpl implements CustomerService {
                 });
     }
 
-    @Override
     @Transactional
+    @Override
     public TokenDTO signInKakaoAdditional(KakaoAdditionalInfoRequestDTO request) {
         KakaoAccountResponseDTO kakaoAccount = (KakaoAccountResponseDTO) session.getAttribute("kakaoAccount");
         if(kakaoAccount == null) {
@@ -164,8 +163,8 @@ public class CustomerServiceImpl implements CustomerService {
         return jwtTokenProvider.generateToken(userDetails.getUsername(),userDetails.getAuthorities());
     }
 
-    @Override
     @Transactional
+    @Override
     public TokenDTO signInNaver(NaverAccountResponseDTO naverAccount) {
         return customerRepository
                 .findByEmailAndProvider(naverAccount.getResponse().getEmail(), Provider.NAVER)
@@ -186,8 +185,8 @@ public class CustomerServiceImpl implements CustomerService {
                 });
     }
 
-    @Override
     @Transactional
+    @Override
     public TokenDTO signInNaverAdditional(NaverAdditionalInfoRequestDTO request) {
         NaverAccountResponseDTO naverAccount = (NaverAccountResponseDTO) session.getAttribute("naverAccount");
         if(naverAccount == null) {
