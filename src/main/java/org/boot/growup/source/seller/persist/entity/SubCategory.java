@@ -27,16 +27,6 @@ public class SubCategory {
     private MainCategory mainCategory; // 메인 카테고리와의 관계
     // 메인 카테고리의 getter 메서드
 
-    public MainCategory getMainCategory() {
+    public MainCategory getMainCategory() { return mainCategory; }
 
-        return mainCategory;
-    }
-    /*
-        상위 카테고리와의 관계 설정 (필요시)
-     */
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "category_id")
-//    private Category category;
-
-    // 기타 필드 및 메서드
 }

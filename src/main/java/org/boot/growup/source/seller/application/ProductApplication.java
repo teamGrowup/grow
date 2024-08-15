@@ -2,11 +2,14 @@ package org.boot.growup.source.seller.application;
 
 import lombok.RequiredArgsConstructor;
 import org.boot.growup.common.constant.BaseException;
+import org.boot.growup.common.enumerate.AuthorityStatus;
 import org.boot.growup.common.error.ErrorCode;
 import org.boot.growup.common.enumerate.Section;
 import org.boot.growup.source.seller.dto.request.ProductRequestDTO;
 import org.boot.growup.source.seller.dto.response.ProductDetailResponseDTO;
+import org.boot.growup.source.seller.dto.response.ReadProductRequestByStatusResponseDTO;
 import org.boot.growup.source.seller.persist.entity.*;
+import org.boot.growup.source.seller.persist.repository.BrandRepository;
 import org.boot.growup.source.seller.persist.repository.ProductRepository;
 import org.boot.growup.source.seller.persist.repository.SellerRepository;
 import org.boot.growup.source.seller.service.ProductImageServiceImpl;
@@ -26,6 +29,7 @@ public class ProductApplication {
     private final ProductImageServiceImpl productImageService;
     private final ProductRepository productRepository;
     private final SellerRepository sellerRepository;
+    private final BrandRepository brandRepository;
 
     /**
      * 상품 등록 및 이미지 저장
@@ -80,22 +84,18 @@ public class ProductApplication {
     // 상품 옵션 리스트를 DTO로 변환하는 메서드
     private List<ProductDetailResponseDTO.ProductOptionDTO> convertToProductOptionDTOs(List<ProductOption> productOptions) {
         return productOptions.stream()
-                .map(option -> ProductDetailResponseDTO.ProductOptionDTO.builder()
-                        .optionName(option.getOptionName())
-                        .optionStock(option.getOptionStock())
-                        .optionPrice(option.getOptionPrice())
-                        .build())
+                .map(ProductDetailResponseDTO.ProductOptionDTO::from)
                 .toList();
     }
     @Transactional
-    public void updateProduct(ProductRequestDTO productRequestDto, List<MultipartFile> productImages) {
+    public void updateProduct(ProductRequestDTO productRequestDto, List<MultipartFile> productImages, Long productId) {
 
-        Long sellerId = 1L; // 실제 seller ID로 변경
-        Seller seller = sellerRepository.findById(sellerId)
-                .orElseThrow(()->new BaseException(ErrorCode.SELLER_NOT_FOUND));
+        Seller seller = sellerRepository.findById(productRequestDto.getSellerId())
+                .orElseThrow(() -> new BaseException(ErrorCode.SELLER_NOT_FOUND));
+
+        // 이미지 처리
         Section section = Section.PRODUCT_IMAGE;
-
-        Product product = productService.updateProduct(productRequestDto, seller);
+        Product product = productService.updateProduct(productRequestDto, seller, productId);
 
         if (productImages != null && !productImages.isEmpty()) {
             productImageService.updateProductImages(productImages, product, section);
@@ -106,4 +106,46 @@ public class ProductApplication {
     }
 
 
+    /**
+     * 상품 거부
+     */
+    @Transactional
+    public void denyProduct(Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new BaseException(ErrorCode.PRODUCT_NOT_FOUND));
+
+        // 상품 상태를 DENIED로 변경
+        productService.changeProductAuthority(productId, AuthorityStatus.DENIED);
+    }
+
+    /**
+     * 상품 승인
+     */
+    @Transactional
+    public void approveProduct(Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new BaseException(ErrorCode.PRODUCT_NOT_FOUND));
+
+        // 상품 상태를 APPROVED로 변경
+        productService.changeProductAuthority(productId, AuthorityStatus.APPROVED);
+    }
+
+    /**
+     * 상품 허가 대기중 상태로 변경
+     */
+    @Transactional
+    public void pendingProduct(Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new BaseException(ErrorCode.PRODUCT_NOT_FOUND));
+
+        // 상품 상태를 PENDING으로 변경
+        productService.changeProductAuthority(productId, AuthorityStatus.PENDING);
+    }
+
+    public List<ReadProductRequestByStatusResponseDTO> readProductRequestsByStatus(AuthorityStatus authorityStatus, int pageNo) {
+        List<Product> productList = productService.readProductRequestsByStatus(authorityStatus, pageNo);
+        return productList.stream()
+                .map(ReadProductRequestByStatusResponseDTO::from)
+                .toList();
+    }
 }

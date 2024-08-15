@@ -34,17 +34,4 @@ public class ProductOption {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-//    /*
-//        재고 수량 업데이트
-//     */
-//    public void updateStock(int newStock) {
-//        this.productOptionStock = newStock;
-//    }
-//
-//    /*
-//        가격 업데이트
-//     */
-//    public void updatePrice(int newPrice) {
-//        this.productOptionPrice = newPrice;
-//    }
 }
