@@ -76,7 +76,7 @@ public class SellerServiceImpl implements SellerService {
 
             log.info("useremail : {} | authority : {}", useremail, authority);
 
-            if(authority.equals(Role.SELLER.getKey())){
+            if (authority.equals(Role.SELLER.getKey())) {
                 return sellerRepository.findByCpEmail(useremail).orElseThrow(
                         () -> new BaseException(ErrorCode.SELLER_NOT_FOUND)
                 );

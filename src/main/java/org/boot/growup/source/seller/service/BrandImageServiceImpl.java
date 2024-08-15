@@ -23,7 +23,7 @@ public class BrandImageServiceImpl implements BrandImageService {
 
     @Transactional
     @Override
-    public void saveBrandImages(List<MultipartFile> brandImageFiles, Brand brand) {
+    public void postBrandImages(List<MultipartFile> brandImageFiles, Brand brand) {
 
         for(MultipartFile multipartFile : brandImageFiles){
             if(!multipartFile.isEmpty()){
@@ -35,13 +35,13 @@ public class BrandImageServiceImpl implements BrandImageService {
     }
 
     @Override
-    public List<BrandImage> readBrandImages(Long id) {
+    public List<BrandImage> getBrandImages(Long id) {
         return brandImageRepository.findBrandImageByBrand_Id(id);
     }
 
     @Transactional
     @Override
-    public void updateBrandImages(List<MultipartFile> brandImageFiles, Brand brand) {
+    public void patchBrandImages(List<MultipartFile> brandImageFiles, Brand brand) {
         // 1. 현재 S3에 등록된 브랜드 이미지를 지움.
         brandImageRepository.findBrandImageByBrand_Id(brand.getId()).forEach(m->s3Service.deleteFile(m.getPath()));
 

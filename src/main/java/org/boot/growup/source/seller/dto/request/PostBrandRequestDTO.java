@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class RegisterBrandRequestDTO {
+public class PostBrandRequestDTO {
     private String name;
     private String description;
 }

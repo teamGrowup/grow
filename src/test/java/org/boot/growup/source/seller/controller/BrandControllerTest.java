@@ -3,7 +3,7 @@ package org.boot.growup.source.seller.controller;
 import org.boot.growup.common.jwt.JwtAuthenticationFilter;
 import org.boot.growup.common.jwt.JwtTokenProvider;
 import org.boot.growup.source.seller.application.BrandApplication;
-import org.boot.growup.source.seller.dto.response.ReadSellerBrandResponseDTO;
+import org.boot.growup.source.seller.dto.response.getSellerBrandResponseDTO;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,14 +40,14 @@ class BrandControllerTest {
 
 
     @Test
-    public void readSellerBrand_Default_Success() throws Exception{
+    public void getSellerBrand_Default_Success() throws Exception{
         //given
-        given(brandApplication.readSellerBrand()).willReturn(
-                ReadSellerBrandResponseDTO.builder()
+        given(brandApplication.getSellerBrand()).willReturn(
+                getSellerBrandResponseDTO.builder()
                         .name("브랜드1")
                         .description("브랜드1은 심플한 디자인과 고급스러운 소재를 활용한 제품을 선보입니다.")
                         .brandImages(
-                                List.of(ReadSellerBrandResponseDTO.BrandImageDTO.builder()
+                                List.of(getSellerBrandResponseDTO.BrandImageDTO.builder()
                                         .path("aws/s3/path1/brand1")
                                         .originalImageName("brand1.jpg")
                                         .build()

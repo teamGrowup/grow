@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 @Builder
-public class ReadSellerBrandResponseDTO {
+public class getSellerBrandResponseDTO {
     private String name;
     private String description;
     private List<BrandImageDTO> brandImages;
