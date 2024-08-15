@@ -2,12 +2,14 @@ package org.boot.growup.dataloader;
 
 import lombok.RequiredArgsConstructor;
 import org.boot.growup.common.enumerate.AuthorityStatus;
+import org.boot.growup.common.enumerate.Role;
 import org.boot.growup.source.seller.persist.entity.Brand;
 import org.boot.growup.source.seller.persist.entity.Seller;
 import org.boot.growup.source.seller.persist.repository.BrandRepository;
 import org.boot.growup.source.seller.persist.repository.SellerRepository;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +22,7 @@ public class Dataloader {
 
     private final BrandRepository brandRepository;
     private final SellerRepository sellerRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @EventListener(ApplicationReadyEvent.class)
     @Transactional
@@ -34,7 +37,6 @@ public class Dataloader {
                 .description("브랜드1은 심플한 디자인과 고급스러운 소재를 활용한 제품을 선보입니다.")
                 .authorityStatus(AuthorityStatus.PENDING)
                 .likeCount(10)
-                .seller(sellerRepository.findById(1L).get())
                 .build();
 
         Brand brand2 = Brand.builder()
@@ -42,7 +44,6 @@ public class Dataloader {
                 .description("브랜드2는 혁신적인 기술과 전통적인 장인 정신을 결합하여 특별한 제품을 만듭니다.")
                 .authorityStatus(AuthorityStatus.PENDING)
                 .likeCount(20)
-                .seller(sellerRepository.findById(2L).get())
                 .build();
 
         Brand brand3 = Brand.builder()
@@ -109,24 +110,26 @@ public class Dataloader {
     public void sellerInit(){
         Seller seller = Seller.builder()
                 .cpEmail("lafudgestore@naver.com")
-                .cpPassword("password1234")
+                .cpPassword(passwordEncoder.encode("!password1234"))
                 .phoneNumber("010-7797-8841") // 대표 전화번호
                 .epName("손준호") // 대표자명
                 .cpName("(주)슬로우스탠다드") // 상호명
                 .cpCode("178-86-01188") // 10자리의 사업자 등록번호
                 .cpAddress("경기도 의정부시 오목로225번길 94, 씨와이파크 (민락동)") // 사업장 소재지(회사주소)
+                .role(Role.SELLER)
                 .netProceeds(1000)
                 .build();
         sellerRepository.save(seller);
 
         Seller seller2 = Seller.builder()
                 .cpEmail("drawfit@naver.com")
-                .cpPassword("password1234")
+                .cpPassword(passwordEncoder.encode("!password1234"))
                 .phoneNumber("02-3394-8271") // 대표 전화번호
                 .epName("조현민") // 대표자명
                 .cpName("디알에프티 주식회사") // 상호명
                 .cpCode("722-87-00697") // 10자리의 사업자 등록번호
                 .cpAddress("서울특별시 성동구 자동차시장1길 81, FCN빌딩 5층 (용답동)") // 사업장 소재지(회사주소)
+                .role(Role.SELLER)
                 .netProceeds(1000)
                 .build();
 
