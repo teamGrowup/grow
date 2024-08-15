@@ -47,7 +47,7 @@ public class RequestMatcherHolder {
     /**
      * 최소 권한이 주어진 요청에 대한 RequestMatcher 반환
      * @param role 권한 (Nullable)
-     * @return 생성된 RequestMatcher
+     * @return RequestMatcher
      */
     public RequestMatcher getRequestMatchersByMinRole(@Nullable Role role) {
         String key = getKeyByRole(role);

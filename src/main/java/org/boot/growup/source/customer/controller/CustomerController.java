@@ -7,10 +7,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.boot.growup.common.constant.BaseResponse;
 import org.boot.growup.common.jwt.TokenDTO;
 import org.boot.growup.common.oauth2.google.dto.GoogleAccountResponseDTO;
-import org.boot.growup.common.oauth2.google.GoogleOauthService;
-import org.boot.growup.common.oauth2.kakao.KakaoOauthService;
+import org.boot.growup.common.oauth2.google.GoogleOauthServiceImpl;
+import org.boot.growup.common.oauth2.kakao.KakaoOauthServiceImpl;
 import org.boot.growup.common.oauth2.kakao.dto.KakaoAccountResponseDTO;
-import org.boot.growup.common.oauth2.naver.NaverOauthService;
+import org.boot.growup.common.oauth2.naver.NaverOauthServiceImpl;
 import org.boot.growup.common.oauth2.naver.dto.NaverAccountResponseDTO;
 import org.boot.growup.source.customer.dto.request.*;
 import org.boot.growup.source.customer.dto.response.EmailCheckResponseDTO;
@@ -22,9 +22,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/customers")
 public class CustomerController {
     private final CustomerService customerService;
-    private final GoogleOauthService googleOauthService;
-    private final KakaoOauthService kakaoOauthService;
-    private final NaverOauthService naverOauthService;
+    private final GoogleOauthServiceImpl googleOauthServiceImpl;
+    private final KakaoOauthServiceImpl kakaoOauthServiceImpl;
+    private final NaverOauthServiceImpl naverOauthServiceImpl;
 
     /**
      * [POST]
@@ -75,8 +75,8 @@ public class CustomerController {
     @PostMapping("/oauth/google")
     public BaseResponse<TokenDTO> signInGoogle(@Valid @RequestBody OauthSignInRequestDTO request) {
         /* 인가코드를 받아서 Google에 AccessToken 요청 -> 받은 AccessToken으로 Google 사용자 정보 요청 */
-        String accessToken = googleOauthService.requestGoogleAccessToken(request.getAuthCode());
-        GoogleAccountResponseDTO googleAccount = googleOauthService.requestGoogleAccount(accessToken);
+        String accessToken = googleOauthServiceImpl.requestGoogleAccessToken(request.getAuthCode());
+        GoogleAccountResponseDTO googleAccount = googleOauthServiceImpl.requestGoogleAccount(accessToken);
         log.info("Google User : {}", googleAccount);
 
         /* Google 사용자 정보를 userService에서 회원가입 및 로그인 처리 */
@@ -107,8 +107,8 @@ public class CustomerController {
      */
     @PostMapping("/oauth/kakao")
     public BaseResponse<TokenDTO> signInKakao(@Valid @RequestBody OauthSignInRequestDTO request) {
-        String accessToken = kakaoOauthService.requestKakaoAccessToken(request.getAuthCode());
-        KakaoAccountResponseDTO kakaoAccount = kakaoOauthService.requestKakaoAccount(accessToken);
+        String accessToken = kakaoOauthServiceImpl.requestKakaoAccessToken(request.getAuthCode());
+        KakaoAccountResponseDTO kakaoAccount = kakaoOauthServiceImpl.requestKakaoAccount(accessToken);
         log.info("Kakao User : {}", kakaoAccount);
 
         TokenDTO response = customerService.signInKakao(kakaoAccount);
@@ -138,8 +138,8 @@ public class CustomerController {
      */
     @PostMapping("/oauth/naver")
     public BaseResponse<TokenDTO> signInNaver(@Valid @RequestBody OauthSignInRequestDTO request) {
-        String accessToken = naverOauthService.requestNaverAccessToken(request.getAuthCode());
-        NaverAccountResponseDTO naverAccount = naverOauthService.requestNaverAccount(accessToken);
+        String accessToken = naverOauthServiceImpl.requestNaverAccessToken(request.getAuthCode());
+        NaverAccountResponseDTO naverAccount = naverOauthServiceImpl.requestNaverAccount(accessToken);
         log.info("Naver User : {}", naverAccount);
 
         TokenDTO response = customerService.signInNaver(naverAccount);
