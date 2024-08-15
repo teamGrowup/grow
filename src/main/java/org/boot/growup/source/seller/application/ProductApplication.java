@@ -88,27 +88,14 @@ public class ProductApplication {
                 .toList();
     }
     @Transactional
-    public void updateProduct(ProductRequestDTO productRequestDto, List<MultipartFile> productImages, Long sellerId,
-                              Long productId) {
+    public void updateProduct(ProductRequestDTO productRequestDto, List<MultipartFile> productImages, Long productId) {
 
-        Seller seller = sellerRepository.findById(sellerId)
+        Seller seller = sellerRepository.findById(productRequestDto.getSellerId())
                 .orElseThrow(() -> new BaseException(ErrorCode.SELLER_NOT_FOUND));
-
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new BaseException(ErrorCode.PRODUCT_NOT_FOUND));
-
-        Brand brand = brandRepository.findById(productRequestDto.getBrandId())
-                .orElseThrow(() -> new BaseException(ErrorCode.BRAND_BY_ID_NOT_FOUND));
-
-        product.pending(); // 대기 상태로 변경.
-        product.updateProductInfo(productRequestDto.getName(), productRequestDto.getDescription());
-        product.setBrand(brand); // Brand 정보 업데이트
-
-        // 상품 저장
-        productRepository.save(product);
 
         // 이미지 처리
         Section section = Section.PRODUCT_IMAGE;
+        Product product = productService.updateProduct(productRequestDto, seller, productId);
 
         if (productImages != null && !productImages.isEmpty()) {
             productImageService.updateProductImages(productImages, product, section);

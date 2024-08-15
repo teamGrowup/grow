@@ -143,7 +143,7 @@ class ProductServiceImplTest {
                 .build();
 
         // when
-        Product updatedProduct = productService.updateProduct(productRequestDto, seller);
+        Product updatedProduct = productService.updateProduct(productRequestDto, seller, product.getId());
 
         // then
         assertNotNull(updatedProduct);

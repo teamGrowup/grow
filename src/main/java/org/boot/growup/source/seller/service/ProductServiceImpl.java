@@ -31,7 +31,7 @@ public class ProductServiceImpl implements ProductService {
         // 서브 카테고리 가져오기
         SubCategory subCategory = subCategoryRepository.findById(productRequestDto.getSubCategoryId())
                 .orElseThrow(() -> new BaseException(ErrorCode.SUBCATEGORY_NOT_FOUND));
-// 브랜드 가져오기
+        // 브랜드 가져오기
         Brand brand = brandRepository.findById(productRequestDto.getBrandId())
                 .orElseThrow(() -> new BaseException(ErrorCode.BRAND_BY_ID_NOT_FOUND));
         Product product = Product.of(productRequestDto, brand, subCategory);
@@ -65,11 +65,10 @@ public class ProductServiceImpl implements ProductService {
     }
     @Transactional
     @Override
-    public Product updateProduct(ProductRequestDTO productRequestDto, Seller seller) {
-        // 판매자에 해당하는 상품 조회
-        Product product = productRepository.findBySeller_Id(seller.getId()).orElseThrow(
-                () -> new BaseException(ErrorCode.PRODUCT_BY_SELLER_NOT_FOUND)
-        );
+    public Product updateProduct(ProductRequestDTO productRequestDto, Seller seller, Long productId) {
+        // 판매자ID와 상품 ID로 상품 조회
+        Product product = productRepository.findByIdAndSeller_Id(productId, seller.getId())
+                .orElseThrow(() -> new BaseException(ErrorCode.PRODUCT_BY_SELLER_NOT_FOUND));
 
         // Brand 조회
         Brand brand = brandRepository.findById(productRequestDto.getBrandId())
@@ -85,8 +84,8 @@ public class ProductServiceImpl implements ProductService {
         return product;
     }
 
-    @Override
     @Transactional
+    @Override
     public void changeProductAuthority(Long productId, AuthorityStatus status) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new BaseException(ErrorCode.PRODUCT_NOT_FOUND));

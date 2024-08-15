@@ -180,15 +180,16 @@ class ProductApplicationTest {
         MockMultipartFile file2 = new MockMultipartFile("file", "test2.jpg", "image/jpeg", "test image content 2".getBytes());
         List<MultipartFile> mockFiles = List.of(file1, file2);
 
+        given(productService.updateProduct(productRequestDTO, seller, product.getId())).willReturn(product);
         given(sellerRepository.findById(seller.getId())).willReturn(Optional.of(seller));
-        given(productRepository.findById(product.getId())).willReturn(Optional.of(product));
         given(brandRepository.findById(brand1.getId())).willReturn(Optional.of(brand1));
 
         // when
-        productApplication.updateProduct(productRequestDTO, mockFiles, seller.getId(), product.getId());
+        productApplication.updateProduct(productRequestDTO, mockFiles, product.getId());
 
         // then
         verify(sellerRepository).findById(seller.getId());
+        verify(productService).updateProduct(productRequestDTO, seller, product.getId());
         verify(productImageService).updateProductImages(mockFiles, product, Section.PRODUCT_IMAGE);
     }
 

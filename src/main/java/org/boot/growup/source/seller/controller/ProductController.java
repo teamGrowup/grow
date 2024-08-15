@@ -59,7 +59,7 @@ public class ProductController {
             @RequestPart(value = "images", required = false) List<MultipartFile> productImages,
             @RequestPart(value = "form") ProductRequestDTO productRequestDto
     ) {
-        productApplication.updateProduct(productRequestDto, productImages, productRequestDto.getSellerId(), productId );
+        productApplication.updateProduct(productRequestDto, productImages, productId );
         return new BaseResponse<>("수정 성공");
     }
 

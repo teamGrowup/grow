@@ -11,7 +11,7 @@ import java.util.List;
 @Service
 public interface ProductService {
     Product registerProduct(ProductRequestDTO productRequestDto, Seller seller);
-    Product updateProduct(ProductRequestDTO productRequestDto, Seller seller);
+    Product updateProduct(ProductRequestDTO productRequestDto, Seller seller, Long productId);
     void changeProductAuthority(Long productId, AuthorityStatus status);
     List<Product> readProductRequestsByStatus(AuthorityStatus authorityStatus, int pageNo);
 }
