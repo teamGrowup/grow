@@ -1,11 +1,13 @@
 package org.boot.growup.common.oauth2.kakao.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.Map;
 
 @Data
+@Builder
 public class KakaoAccountResponseDTO {
     private Long id;
 

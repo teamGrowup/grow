@@ -52,7 +52,11 @@ public enum ErrorCode {
 
 
     /* Seller 관련 */
-    SELLER_NOT_FOUND(HttpStatus.BAD_REQUEST,404, false, "해당 판매자를 찾을 수 없습니다.");
+    SELLER_NOT_FOUND(HttpStatus.BAD_REQUEST,404, false, "해당 판매자를 찾을 수 없습니다."),
+
+    /* Board 관련 */
+    NOTICE_NOT_FOUND(HttpStatus.BAD_REQUEST, 404,false, "해당 공지사항을 찾을 수 없습니다."),
+    INQUIRY_NOT_FOUND(HttpStatus.BAD_REQUEST, 404, false, "해당 문의를 찾을 수 없습니다.");
 
     private final HttpStatus httpStatus;
     private final int code;

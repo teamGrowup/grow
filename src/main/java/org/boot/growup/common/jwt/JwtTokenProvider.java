@@ -33,7 +33,7 @@ public class JwtTokenProvider {
         this.key = Keys.hmacShaKeyFor(secretByteKey);
     }
 
-    public TokenDto generateToken(String userEmail, Collection<? extends GrantedAuthority> authorities) {
+    public TokenDTO generateToken(String userEmail, Collection<? extends GrantedAuthority> authorities) {
         String authoritiesString = authorities.stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
@@ -58,7 +58,7 @@ public class JwtTokenProvider {
         // redis에 저장
         redisDao.setValues(userEmail, refreshToken, REFRESH_TOKEN_EXPIRE_TIME + 5000L);
 
-        return TokenDto.of(accessToken, refreshToken);
+        return TokenDTO.of(accessToken, refreshToken);
     }
 
     public Authentication getAuthentication(String token) {

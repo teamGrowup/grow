@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.boot.growup.common.enumerate.Role;
+import org.boot.growup.common.userdetail.CustomUserDetails;
+import org.boot.growup.source.seller.dto.request.SellerSignUpRequestDTO;
 
 @Entity
 @Getter
@@ -44,5 +47,27 @@ public class Seller {
 
     @OneToOne(mappedBy = "seller")
     private Brand brand;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
+    private Role role;
+
+    public CustomUserDetails toUserDetails() {
+        return new CustomUserDetails(cpEmail, cpPassword, role);
+    }
+
+    /* 판매자 회원가입 */
+    public static Seller of(SellerSignUpRequestDTO request, String encodedPassword) {
+        return Seller.builder()
+                .cpEmail(request.getCpEmail())
+                .cpPassword(encodedPassword)
+                .phoneNumber(request.getPhoneNumber())
+                .epName(request.getEpName())
+                .cpCode(request.getCpCode())
+                .cpName(request.getCpName())
+                .cpAddress(request.getCpAddress())
+                .role(Role.SELLER)
+                .build();
+    }
 
 }

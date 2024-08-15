@@ -58,6 +58,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             log.error("JwtFilter - doFilterInternal() 오류발생");
             log.error("Exception Message : {}", e.getMessage());
             log.error("Exception StackTrace : {");
+            System.out.println(e);
             e.printStackTrace();
             log.error("}");
             log.error("================================================");
