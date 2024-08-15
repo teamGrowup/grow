@@ -6,5 +6,5 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface ReplyService {
-    public Long postReply(PostReplyRequestDTO input, Long admin, Inquiry inquiry);
+    Long postReply(PostReplyRequestDTO input, Long admin, Inquiry inquiry);
 }

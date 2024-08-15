@@ -1,19 +1,13 @@
 package org.boot.growup.source.board.persist.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.boot.growup.common.enumerate.InquiryCategory;
 import org.boot.growup.source.board.dto.request.PostInquiryRequestDTO;
+import org.boot.growup.source.customer.persist.entity.Customer;
 import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
@@ -42,12 +36,11 @@ public class Inquiry {
 
   private Boolean isAnswered;
 
-//  @ManyToOne(fetch = FetchType.LAZY)
-//  @JoinColumn(name = "customer_id")
-//  private Customer customer;
-  private long customer;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "customer_id")
+  private Customer customer;
 
-  public static Inquiry of(PostInquiryRequestDTO input, long customer) {
+  public static Inquiry of(PostInquiryRequestDTO input, Customer customer) {
     return Inquiry.builder()
         .category(input.getInquiryCategory())
         .title(input.getTitle())

@@ -7,10 +7,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.boot.growup.common.constant.BaseException;
 import org.boot.growup.common.error.ErrorCode;
 import org.boot.growup.source.board.dto.request.PostInquiryRequestDTO;
-import org.boot.growup.source.board.dto.request.PostReplyRequestDTO;
 import org.boot.growup.source.board.dto.response.GetInquiryResponseDTO;
-import org.boot.growup.source.board.persist.InquiryRepository;
+import org.boot.growup.source.board.persist.repository.InquiryRepository;
 import org.boot.growup.source.board.persist.entity.Inquiry;
+import org.boot.growup.source.customer.persist.entity.Customer;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,7 +29,7 @@ public class InquiryServiceImpl implements InquiryService {
 
   @Transactional
   @Override
-  public Long postInquiry(PostInquiryRequestDTO input, long customer) {
+  public Long postInquiry(PostInquiryRequestDTO input, Customer customer) {
     // DTO -> Entity
     Inquiry inquiry = Inquiry.of(input, customer);
 
@@ -37,14 +37,14 @@ public class InquiryServiceImpl implements InquiryService {
   }
 
   @Override
-  public Page<GetInquiryResponseDTO> getInquiry(long id, int pageNo) {
+  public Page<GetInquiryResponseDTO> getInquiry(Long id, int pageNo) {
 
     List<Order> sorts = new ArrayList<>();
     sorts.add(Sort.Order.desc("id")); // 정렬기준
     Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(sorts)); // Pageable 설정
 
     // 데이터 조회 (수정필요)
-    Page<Inquiry> inquiryList = inquiryRepository.findByCustomer(id, pageable);
+    Page<Inquiry> inquiryList = inquiryRepository.findByCustomer_Id(id, pageable);
 
     return GetInquiryResponseDTO.pageFrom(inquiryList);
   }

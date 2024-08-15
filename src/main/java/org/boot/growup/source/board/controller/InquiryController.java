@@ -11,6 +11,8 @@ import org.boot.growup.source.board.dto.response.GetInquiryResponseDTO;
 import org.boot.growup.source.board.persist.entity.Inquiry;
 import org.boot.growup.source.board.service.InquiryService;
 import org.boot.growup.source.board.service.ReplyService;
+import org.boot.growup.source.customer.persist.entity.Customer;
+import org.boot.growup.source.customer.service.CustomerService;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,36 +30,41 @@ public class InquiryController {
 
   private final InquiryService inquiryService;
   private final ReplyService replyService;
+  private final CustomerService customerService;
 
   /**
-   * 1. 문의 등록
+   * [CUSTOMER] 일반 문의 등록
+   * @param input
    */
   @PostMapping
   public void postInquiry(@Valid @RequestBody PostInquiryRequestDTO input) {
     // 로그인 정보 가져오기
-    long customer = 1L;
+    Customer customer = customerService.getCurrentCustomer();
 
     // 문의 등록
     Long id = inquiryService.postInquiry(input, customer);
   }
 
   /**
-   * 2. [사용자] 문의 조회
+   * [CUSTOMER] 내가 작성한 문의 정보 조회
+   * @param pageNo
+   * @return
    */
   @GetMapping
-  public BaseResponse<Page<GetInquiryResponseDTO>> getInquiry(
-      @RequestParam(value="pageNo", defaultValue="0") int pageNo) {
+  public BaseResponse<Page<GetInquiryResponseDTO>> getInquiry(@RequestParam(value="pageNo", defaultValue="0") int pageNo) {
     // 로그인 확인
-    Long customer = 1L;
+    Customer customer = customerService.getCurrentCustomer();
 
     // 내가 작성한 문의 조회
-    Page<GetInquiryResponseDTO> result = inquiryService.getInquiry(customer, pageNo);
+    Page<GetInquiryResponseDTO> result = inquiryService.getInquiry(customer.getId(), pageNo);
 
     return new BaseResponse<>(result);
   }
 
   /**
-   * 3. [관리자] 미답변 문의 조회
+   * [ADMIN] 미답변 문의 정보 조회
+   * @param pageNo
+   * @return
    */
   @GetMapping("/unanswered")
   public BaseResponse<Page<GetInquiryResponseDTO>> getUnansweredInquiry(
@@ -72,7 +79,10 @@ public class InquiryController {
   }
 
   /**
-   * 4. [관리자] 문의 답변 등록
+   * [ADMIN] 문의 답변 등록
+   * @param input
+   * @param inquiryId
+   * @return
    */
   @PostMapping("/{inquiryId}")
   public BaseResponse<String> postReply(@Valid @RequestBody PostReplyRequestDTO input, @PathVariable Long inquiryId) {
