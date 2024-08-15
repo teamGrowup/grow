@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.boot.growup.common.enumerate.AuthorityStatus;
 import org.boot.growup.source.seller.dto.request.RegisterBrandRequestDTO;
+import org.boot.growup.source.seller.dto.response.GetBrandDetailResponseDTO;
 import org.boot.growup.source.seller.dto.response.ReadBrandRequestByStatusResponseDTO;
 import org.boot.growup.source.seller.dto.response.ReadSellerBrandResponseDTO;
 import org.boot.growup.source.seller.persist.entity.Brand;
@@ -101,5 +102,11 @@ public class BrandApplication {
         return brandList.stream()
                 .map(ReadBrandRequestByStatusResponseDTO::from)
                 .toList();
+    }
+
+    public GetBrandDetailResponseDTO getBrandDetail(Long brandId) {
+        Brand brand = brandService.getBrandById(brandId);
+        List<BrandImage> brandImages = brandImageService.readBrandImages(brand.getId());
+        return GetBrandDetailResponseDTO.of(brand, brandImages);
     }
 }

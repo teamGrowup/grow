@@ -15,4 +15,5 @@ public interface BrandService {
     Brand updateBrand(RegisterBrandRequestDTO registerBrandRequestDTO, Seller seller);
     void changeBrandAuthority(Long brandId, AuthorityStatus status);
     List<Brand> readBrandRequestsByStatus(AuthorityStatus authorityStatus, int pageNo);
+    Brand getBrandById(Long brandId);
 }

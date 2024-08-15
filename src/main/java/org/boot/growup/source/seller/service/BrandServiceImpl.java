@@ -84,4 +84,11 @@ public class BrandServiceImpl implements BrandService {
 
         return brandRepository.findByAuthorityStatus(authorityStatus, pageable);
     }
+
+    @Override
+    public Brand getBrandById(Long brandId) {
+        return brandRepository.findById(brandId).orElseThrow(
+                () -> new BaseException(ErrorCode.BRAND_BY_ID_NOT_FOUND)
+        );
+    }
 }
