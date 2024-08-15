@@ -3,6 +3,7 @@ package org.boot.growup.common.dataloader;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.boot.growup.common.enumerate.AuthorityStatus;
+import org.boot.growup.common.enumerate.Role;
 import org.boot.growup.source.seller.persist.entity.*;
 import org.boot.growup.source.seller.persist.repository.*;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -119,6 +120,7 @@ public class DataLoader {
                 .cpCode("178-86-01188") // 10자리의 사업자 등록번호
                 .cpAddress("경기도 의정부시 오목로225번길 94, 씨와이파크 (민락동)") // 사업장 소재지(회사주소)
                 .netProceeds(1000)
+                .role(Role.SELLER)
                 .build();
         sellerRepository.save(seller);
 
@@ -131,6 +133,7 @@ public class DataLoader {
                 .cpCode("722-87-00697") // 10자리의 사업자 등록번호
                 .cpAddress("서울특별시 성동구 자동차시장1길 81, FCN빌딩 5층 (용답동)") // 사업장 소재지(회사주소)
                 .netProceeds(1000)
+                .role(Role.CUSTOMER)
                 .build();
 
         sellerRepository.save(seller2);

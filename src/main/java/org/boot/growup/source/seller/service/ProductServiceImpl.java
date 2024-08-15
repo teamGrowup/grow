@@ -40,8 +40,8 @@ public class ProductServiceImpl implements ProductService {
         List<ProductOption> productOptions = convertToProductOptions(postProductRequestDto.getProductOptions(), product);
         product.initProductOptions(productOptions); // 상품 옵션 초기화 메서드 사용
 
-        product.setSubCategory(subCategory); // 서브 카테고리 설정
-        product.setBrand(brand);
+        product.patchSubCategory(subCategory); // 서브 카테고리 설정
+        product.patchBrand(brand);
         product.pending();
         product.initAverageRating();
         product.initLikeCount();
@@ -76,8 +76,8 @@ public class ProductServiceImpl implements ProductService {
 
         // 상태 변경 및 정보 업데이트
         product.pending(); // 대기 상태로 변경.
-        product.updateProductInfo(postProductRequestDto.getName(), postProductRequestDto.getDescription());
-        product.setBrand(brand); // Brand 정보 업데이트
+        product.patchProductInfo(postProductRequestDto.getName(), postProductRequestDto.getDescription());
+        product.patchBrand(brand); // Brand 정보 업데이트
 
         // 상품 저장
         productRepository.save(product);

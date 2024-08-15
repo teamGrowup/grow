@@ -10,7 +10,6 @@ import java.util.List;
 
 @Entity
 @Getter
-@Setter
 @Builder
 @Table(name = "product")
 @NoArgsConstructor
@@ -69,10 +68,6 @@ public class Product {
                 .build();
     }
 
-    public void setSubCategory(SubCategory subCategory) {
-        this.subCategory = subCategory;
-    }
-
     /*
     판매자(대표자) 설정
      */
@@ -80,9 +75,6 @@ public class Product {
         this.seller = seller;
     }
 
-    /*
-    허가 상태 변경
-     */
     public void approve() {
         this.authorityStatus = AuthorityStatus.APPROVED;
     }
@@ -115,12 +107,17 @@ public class Product {
         }
     }
 
-    /*
-    product명 및 상세 설명 수정
-     */
-    public void updateProductInfo(String name, String description){
+    public void patchProductInfo(String name, String description) {
         this.name = name;
         this.description = description;
+    }
+
+    public void patchSubCategory(SubCategory subCategory) {
+        this.subCategory = subCategory;
+    }
+
+    public void patchBrand(Brand brand) {
+        this.brand = brand;
     }
 }
 
