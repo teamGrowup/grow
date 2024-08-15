@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.Getter;
 import org.boot.growup.common.enumerate.AuthorityStatus;
 import org.boot.growup.common.enumerate.Section;
+import org.boot.growup.source.seller.persist.entity.Product;
 import org.boot.growup.source.seller.persist.entity.ProductImage;
 import org.boot.growup.source.seller.persist.entity.ProductOption;
 
@@ -39,6 +40,26 @@ public class ProductDetailResponseDTO {
         this.productImages = productImages;
         this.productOptions = productOptions;
 
+    }
+
+    // from 메서드 추가
+    public static ProductDetailResponseDTO from(Product product) {
+        return ProductDetailResponseDTO.builder()
+                .productId(product.getId())
+                .name(product.getName())
+                .description(product.getDescription())
+                .averageRating(product.getAverageRating())
+                .likeCount(product.getLikeCount())
+                .authorityStatus(product.getAuthorityStatus())
+                .subCategoryId(product.getSubCategory().getId())
+                .mainCategoryId(product.getSubCategory().getMainCategory().getId())
+                .productImages(product.getProductImages().stream()
+                        .map(ProductImageDTO::from)
+                        .toList())
+                .productOptions(product.getProductOptions().stream()
+                        .map(ProductOptionDTO::from)
+                        .toList())
+                .build();
     }
 
     @Getter
