@@ -2,9 +2,9 @@ package org.boot.growup.common.oauth2.kakao;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.boot.growup.common.constant.BaseException;
-import org.boot.growup.common.oauth2.kakao.call.KakaoTokenFeignClient;
-import org.boot.growup.common.oauth2.kakao.call.KakaoUserInfoFeignClient;
+import org.boot.growup.common.error.BaseException;
+import org.boot.growup.common.oauth2.kakao.client.KakaoTokenFeignClient;
+import org.boot.growup.common.oauth2.kakao.client.KakaoUserInfoFeignClient;
 import org.boot.growup.common.oauth2.kakao.dto.KakaoAccessTokenResponseDTO;
 import org.boot.growup.common.oauth2.kakao.dto.KakaoAccountResponseDTO;
 import org.springframework.http.MediaType;

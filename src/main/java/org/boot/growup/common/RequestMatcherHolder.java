@@ -42,6 +42,7 @@ public class RequestMatcherHolder {
             RequestInfo.of(GET, "/*.ico", null),
             RequestInfo.of(GET, "/images/**", null)
     );
+
     private final ConcurrentHashMap<String, RequestMatcher> reqMatcherCacheMap = new ConcurrentHashMap<>();
 
     /**
@@ -62,6 +63,7 @@ public class RequestMatcherHolder {
     private String getKeyByRole(@Nullable Role role) {
         return role == null ? "VISITOR" : role.getKey();
     }
+
     @Data
     @Builder
     private static class RequestInfo {

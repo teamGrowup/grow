@@ -8,10 +8,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
 public class GrowApplication {
-
-
     public static void main(String[] args) {
         SpringApplication.run(GrowApplication.class, args);
     }
-
 }

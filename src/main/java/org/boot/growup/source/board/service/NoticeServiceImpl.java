@@ -2,10 +2,10 @@ package org.boot.growup.source.board.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.boot.growup.common.constant.BaseException;
+import org.boot.growup.common.error.BaseException;
 import org.boot.growup.common.error.ErrorCode;
 import org.boot.growup.source.board.dto.request.PostNoticeRequestDTO;
 import org.boot.growup.source.board.dto.response.GetNoticeResponseDTO;

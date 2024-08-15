@@ -1,6 +1,6 @@
 package org.boot.growup.source.seller.service;
 
-import org.boot.growup.common.constant.BaseException;
+import org.boot.growup.common.error.BaseException;
 import org.boot.growup.common.error.ErrorCode;
 import org.boot.growup.common.enumerate.AuthorityStatus;
 import org.boot.growup.source.seller.dto.request.RegisterBrandRequestDTO;

@@ -18,19 +18,23 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
     private static final String TOKEN_HEADER = "Authorization";
     private static final String TOKEN_PREFIX = "Bearer ";
     private final JwtTokenProvider jwtTokenProvider;
     private final RequestMatcherHolder requestMatcherHolder;
+
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) { //이 필터 안걸치는 path
         return requestMatcherHolder.getRequestMatchersByMinRole(null).matches(request);
 
     }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
                 throws ServletException, IOException {

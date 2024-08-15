@@ -64,7 +64,7 @@ class ProductImageServiceImplTest {
 
 
     @Test
-    public void updateProductImages_Success() {
+    public void patchProductImages_Success() {
         //given
         Product product = new Product();
         MockMultipartFile file1 = new MockMultipartFile("file", "product1.jpg", "image/jpeg", "test image content".getBytes());
@@ -76,7 +76,7 @@ class ProductImageServiceImplTest {
 
 
         // when
-        productImageServiceImpl.updateProductImages(List.of(file1, file2), product, Section.PRODUCT_IMAGE);
+        productImageServiceImpl.patchProductImages(List.of(file1, file2), product, Section.PRODUCT_IMAGE);
 
         // then
         verify(productImageRepository, times(1)).deleteProductImageByProduct_Id(product.getId());

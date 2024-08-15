@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import org.boot.growup.common.Regex;
 import org.boot.growup.common.enumerate.Gender;
+
 @Data
 @Builder
 public class KakaoAdditionalInfoRequestDTO {

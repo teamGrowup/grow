@@ -16,10 +16,11 @@ import org.boot.growup.source.customer.dto.request.*;
 import org.boot.growup.source.customer.dto.response.EmailCheckResponseDTO;
 import org.boot.growup.source.customer.service.CustomerService;
 import org.springframework.web.bind.annotation.*;
+
 @Slf4j
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/customers")
+@RequiredArgsConstructor
 public class CustomerController {
     private final CustomerService customerService;
     private final GoogleOauthServiceImpl googleOauthServiceImpl;

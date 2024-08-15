@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 @Builder
-public class ProductRequestDTO {
+public class PostProductRequestDTO {
     @NotBlank(message = "상품 이름은 필수입니다.")
     private String name;
 

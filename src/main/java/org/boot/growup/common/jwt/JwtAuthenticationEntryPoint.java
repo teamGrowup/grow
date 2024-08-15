@@ -14,6 +14,7 @@ import java.io.IOException;
 
 import static org.boot.growup.common.error.ErrorCode.*;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
+
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 

@@ -3,7 +3,7 @@ package org.boot.growup.source.board.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.boot.growup.common.constant.BaseException;
+import org.boot.growup.common.error.BaseException;
 import org.boot.growup.common.constant.BaseResponse;
 import org.boot.growup.common.error.ErrorCode;
 import org.boot.growup.source.board.dto.request.PostNoticeRequestDTO;

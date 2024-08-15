@@ -1,7 +1,7 @@
 package org.boot.growup.source.seller.service;
 
 import org.boot.growup.common.enumerate.AuthorityStatus;
-import org.boot.growup.source.seller.dto.request.ProductRequestDTO;
+import org.boot.growup.source.seller.dto.request.PostProductRequestDTO;
 import org.boot.growup.source.seller.persist.entity.*;
 import org.boot.growup.source.seller.persist.repository.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -83,16 +83,16 @@ class ProductServiceImplTest {
     @Test
     public void registerProduct_withBrand_success() {
         // given
-        ProductRequestDTO productRequestDto = ProductRequestDTO.builder()
+        PostProductRequestDTO postProductRequestDto = PostProductRequestDTO.builder()
                 .name("테스트 제품")
                 .description("테스트 설명")
                 .productOptions(List.of(
-                        ProductRequestDTO.ProductOptionDTO.builder() // 빌더 사용
+                        PostProductRequestDTO.ProductOptionDTO.builder() // 빌더 사용
                                 .optionName("옵션1")
                                 .optionStock(10)
                                 .optionPrice(1000)
                                 .build(),
-                        ProductRequestDTO.ProductOptionDTO.builder() // 빌더 사용
+                        PostProductRequestDTO.ProductOptionDTO.builder() // 빌더 사용
                                 .optionName("옵션2")
                                 .optionStock(5)
                                 .optionPrice(1500)
@@ -103,18 +103,18 @@ class ProductServiceImplTest {
                 .build();
 
         // when
-        Product savedProduct = productService.registerProduct(productRequestDto, seller);
+        Product savedProduct = productService.registerProduct(postProductRequestDto, seller);
 
         // then
         assertNotNull(savedProduct);
-        assertEquals(productRequestDto.getName(), savedProduct.getName());
-        assertEquals(productRequestDto.getDescription(), savedProduct.getDescription());
+        assertEquals(postProductRequestDto.getName(), savedProduct.getName());
+        assertEquals(postProductRequestDto.getDescription(), savedProduct.getDescription());
         assertEquals(2, savedProduct.getProductOptions().size()); // 옵션 수 확인
         assertEquals(brand.getId(), savedProduct.getBrand().getId()); // 브랜드 확인
     }
 
     @Test
-    public void updateProduct_withBrand_success() {
+    public void patchProduct_withBrand_success() {
         // given
         Product product = Product.builder()
                 .name("테스트 제품")
@@ -128,11 +128,11 @@ class ProductServiceImplTest {
                 .build();
         productRepository.save(product); // Product 저장
 
-        ProductRequestDTO productRequestDto = ProductRequestDTO.builder()
+        PostProductRequestDTO postProductRequestDto = PostProductRequestDTO.builder()
                 .name("업데이트된 제품")
                 .description("업데이트된 설명")
                 .productOptions(List.of(
-                        ProductRequestDTO.ProductOptionDTO.builder()
+                        PostProductRequestDTO.ProductOptionDTO.builder()
                                 .optionName("업데이트된 옵션")
                                 .optionStock(100)
                                 .optionPrice(2000)
@@ -143,12 +143,12 @@ class ProductServiceImplTest {
                 .build();
 
         // when
-        Product updatedProduct = productService.updateProduct(productRequestDto, seller, product.getId());
+        Product updatedProduct = productService.patchProduct(postProductRequestDto, seller, product.getId());
 
         // then
         assertNotNull(updatedProduct);
-        assertEquals(productRequestDto.getName(), updatedProduct.getName());
-        assertEquals(productRequestDto.getDescription(), updatedProduct.getDescription());
+        assertEquals(postProductRequestDto.getName(), updatedProduct.getName());
+        assertEquals(postProductRequestDto.getDescription(), updatedProduct.getDescription());
         assertEquals(brand.getId(), updatedProduct.getBrand().getId()); // 브랜드 확인
     }
 }

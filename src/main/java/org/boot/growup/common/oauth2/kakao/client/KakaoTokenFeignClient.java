@@ -1,4 +1,4 @@
-package org.boot.growup.common.oauth2.kakao.call;
+package org.boot.growup.common.oauth2.kakao.client;
 
 import org.boot.growup.common.oauth2.kakao.dto.KakaoAccessTokenResponseDTO;
 import org.springframework.cloud.openfeign.FeignClient;

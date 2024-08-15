@@ -1,11 +1,11 @@
 package org.boot.growup.source.seller.application;
 
 import org.boot.growup.common.enumerate.Section;
-import org.boot.growup.source.seller.dto.request.ProductRequestDTO;
+import org.boot.growup.source.seller.dto.request.PostProductRequestDTO;
 import org.boot.growup.source.seller.dto.response.ProductDetailResponseDTO;
 import org.boot.growup.source.seller.persist.entity.*;
 import org.boot.growup.common.enumerate.AuthorityStatus;
-import org.boot.growup.source.seller.dto.request.ProductRequestDTO.ProductOptionDTO;
+import org.boot.growup.source.seller.dto.request.PostProductRequestDTO.ProductOptionDTO;
 import org.boot.growup.source.seller.dto.SubCategoryDTO;
 import org.boot.growup.source.seller.dto.MainCategoryDTO;
 import org.boot.growup.source.seller.persist.repository.BrandRepository;
@@ -48,7 +48,7 @@ class ProductApplicationTest {
     @Mock
     private BrandRepository brandRepository; // BrandRepository Mock 추가
 
-    private ProductRequestDTO productRequestDTO;
+    private PostProductRequestDTO postProductRequestDTO;
     private Product product;
     private Seller seller;
     private SubCategory subCategory;
@@ -100,7 +100,7 @@ class ProductApplicationTest {
                 .build();
 
         // ProductRequestDTO 초기화
-        productRequestDTO = ProductRequestDTO.builder()
+        postProductRequestDTO = PostProductRequestDTO.builder()
                 .name("테스트 상품")
                 .description("테스트 상품 설명입니다.")
                 .subCategoryId(subCategory.getId()) // 서브 카테고리 ID 추가
@@ -140,18 +140,18 @@ class ProductApplicationTest {
     }
 
     @Test
-    public void registerProductWithImages_Default_Success() {
+    public void postProductWithImages_Default_Success() {
         // given
         MockMultipartFile file1 = new MockMultipartFile("file", "product_image1.jpg", "image/jpeg", "image content 1".getBytes());
         MockMultipartFile file2 = new MockMultipartFile("file", "product_image2.jpg", "image/jpeg", "image content 2".getBytes());
-        given(productService.registerProduct(productRequestDTO, seller)).willReturn(product);
+        given(productService.registerProduct(postProductRequestDTO, seller)).willReturn(product);
         given(sellerRepository.findById(seller.getId())).willReturn(Optional.of(seller));
 
         given(brandRepository.findById(brand1.getId())).willReturn(Optional.of(brand1));
         List<MultipartFile> mockFiles = List.of(file1, file2);
 
         // when
-        productApplication.registerProductWithImages(productRequestDTO, mockFiles);
+        productApplication.postProductWithImages(postProductRequestDTO, mockFiles);
 
         // then
         verify(sellerRepository).findById(seller.getId());
@@ -174,23 +174,23 @@ class ProductApplicationTest {
     }
 
     @Test
-    void testUpdateProduct() {
+    void testPatchProduct() {
         // given
         MockMultipartFile file1 = new MockMultipartFile("file", "test1.jpg", "image/jpeg", "test image content 1".getBytes());
         MockMultipartFile file2 = new MockMultipartFile("file", "test2.jpg", "image/jpeg", "test image content 2".getBytes());
         List<MultipartFile> mockFiles = List.of(file1, file2);
 
-        given(productService.updateProduct(productRequestDTO, seller, product.getId())).willReturn(product);
+        given(productService.patchProduct(postProductRequestDTO, seller, product.getId())).willReturn(product);
         given(sellerRepository.findById(seller.getId())).willReturn(Optional.of(seller));
         given(brandRepository.findById(brand1.getId())).willReturn(Optional.of(brand1));
 
         // when
-        productApplication.updateProduct(productRequestDTO, mockFiles, product.getId());
+        productApplication.patchProduct(postProductRequestDTO, mockFiles, product.getId());
 
         // then
         verify(sellerRepository).findById(seller.getId());
-        verify(productService).updateProduct(productRequestDTO, seller, product.getId());
-        verify(productImageService).updateProductImages(mockFiles, product, Section.PRODUCT_IMAGE);
+        verify(productService).patchProduct(postProductRequestDTO, seller, product.getId());
+        verify(productImageService).patchProductImages(mockFiles, product, Section.PRODUCT_IMAGE);
     }
 
 }

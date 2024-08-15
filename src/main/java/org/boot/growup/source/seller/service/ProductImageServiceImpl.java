@@ -62,7 +62,7 @@ public class ProductImageServiceImpl implements ProductImageService {
     }
     @Transactional
     @Override
-    public void updateProductImages(List<MultipartFile> productImages, Product product, Section section) {
+    public void patchProductImages(List<MultipartFile> productImages, Product product, Section section) {
         // 1. 현재 등록된 상품 이미지를 지움.
         productImageRepository.deleteProductImageByProduct_Id(product.getId());
 

@@ -2,9 +2,9 @@ package org.boot.growup.common.oauth2.google;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.boot.growup.common.constant.BaseException;
-import org.boot.growup.common.oauth2.google.call.GoogleTokenFeignClient;
-import org.boot.growup.common.oauth2.google.call.GoogleUserInfoFeignClient;
+import org.boot.growup.common.error.BaseException;
+import org.boot.growup.common.oauth2.google.client.GoogleTokenFeignClient;
+import org.boot.growup.common.oauth2.google.client.GoogleUserInfoFeignClient;
 import org.boot.growup.common.oauth2.google.dto.GoogleAccessTokenResponseDTO;
 import org.boot.growup.common.oauth2.google.dto.GoogleAccountResponseDTO;
 import org.springframework.http.*;

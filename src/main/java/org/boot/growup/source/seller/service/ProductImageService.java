@@ -11,8 +11,9 @@ public interface ProductImageService {
     상품 이미지 등록
      */
     void saveProductImages(List<MultipartFile> productImageFiles, Product product, Section section);
+
     /*
     등록된 상품 이미지 수정
      */
-    void updateProductImages(List<MultipartFile> productImages, Product product, Section section);
+    void patchProductImages(List<MultipartFile> productImages, Product product, Section section);
 }

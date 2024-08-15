@@ -13,10 +13,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
 @Slf4j
 @Controller
-@RequiredArgsConstructor
 @RequestMapping("/login")
+@RequiredArgsConstructor
 public class Oauth2Controller {
     private final GoogleClient googleClient;
     private final KakaoClient kakaoClient;
@@ -54,7 +55,6 @@ public class Oauth2Controller {
         log.info("Authorization Code : {}", code);
         return "login";
     }
-
 
     /**
      * Oauth2.0 카카오 리다이렉트 > 인가코드 받기

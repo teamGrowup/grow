@@ -7,13 +7,13 @@ import org.boot.growup.source.seller.persist.entity.Product;
 
 @Data
 @Builder
-public class ReadProductRequestByStatusResponseDTO {
+public class GetProductRequestByStatusResponseDTO {
     private Long productId;
     private String productName;
     private AuthorityStatus authorityStatus;
 
-    public static ReadProductRequestByStatusResponseDTO from(Product product) {
-        return ReadProductRequestByStatusResponseDTO.builder()
+    public static GetProductRequestByStatusResponseDTO from(Product product) {
+        return GetProductRequestByStatusResponseDTO.builder()
                 .productId(product.getId())
                 .productName(product.getName())
                 .authorityStatus(product.getAuthorityStatus())

@@ -5,9 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.boot.growup.common.constant.BaseResponse;
 import org.boot.growup.common.enumerate.AuthorityStatus;
 import org.boot.growup.source.seller.application.ProductApplication;
-import org.boot.growup.source.seller.dto.request.ProductRequestDTO;
+import org.boot.growup.source.seller.dto.request.PostProductRequestDTO;
 import org.boot.growup.source.seller.dto.response.ProductDetailResponseDTO;
-import org.boot.growup.source.seller.dto.response.ReadProductRequestByStatusResponseDTO;
+import org.boot.growup.source.seller.dto.response.GetProductRequestByStatusResponseDTO;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,15 +23,15 @@ public class ProductController {
     /**
      * 현재 판매자의 제품 등록 요청
      * @param productImages
-     * @param productRequestDto
+     * @param postProductRequestDto
      * @return BaseResponse<String>
      */
     @PostMapping("/sellers/products")
-    public BaseResponse<String> registerProduct(
+    public BaseResponse<String> postProduct(
             @RequestPart(value = "images", required = false) List<MultipartFile> productImages,
-            @RequestPart(value = "form") ProductRequestDTO productRequestDto
+            @RequestPart(value = "form") PostProductRequestDTO postProductRequestDto
     ) {
-        productApplication.registerProductWithImages(productRequestDto, productImages);
+        productApplication.postProductWithImages(postProductRequestDto, productImages);
         return new BaseResponse<>("등록 성공");
     }
 
@@ -50,16 +50,16 @@ public class ProductController {
      * 현재 판매자의 제품 정보를 수정 요청
      * @param productId 상품 ID
      * @param productImages 수정할 이미지 파일 리스트
-     * @param productRequestDto 수정할 제품 정보 DTO
+     * @param postProductRequestDto 수정할 제품 정보 DTO
      * @return BaseResponse<String>
      */
     @PatchMapping("/sellers/products/{productId}")
-    public BaseResponse<String> updateProduct(
+    public BaseResponse<String> patchProduct(
             @PathVariable Long productId,
             @RequestPart(value = "images", required = false) List<MultipartFile> productImages,
-            @RequestPart(value = "form") ProductRequestDTO productRequestDto
+            @RequestPart(value = "form") PostProductRequestDTO postProductRequestDto
     ) {
-        productApplication.updateProduct(productRequestDto, productImages, productId );
+        productApplication.patchProduct(postProductRequestDto, productImages, productId );
         return new BaseResponse<>("수정 성공");
     }
 
@@ -92,11 +92,11 @@ public class ProductController {
      * @return
      */
     @GetMapping("/admins/product-requests")
-    public BaseResponse<List<ReadProductRequestByStatusResponseDTO>> readProductRequestsByStatus(
+    public BaseResponse<List<GetProductRequestByStatusResponseDTO>> getProductRequestsByStatus(
             @RequestParam(value = "authorityStatus", required = false) AuthorityStatus authorityStatus,
             @RequestParam(value = "pageNo", defaultValue = "0") int pageNo
     ) {
-        return new BaseResponse<>(productApplication.readProductRequestsByStatus(authorityStatus, pageNo));
+        return new BaseResponse<>(productApplication.getProductRequestsByStatus(authorityStatus, pageNo));
     }
 
     /**
