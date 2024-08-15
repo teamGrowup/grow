@@ -2,6 +2,7 @@ package org.boot.growup.source.seller.application;
 
 import org.boot.growup.common.enumerate.AuthorityStatus;
 import org.boot.growup.source.seller.dto.request.RegisterBrandRequestDTO;
+import org.boot.growup.source.seller.dto.response.GetBrandDetailResponseDTO;
 import org.boot.growup.source.seller.dto.response.ReadBrandRequestByStatusResponseDTO;
 import org.boot.growup.source.seller.dto.response.ReadSellerBrandResponseDTO;
 import org.boot.growup.source.seller.persist.entity.Brand;
@@ -229,5 +230,26 @@ class BrandApplicationTest {
         assertEquals(10, res.size());
         assertEquals(res.get(0).getClass(), ReadBrandRequestByStatusResponseDTO.class);
     }
+
+    @Test
+    public void getBrandDetail_Default_Success() throws Exception{
+        //given
+        given(brandService.getBrandById(1L)).willReturn(brand1);
+        given(brandImageService.readBrandImages(brand1.getId())).willReturn(List.of(brandImage1, brandImage2));
+
+        //when
+        GetBrandDetailResponseDTO res = brandApplication.getBrandDetail(1L);
+
+        //then
+        assertNotNull(res);
+        assertEquals(brand1.getName(), res.getName());
+        assertEquals(brand1.getDescription(), res.getDescription());
+        assertEquals(brand1.getLikeCount(), res.getLikeCount());
+        assertEquals(brandImage1.getOriginalImageName(), res.getImages().get(0).getOriginalImageName());
+        assertEquals(brandImage1.getPath(), res.getImages().get(0).getPath());
+        assertEquals(brandImage2.getOriginalImageName(), res.getImages().get(1).getOriginalImageName());
+        assertEquals(brandImage2.getPath(), res.getImages().get(1).getPath());
+    }
+
 
 }

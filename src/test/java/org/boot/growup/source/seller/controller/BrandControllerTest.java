@@ -1,5 +1,6 @@
 package org.boot.growup.source.seller.controller;
 
+import org.boot.growup.common.jwt.JwtAuthenticationFilter;
 import org.boot.growup.common.jwt.JwtTokenProvider;
 import org.boot.growup.source.seller.application.BrandApplication;
 import org.boot.growup.source.seller.dto.response.ReadSellerBrandResponseDTO;
@@ -34,6 +35,9 @@ class BrandControllerTest {
     @MockBean
     private JwtTokenProvider jwtTokenProvider;
 
+    @MockBean
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
+
 
     @Test
     public void readSellerBrand_Default_Success() throws Exception{
@@ -53,7 +57,7 @@ class BrandControllerTest {
         );
 
         //when, then
-        mockMvc.perform(get("/sellers/brand"))
+        mockMvc.perform(get("/sellers/brands"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code", Matchers.is(200)))

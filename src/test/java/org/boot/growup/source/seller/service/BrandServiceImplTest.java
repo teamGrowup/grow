@@ -21,7 +21,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest
 @Transactional
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -349,5 +349,25 @@ class BrandServiceImplTest {
 
         //then
         assertEquals(10, brandFoundList.size());
+    }
+
+    @Test
+    public void getBrandById_Default_Success() throws Exception{
+        //given
+        Brand brand1 = Brand.builder()
+                .name("브랜드1")
+                .description("브랜드1은 심플한 디자인과 고급스러운 소재를 활용한 제품을 선보입니다.")
+                .authorityStatus(AuthorityStatus.PENDING)
+                .likeCount(10)
+                .build();
+        brandRepository.save(brand1);
+
+
+        //when
+        Brand brandFound = brandServiceImpl.getBrandById(brand1.getId());
+
+        //then
+        assertNotNull(brandFound);
+        assertEquals(brand1, brandFound);
     }
 }
