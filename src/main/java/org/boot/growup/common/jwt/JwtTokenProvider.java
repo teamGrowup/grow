@@ -19,8 +19,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
 
-@Component
 @Slf4j
+@Component
 public class JwtTokenProvider {
     private static final String AUTHORITIES_KEY = "auth";
     private final Key key;
