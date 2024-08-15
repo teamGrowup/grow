@@ -7,10 +7,8 @@ import org.boot.growup.source.seller.persist.entity.ProductImage;
 import org.boot.growup.source.seller.persist.repository.ProductImageRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
@@ -66,7 +64,7 @@ class ProductImageServiceImplTest {
 
 
     @Test
-    public void updateProductImages_Success() {
+    public void patchProductImages_Success() {
         //given
         Product product = new Product();
         MockMultipartFile file1 = new MockMultipartFile("file", "product1.jpg", "image/jpeg", "test image content".getBytes());
@@ -78,7 +76,7 @@ class ProductImageServiceImplTest {
 
 
         // when
-        productImageServiceImpl.updateProductImages(List.of(file1, file2), product, Section.PRODUCT_IMAGE);
+        productImageServiceImpl.patchProductImages(List.of(file1, file2), product, Section.PRODUCT_IMAGE);
 
         // then
         verify(productImageRepository, times(1)).deleteProductImageByProduct_Id(product.getId());

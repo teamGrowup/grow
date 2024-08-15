@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.boot.growup.common.email.EmailMessageDTO;
 import org.boot.growup.common.email.EmailService;
-import org.boot.growup.common.constant.BaseException;
+import org.boot.growup.common.error.BaseException;
 import org.boot.growup.common.error.ErrorCode;
 import org.boot.growup.common.jwt.JwtTokenProvider;
 import org.boot.growup.common.jwt.TokenDTO;
@@ -29,17 +29,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.boot.growup.common.error.ErrorCode.*;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class CustomerServiceImpl implements CustomerService {
+
     private final CustomerRepository customerRepository;
     private final PasswordEncoder passwordEncoder;
     private final CustomUserDetailService customUserDetailService;
     private final JwtTokenProvider jwtTokenProvider;
     private final EmailService emailService;
     private final HttpSession session;
+
     @Transactional
     @Override
     public void signUp(CustomerSignUpRequestDTO request) {

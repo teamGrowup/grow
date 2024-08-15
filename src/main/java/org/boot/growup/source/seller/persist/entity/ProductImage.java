@@ -15,7 +15,6 @@ import org.boot.growup.common.enumerate.Section;
 @AllArgsConstructor
 @Table(name = "product_image")
 public class ProductImage {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "product_image_id", nullable = false)

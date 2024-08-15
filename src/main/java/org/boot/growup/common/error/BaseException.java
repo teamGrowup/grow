@@ -1,11 +1,10 @@
-package org.boot.growup.common.constant;
+package org.boot.growup.common.error;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.boot.growup.common.error.ErrorCode;
 
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public class BaseException extends RuntimeException {
     private final ErrorCode errorCode;
     private final int code;
@@ -25,7 +24,6 @@ public class BaseException extends RuntimeException {
         this.errorMessage = errorMessage;
     }
 
-    // With Cause Exception
     public BaseException(ErrorCode errorcode, Exception cause) {
         super(errorcode.getMessage(), cause);
         this.errorCode = errorcode;

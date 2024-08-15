@@ -1,9 +1,7 @@
 package org.boot.growup.source.seller.dto.request;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import jakarta.validation.constraints.NotBlank;
 
@@ -11,9 +9,7 @@ import java.util.List;
 
 @Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class ProductRequestDTO {
+public class PostProductRequestDTO {
     @NotBlank(message = "상품 이름은 필수입니다.")
     private String name;
 
@@ -21,6 +17,8 @@ public class ProductRequestDTO {
     private String description;
 
     private Long subCategoryId;
+
+    private Long brandId;
 
     private List<ProductOptionDTO> productOptions;
 
@@ -33,6 +31,7 @@ public class ProductRequestDTO {
         private String optionName;
         private int optionStock;
         private int optionPrice;
+
     }
 
 }

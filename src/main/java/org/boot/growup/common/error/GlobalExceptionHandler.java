@@ -5,7 +5,6 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.boot.growup.common.constant.BaseException;
 import org.boot.growup.common.constant.BaseResponse;
 
 import org.springframework.http.HttpStatus;
@@ -26,9 +25,8 @@ import java.util.stream.Collectors;
 
 import static org.boot.growup.common.error.ErrorCode.*;
 
-
-@RestControllerAdvice
 @Slf4j
+@RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(BaseException.class)
     public ResponseEntity<BaseResponse<?>> handleBaseException(BaseException e) {

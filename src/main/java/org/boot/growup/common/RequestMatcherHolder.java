@@ -42,12 +42,13 @@ public class RequestMatcherHolder {
             RequestInfo.of(GET, "/*.ico", null),
             RequestInfo.of(GET, "/images/**", null)
     );
+
     private final ConcurrentHashMap<String, RequestMatcher> reqMatcherCacheMap = new ConcurrentHashMap<>();
 
     /**
      * 최소 권한이 주어진 요청에 대한 RequestMatcher 반환
      * @param role 권한 (Nullable)
-     * @return 생성된 RequestMatcher
+     * @return RequestMatcher
      */
     public RequestMatcher getRequestMatchersByMinRole(@Nullable Role role) {
         String key = getKeyByRole(role);
@@ -62,6 +63,7 @@ public class RequestMatcherHolder {
     private String getKeyByRole(@Nullable Role role) {
         return role == null ? "VISITOR" : role.getKey();
     }
+
     @Data
     @Builder
     private static class RequestInfo {

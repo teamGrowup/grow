@@ -18,8 +18,10 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class CustomUserDetailService implements UserDetailsService {
+
     private final CustomerRepository customerRepository;
     private final SellerRepository sellerRepository;
+
     public UserDetails loadUserByUsernameAndProvider(String username, Provider provider) throws UsernameNotFoundException {
         Customer customer = customerRepository.findByEmailAndProvider(username, provider)
                 .orElseThrow(() -> new UsernameNotFoundException("해당하는 유저를 찾을 수 없습니다."));
@@ -28,15 +30,14 @@ public class CustomUserDetailService implements UserDetailsService {
         log.info("구매자 권한: {}", userDetails.getAuthorities());
         return userDetails;
     }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Seller seller = sellerRepository.findByCpEmail(username).orElse(null);
-        if (seller != null) {
-            CustomUserDetails userDetails = seller.toUserDetails();
-            log.info("판매자 권한 {}", userDetails.getAuthorities());
-            return userDetails;
-        }
+        Seller seller = sellerRepository.findByCpEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("해당하는 유저를 찾을 수 없습니다."));
 
-        throw new UsernameNotFoundException("해당하는 유저를 찾을 수 없습니다.");
+        CustomUserDetails userDetails = seller.toUserDetails();
+        log.info("판매자 권한 {}", userDetails.getAuthorities());
+        return userDetails;
     }
 }

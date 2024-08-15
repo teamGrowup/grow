@@ -67,9 +67,6 @@ public class Customer {
 
     private String profileUrl;
 
-
-
-
     public CustomUserDetails toUserDetails() {
         return new CustomUserDetails(email, password, role);
     }
@@ -106,6 +103,7 @@ public class Customer {
                 .role(Role.CUSTOMER)
                 .build();
     }
+
     /* 카카오 유저 회원가입 */
     public static Customer of(KakaoAdditionalInfoRequestDTO request, KakaoAccountResponseDTO kakaoAccount) {
         return Customer.builder()

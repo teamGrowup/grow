@@ -1,14 +1,16 @@
 package org.boot.growup.source.seller.dto.response;
 
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import org.boot.growup.common.enumerate.AuthorityStatus;
 import org.boot.growup.common.enumerate.Section;
 import org.boot.growup.source.seller.persist.entity.ProductImage;
+import org.boot.growup.source.seller.persist.entity.ProductOption;
 
 import java.util.List;
 
-@Getter
+@Data
 @Builder
 public class ProductDetailResponseDTO {
     private Long productId;
@@ -60,5 +62,13 @@ public class ProductDetailResponseDTO {
         private String optionName;
         private int optionStock;
         private int optionPrice;
+
+        public static ProductOptionDTO from(ProductOption productOption) {
+            return ProductOptionDTO.builder()
+                    .optionName(productOption.getOptionName())
+                    .optionStock(productOption.getOptionStock())
+                    .optionPrice(productOption.getOptionPrice())
+                    .build();
+        }
     }
 }

@@ -1,4 +1,4 @@
-package org.boot.growup.common.oauth2.naver.call;
+package org.boot.growup.common.oauth2.naver.client;
 
 import org.boot.growup.common.oauth2.naver.dto.NaverAccountResponseDTO;
 import org.springframework.cloud.openfeign.FeignClient;

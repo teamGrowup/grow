@@ -8,7 +8,14 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface SellerService {
+    /*
+    판매자 이메일 회원가입
+     */
     void signUp(SellerSignUpRequestDTO request);
+
+    /*
+    판매자 이메일 로그인
+     */
     TokenDTO signIn(SellerSignInRequestDTO request);
 
     /*

@@ -1,4 +1,4 @@
-package org.boot.growup.common.oauth2.google.call;
+package org.boot.growup.common.oauth2.google.client;
 
 import org.boot.growup.common.oauth2.google.dto.GoogleAccessTokenResponseDTO;
 import org.springframework.cloud.openfeign.FeignClient;
