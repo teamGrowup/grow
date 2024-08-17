@@ -20,14 +20,13 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
-
     private final ProductRepository productRepository;
     private final SubCategoryRepository subCategoryRepository;
     private final BrandRepository brandRepository;
 
     @Override
     @Transactional
-    public Product registerProduct(PostProductRequestDTO postProductRequestDto, Seller seller) {
+    public Product postProduct(PostProductRequestDTO postProductRequestDto, Seller seller) {
         // 서브 카테고리 가져오기
         SubCategory subCategory = subCategoryRepository.findById(postProductRequestDto.getSubCategoryId())
                 .orElseThrow(() -> new BaseException(ErrorCode.SUBCATEGORY_NOT_FOUND));
@@ -40,8 +39,8 @@ public class ProductServiceImpl implements ProductService {
         List<ProductOption> productOptions = convertToProductOptions(postProductRequestDto.getProductOptions(), product);
         product.initProductOptions(productOptions); // 상품 옵션 초기화 메서드 사용
 
-        product.setSubCategory(subCategory); // 서브 카테고리 설정
-        product.setBrand(brand);
+        product.patchSubCategory(subCategory); // 서브 카테고리 설정
+        product.patchBrand(brand);
         product.pending();
         product.initAverageRating();
         product.initLikeCount();
@@ -51,6 +50,12 @@ public class ProductServiceImpl implements ProductService {
         return product;
     }
 
+    @Override
+    public Product getProductBySellerId(Long sellerId) {
+        return productRepository.findBySeller_Id(sellerId).orElseThrow(
+                () -> new BaseException(ErrorCode.PRODUCT_BY_SELLER_NOT_FOUND)
+        );
+    }
 
     // ProductRequestDTO의 ProductOptionDTO를 ProductOption으로 변환하는 메서드
     private List<ProductOption> convertToProductOptions(List<PostProductRequestDTO.ProductOptionDTO> productOptionDTOs, Product product) {
@@ -63,6 +68,7 @@ public class ProductServiceImpl implements ProductService {
                         .build())
                 .toList();
     }
+
     @Transactional
     @Override
     public Product patchProduct(PostProductRequestDTO postProductRequestDto, Seller seller, Long productId) {
@@ -76,8 +82,8 @@ public class ProductServiceImpl implements ProductService {
 
         // 상태 변경 및 정보 업데이트
         product.pending(); // 대기 상태로 변경.
-        product.updateProductInfo(postProductRequestDto.getName(), postProductRequestDto.getDescription());
-        product.setBrand(brand); // Brand 정보 업데이트
+        product.patchProductInfo(postProductRequestDto.getName(), postProductRequestDto.getDescription());
+        product.patchBrand(brand); // Brand 정보 업데이트
 
         // 상품 저장
         productRepository.save(product);
@@ -95,7 +101,6 @@ public class ProductServiceImpl implements ProductService {
             case PENDING -> product.pending();
             case APPROVED -> product.approve();
         }
-
     }
 
     @Override
@@ -108,5 +113,4 @@ public class ProductServiceImpl implements ProductService {
 
         return productRepository.findByAuthorityStatus(authorityStatus, pageable);
     }
-
 }

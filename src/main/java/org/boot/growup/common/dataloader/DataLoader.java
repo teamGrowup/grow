@@ -124,6 +124,7 @@ public class DataLoader {
                 .cpAddress("경기도 의정부시 오목로225번길 94, 씨와이파크 (민락동)") // 사업장 소재지(회사주소)
                 .role(Role.SELLER)
                 .netProceeds(1000)
+                .role(Role.SELLER)
                 .build();
         sellerRepository.save(seller);
 
@@ -137,6 +138,7 @@ public class DataLoader {
                 .cpAddress("서울특별시 성동구 자동차시장1길 81, FCN빌딩 5층 (용답동)") // 사업장 소재지(회사주소)
                 .role(Role.SELLER)
                 .netProceeds(1000)
+                .role(Role.CUSTOMER)
                 .build();
 
         sellerRepository.save(seller2);

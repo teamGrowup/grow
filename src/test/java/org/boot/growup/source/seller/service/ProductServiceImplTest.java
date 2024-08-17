@@ -30,7 +30,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class ProductServiceImplTest {
-
     @Autowired
     private ProductServiceImpl productService;
 
@@ -94,7 +93,7 @@ class ProductServiceImplTest {
                 .build();
 
         // when
-        Product savedProduct = productService.registerProduct(productRequestDto, seller);
+        Product savedProduct = productService.postProduct(postProductRequestDto, seller);
 
         // then
         assertNotNull(savedProduct);

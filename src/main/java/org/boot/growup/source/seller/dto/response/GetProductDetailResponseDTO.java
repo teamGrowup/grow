@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.Getter;
 import org.boot.growup.common.enumerate.AuthorityStatus;
 import org.boot.growup.common.enumerate.Section;
+import org.boot.growup.source.seller.persist.entity.Product;
 import org.boot.growup.source.seller.persist.entity.ProductImage;
 import org.boot.growup.source.seller.persist.entity.ProductOption;
 
@@ -12,7 +13,7 @@ import java.util.List;
 
 @Data
 @Builder
-public class ProductDetailResponseDTO {
+public class GetProductDetailResponseDTO {
     private Long productId;
     private String name;
     private String description;
@@ -25,7 +26,7 @@ public class ProductDetailResponseDTO {
     private List<ProductOptionDTO> productOptions;
 
     // public 생성자
-    public ProductDetailResponseDTO(Long id, String name, String description, double averageRating, int likeCount,
+    public GetProductDetailResponseDTO(Long id, String name, String description, double averageRating, int likeCount,
                                     AuthorityStatus authorityStatus, Long subCategoryId, Long mainCategoryId,
                                     List<ProductImageDTO> productImages,List<ProductOptionDTO> productOptions) {
         this.productId = id;
@@ -39,6 +40,26 @@ public class ProductDetailResponseDTO {
         this.productImages = productImages;
         this.productOptions = productOptions;
 
+    }
+
+    // from 메서드 추가
+    public static GetProductDetailResponseDTO from(Product product) {
+        return GetProductDetailResponseDTO.builder()
+                .productId(product.getId())
+                .name(product.getName())
+                .description(product.getDescription())
+                .averageRating(product.getAverageRating())
+                .likeCount(product.getLikeCount())
+                .authorityStatus(product.getAuthorityStatus())
+                .subCategoryId(product.getSubCategory().getId())
+                .mainCategoryId(product.getSubCategory().getMainCategory().getId())
+                .productImages(product.getProductImages().stream()
+                        .map(ProductImageDTO::from)
+                        .toList())
+                .productOptions(product.getProductOptions().stream()
+                        .map(ProductOptionDTO::from)
+                        .toList())
+                .build();
     }
 
     @Getter

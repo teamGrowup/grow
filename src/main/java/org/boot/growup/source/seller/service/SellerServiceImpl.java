@@ -87,4 +87,4 @@ public class SellerServiceImpl implements SellerService {
 
         throw new BaseException(ErrorCode.ACCESS_DENIED);
     }
-}
+)

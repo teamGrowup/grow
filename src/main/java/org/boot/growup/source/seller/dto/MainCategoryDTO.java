@@ -8,7 +8,6 @@ import jakarta.validation.constraints.NotBlank;
 @Data
 @Builder
 public class MainCategoryDTO {
-
     private Long id;  // 메인 카테고리 ID
 
     @NotBlank(message = "메인 카테고리 이름은 필수입니다.")

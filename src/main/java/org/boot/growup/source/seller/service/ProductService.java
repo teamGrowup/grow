@@ -13,7 +13,12 @@ public interface ProductService {
     /*
     상품 등록
      */
-    Product registerProduct(PostProductRequestDTO postProductRequestDto, Seller seller);
+    Product postProduct(PostProductRequestDTO postProductRequestDto, Seller seller);
+
+    /*
+        SellerId로 Product 정보 가져오기
+    */
+    Product getProductBySellerId(Long sellerId);
 
     /*
     등록된 상품 수정
