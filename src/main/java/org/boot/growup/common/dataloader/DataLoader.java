@@ -18,7 +18,6 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class DataLoader {
-
     private final BrandRepository brandRepository;
     private final SellerRepository sellerRepository;
     private final ProductRepository productRepository;

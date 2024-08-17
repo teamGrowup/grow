@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 @FeignClient(name = "googleUserInfoFeignClient", url = "https://www.googleapis.com")
 public interface GoogleUserInfoFeignClient {
-
     @GetMapping("/userinfo/v2/me")
     GoogleAccountResponseDTO requestGoogleAccount(
             @RequestHeader("Authorization") String authorizationHeader

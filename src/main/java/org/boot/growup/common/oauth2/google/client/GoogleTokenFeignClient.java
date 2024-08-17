@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 @FeignClient(name = "googleTokenFeignClient", url = "https://oauth2.googleapis.com")
 public interface GoogleTokenFeignClient {
-
     @PostMapping(value = "/token", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     GoogleAccessTokenResponseDTO requestAccessToken(
             @RequestHeader("Content-Type") String contentType,

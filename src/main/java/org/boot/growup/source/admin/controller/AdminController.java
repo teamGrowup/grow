@@ -17,6 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AdminController {
     private final AdminService adminService;
+
+    /**
+     * [POST]
+     * 관리자 이메일 로그인
+     * @header null
+     * @body AdminSignInRequestDTO
+     * @response TokenDTO
+     */
     @PostMapping("/login")
     public BaseResponse<TokenDTO> signIn(@RequestBody AdminSignInRequestDTO request) {
         TokenDTO response = adminService.signIn(request);

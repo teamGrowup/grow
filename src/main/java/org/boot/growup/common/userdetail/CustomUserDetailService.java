@@ -22,7 +22,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class CustomUserDetailService implements UserDetailsService {
-
     private final CustomerRepository customerRepository;
     private final SellerRepository sellerRepository;
     private final AdminRepository adminRepository;
@@ -39,6 +38,7 @@ public class CustomUserDetailService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<Seller> seller = sellerRepository.findByCpEmail(username);
+
         if (seller.isPresent()) {
             CustomUserDetails userDetails = seller.get().toUserDetails();
             log.info("판매자 권한 {}", userDetails.getAuthorities());
@@ -46,6 +46,7 @@ public class CustomUserDetailService implements UserDetailsService {
         }
 
         Optional<Admin> admin = adminRepository.findByEmail(username);
+
         if (admin.isPresent()) {
             CustomUserDetails userDetails = admin.get().toUserDetails();
             log.info("관리자 권한: {}", userDetails.getAuthorities());

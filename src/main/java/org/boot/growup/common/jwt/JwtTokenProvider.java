@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 public class JwtTokenProvider {
-
     private static final String AUTHORITIES_KEY = "auth";
     private final Key key;
     private final RedisDao redisDao;

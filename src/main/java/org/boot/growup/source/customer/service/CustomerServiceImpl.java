@@ -35,7 +35,6 @@ import static org.boot.growup.common.error.ErrorCode.*;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class CustomerServiceImpl implements CustomerService {
-
     private final CustomerRepository customerRepository;
     private final PasswordEncoder passwordEncoder;
     private final CustomUserDetailService customUserDetailService;
