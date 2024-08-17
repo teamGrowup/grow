@@ -65,6 +65,7 @@ public class ProductImageServiceImpl implements ProductImageService {
                 .section(Section.valueOf(section.name()))
                 .build(); // section은 설정하지 않음
     }
+
     @Transactional
     @Override
     public void patchProductImages(List<MultipartFile> productImages, Product product, Section section) {

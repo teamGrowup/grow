@@ -17,7 +17,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @ActiveProfiles("test") // 테스트 시 dev profile을 활성화시킴.
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // 기본 생성된 datasource 빈을 사용함.
 class MainCategoryRepositoryTest {
-
     @Autowired
     private MainCategoryRepository mainCategoryRepository;
 

@@ -20,7 +20,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
-
     private final ProductRepository productRepository;
     private final SubCategoryRepository subCategoryRepository;
     private final BrandRepository brandRepository;
@@ -69,6 +68,7 @@ public class ProductServiceImpl implements ProductService {
                         .build())
                 .toList();
     }
+
     @Transactional
     @Override
     public Product patchProduct(PostProductRequestDTO postProductRequestDto, Seller seller, Long productId) {
@@ -101,7 +101,6 @@ public class ProductServiceImpl implements ProductService {
             case PENDING -> product.pending();
             case APPROVED -> product.approve();
         }
-
     }
 
     @Override
@@ -114,5 +113,4 @@ public class ProductServiceImpl implements ProductService {
 
         return productRepository.findByAuthorityStatus(authorityStatus, pageable);
     }
-
 }

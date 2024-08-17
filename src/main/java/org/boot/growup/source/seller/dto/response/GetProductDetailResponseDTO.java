@@ -13,7 +13,7 @@ import java.util.List;
 
 @Data
 @Builder
-public class ProductDetailResponseDTO {
+public class GetProductDetailResponseDTO {
     private Long productId;
     private String name;
     private String description;
@@ -26,7 +26,7 @@ public class ProductDetailResponseDTO {
     private List<ProductOptionDTO> productOptions;
 
     // public 생성자
-    public ProductDetailResponseDTO(Long id, String name, String description, double averageRating, int likeCount,
+    public GetProductDetailResponseDTO(Long id, String name, String description, double averageRating, int likeCount,
                                     AuthorityStatus authorityStatus, Long subCategoryId, Long mainCategoryId,
                                     List<ProductImageDTO> productImages,List<ProductOptionDTO> productOptions) {
         this.productId = id;
@@ -43,8 +43,8 @@ public class ProductDetailResponseDTO {
     }
 
     // from 메서드 추가
-    public static ProductDetailResponseDTO from(Product product) {
-        return ProductDetailResponseDTO.builder()
+    public static GetProductDetailResponseDTO from(Product product) {
+        return GetProductDetailResponseDTO.builder()
                 .productId(product.getId())
                 .name(product.getName())
                 .description(product.getDescription())

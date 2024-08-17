@@ -21,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class ProductImageRepositoryTest {
-
     @Autowired
     private ProductImageRepository productImageRepository;
 

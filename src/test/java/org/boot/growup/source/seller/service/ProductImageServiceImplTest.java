@@ -61,8 +61,6 @@ class ProductImageServiceImplTest {
         verify(productImageRepository, times(2)).save(any(ProductImage.class));
     }
 
-
-
     @Test
     public void patchProductImages_Success() {
         //given

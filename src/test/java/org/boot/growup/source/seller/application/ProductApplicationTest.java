@@ -2,7 +2,7 @@ package org.boot.growup.source.seller.application;
 
 import org.boot.growup.common.enumerate.Section;
 import org.boot.growup.source.seller.dto.request.PostProductRequestDTO;
-import org.boot.growup.source.seller.dto.response.ProductDetailResponseDTO;
+import org.boot.growup.source.seller.dto.response.GetProductDetailResponseDTO;
 import org.boot.growup.source.seller.persist.entity.*;
 import org.boot.growup.common.enumerate.AuthorityStatus;
 import org.boot.growup.source.seller.dto.request.PostProductRequestDTO.ProductOptionDTO;
@@ -30,7 +30,6 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 class ProductApplicationTest {
-
     @InjectMocks
     private ProductApplication productApplication;
 
@@ -45,6 +44,7 @@ class ProductApplicationTest {
 
     @Mock
     private SellerRepository sellerRepository;
+
     @Mock
     private BrandRepository brandRepository; // BrandRepository Mock 추가
 
@@ -52,7 +52,6 @@ class ProductApplicationTest {
     private Product product;
     private Seller seller;
     private SubCategory subCategory;
-
     private MainCategory mainCategory;
     private ProductImage productImage;
     private SubCategoryDTO subCategoryDTO;
@@ -166,7 +165,7 @@ class ProductApplicationTest {
         when(productRepository.findById(product.getId())).thenReturn(Optional.of(product));
 
         // When
-        ProductDetailResponseDTO response = productApplication.getProductDetail(product.getId());
+        GetProductDetailResponseDTO response = productApplication.getProductDetail(product.getId());
 
         // Then
         assertNotNull(response);

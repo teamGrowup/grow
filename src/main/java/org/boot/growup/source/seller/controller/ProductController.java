@@ -6,7 +6,7 @@ import org.boot.growup.common.constant.BaseResponse;
 import org.boot.growup.common.enumerate.AuthorityStatus;
 import org.boot.growup.source.seller.application.ProductApplication;
 import org.boot.growup.source.seller.dto.request.PostProductRequestDTO;
-import org.boot.growup.source.seller.dto.response.ProductDetailResponseDTO;
+import org.boot.growup.source.seller.dto.response.GetProductDetailResponseDTO;
 import org.boot.growup.source.seller.dto.response.GetProductRequestByStatusResponseDTO;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,8 +41,8 @@ public class ProductController {
      * @return BaseResponse<ProductDetailResponseDTO>
      */
     @GetMapping("/sellers/products/{productId}")
-    public BaseResponse<ProductDetailResponseDTO> getProductDetail(@PathVariable Long productId) {
-        ProductDetailResponseDTO productDetail = productApplication.getProductDetail(productId);
+    public BaseResponse<GetProductDetailResponseDTO> getProductDetail(@PathVariable Long productId) {
+        GetProductDetailResponseDTO productDetail = productApplication.getProductDetail(productId);
         return new BaseResponse<>(productDetail);
     }
 

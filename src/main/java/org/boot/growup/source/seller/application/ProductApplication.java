@@ -7,7 +7,7 @@ import org.boot.growup.common.error.ErrorCode;
 import org.boot.growup.common.enumerate.Section;
 import org.boot.growup.source.seller.dto.request.PostProductRequestDTO;
 import org.boot.growup.source.seller.dto.response.GetSellerProductResponseDTO;
-import org.boot.growup.source.seller.dto.response.ProductDetailResponseDTO;
+import org.boot.growup.source.seller.dto.response.GetProductDetailResponseDTO;
 import org.boot.growup.source.seller.dto.response.GetProductRequestByStatusResponseDTO;
 import org.boot.growup.source.seller.persist.entity.*;
 import org.boot.growup.source.seller.persist.repository.ProductRepository;
@@ -66,11 +66,11 @@ public class ProductApplication {
                 .build();
     }
 
-    public ProductDetailResponseDTO getProductDetail(Long productId) {
+    public GetProductDetailResponseDTO getProductDetail(Long productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new BaseException(ErrorCode.PRODUCT_NOT_FOUND));
 
-        return ProductDetailResponseDTO.from(product);
+        return GetProductDetailResponseDTO.from(product);
     }
 
     @Transactional
