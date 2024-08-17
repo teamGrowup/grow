@@ -103,7 +103,7 @@ class ProductServiceImplTest {
                 .build();
 
         // when
-        Product savedProduct = productService.registerProduct(postProductRequestDto, seller);
+        Product savedProduct = productService.postProduct(postProductRequestDto, seller);
 
         // then
         assertNotNull(savedProduct);
