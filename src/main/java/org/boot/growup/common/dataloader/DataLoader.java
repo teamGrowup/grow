@@ -4,10 +4,13 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.boot.growup.common.enumerate.AuthorityStatus;
 import org.boot.growup.common.enumerate.Role;
+import org.boot.growup.source.admin.persist.entity.Admin;
+import org.boot.growup.source.admin.persist.repository.AdminRepository;
 import org.boot.growup.source.seller.persist.entity.*;
 import org.boot.growup.source.seller.persist.repository.*;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -21,6 +24,8 @@ public class DataLoader {
     private final ProductRepository productRepository;
     private final MainCategoryRepository mainCategoryRepository;
     private final SubCategoryRepository subCategoryRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final AdminRepository adminRepository;
 
     @EventListener(ApplicationReadyEvent.class)
     @Transactional
@@ -29,6 +34,7 @@ public class DataLoader {
         brandInit();
         categoryInit();
         productInit();
+        adminInit();
     }
 
     public void brandInit(){
@@ -111,7 +117,7 @@ public class DataLoader {
     public void sellerInit(){
         Seller seller = Seller.builder()
                 .cpEmail("lafudgestore@naver.com")
-                .cpPassword("password1234")
+                .cpPassword(passwordEncoder.encode("password1234"))
                 .phoneNumber("010-7797-8841") // 대표 전화번호
                 .epName("손준호") // 대표자명
                 .cpName("(주)슬로우스탠다드") // 상호명
@@ -124,7 +130,7 @@ public class DataLoader {
 
         Seller seller2 = Seller.builder()
                 .cpEmail("drawfit@naver.com")
-                .cpPassword("password1234")
+                .cpPassword(passwordEncoder.encode("password1234"))
                 .phoneNumber("02-3394-8271") // 대표 전화번호
                 .epName("조현민") // 대표자명
                 .cpName("디알에프티 주식회사") // 상호명
@@ -318,6 +324,16 @@ public class DataLoader {
                 product1, product2, product3, product4,
                 product5, product6, product7, product8
         ));
+    }
+
+    public void adminInit(){
+        Admin admin = Admin.builder()
+                .uid("root")
+                .password(passwordEncoder.encode("1234"))
+                .balance(0)
+                .role(Role.ADMIN)
+                .build();
+        adminRepository.save(admin);
     }
 }
 
