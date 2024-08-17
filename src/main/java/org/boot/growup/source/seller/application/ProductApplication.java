@@ -6,6 +6,7 @@ import org.boot.growup.common.enumerate.AuthorityStatus;
 import org.boot.growup.common.error.ErrorCode;
 import org.boot.growup.common.enumerate.Section;
 import org.boot.growup.source.seller.dto.request.PostProductRequestDTO;
+import org.boot.growup.source.seller.dto.response.GetSellerProductResponseDTO;
 import org.boot.growup.source.seller.dto.response.ProductDetailResponseDTO;
 import org.boot.growup.source.seller.dto.response.GetProductRequestByStatusResponseDTO;
 import org.boot.growup.source.seller.persist.entity.*;
@@ -13,6 +14,7 @@ import org.boot.growup.source.seller.persist.repository.ProductRepository;
 import org.boot.growup.source.seller.persist.repository.SellerRepository;
 import org.boot.growup.source.seller.service.ProductImageServiceImpl;
 import org.boot.growup.source.seller.service.ProductService;
+import org.boot.growup.source.seller.service.SellerService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,6 +28,7 @@ public class ProductApplication {
 
     private final ProductService productService;
     private final ProductImageServiceImpl productImageService;
+    private final SellerService sellerService;
     private final ProductRepository productRepository;
     private final SellerRepository sellerRepository;
 
@@ -34,22 +37,34 @@ public class ProductApplication {
      */
     @Transactional
     public void postProductWithImages(PostProductRequestDTO postProductRequestDto, List<MultipartFile> productImages) {
-        // 현재 유저가 seller인지 확인 및 seller 가져오기 (여기서는 하드코딩된 ID 사용)
-        Long sellerId = 1L; // 예시: 실제 판매자 ID를 가져오는 로직을 작성해야 함.
-
-        Seller seller = sellerRepository.findById(sellerId)
-                .orElseThrow(()->new BaseException(ErrorCode.SELLER_NOT_FOUND));
-
-        // 상품 등록 요청 DTO에 판매자 ID 설정
-        postProductRequestDto.setSellerId(seller.getId());
+        Seller seller = sellerService.getCurrentSeller();
 
         Section section = Section.PRODUCT_IMAGE; // 적절한 섹션으로 변경
-        Product product = productService.registerProduct(postProductRequestDto, seller);
+        Product product = productService.postProduct(postProductRequestDto, seller);
 
-        productImageService.saveProductImages(productImages, product, section);
+        productImageService.postProductImages(productImages, product, section);
 
     }
 
+    /**
+     * 현재 판매자의 상품 목록을 조회
+     *
+     * @return 판매자의 상품 목록
+     */
+    public GetSellerProductResponseDTO getSellerProduct() {
+        Seller seller = sellerService.getCurrentSeller(); // 현재 판매자 정보 가져오기
+
+        Product product = productService.getProductBySellerId(seller.getId()); // 판매자의 상품 목록 조회
+        List<ProductImage> productImages = productImageService.getProductImages(product.getId());
+        
+        return GetSellerProductResponseDTO.builder()
+                .name(product.getName())
+                .description(product.getDescription())
+                .productImages(
+                        productImages.stream().map(GetSellerProductResponseDTO.ProductImageDTO::from).toList()
+                )
+                .build();
+    }
 
     public ProductDetailResponseDTO getProductDetail(Long productId) {
         Product product = productRepository.findById(productId)
@@ -60,9 +75,7 @@ public class ProductApplication {
 
     @Transactional
     public void patchProduct(PostProductRequestDTO postProductRequestDto, List<MultipartFile> productImages, Long productId) {
-
-        Seller seller = sellerRepository.findById(postProductRequestDto.getSellerId())
-                .orElseThrow(() -> new BaseException(ErrorCode.SELLER_NOT_FOUND));
+        Seller seller = sellerService.getCurrentSeller();
 
         // 이미지 처리
         Section section = Section.PRODUCT_IMAGE;

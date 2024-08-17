@@ -55,7 +55,7 @@ class ProductImageServiceImplTest {
         when(imageStore.createStoreFileName("product2.jpg")).thenReturn("stored-product2.jpg");
 
         // when
-        productImageServiceImpl.saveProductImages(List.of(file1, file2), product, Section.PRODUCT_IMAGE);
+        productImageServiceImpl.postProductImages(List.of(file1, file2), product, Section.PRODUCT_IMAGE);
 
         // then
         verify(productImageRepository, times(2)).save(any(ProductImage.class));

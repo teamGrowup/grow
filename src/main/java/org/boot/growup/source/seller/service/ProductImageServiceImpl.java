@@ -26,7 +26,7 @@ public class ProductImageServiceImpl implements ProductImageService {
     }
 
     @Transactional
-    public void saveProductImages(List<MultipartFile> productImages, Product product, Section section) {
+    public void postProductImages(List<MultipartFile> productImages, Product product, Section section) {
 
         for (MultipartFile multipartFile : productImages) {
             if (!multipartFile.isEmpty()) {
@@ -35,6 +35,11 @@ public class ProductImageServiceImpl implements ProductImageService {
                 productImageRepository.save(uploadImage); // 이미지 저장
             }
         }
+    }
+
+    @Override
+    public List<ProductImage> getProductImages(Long id) {
+        return productImageRepository.findProductImageByProduct_Id(id);
     }
 
     public ProductImage storeImage(MultipartFile multipartFile, Section section) {

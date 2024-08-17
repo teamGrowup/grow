@@ -86,6 +86,17 @@ public class ProductController {
     }
 
     /**
+     * 관리자가 등록된 상품들의 승인 상태 '대기'로 변경.
+     * @param productId
+     * @return
+     */
+    @PatchMapping("/admins/product-requests/{productId}/pending")
+    public BaseResponse<String> pendingProductRegister(@PathVariable Long productId) {
+        productApplication.pendingProduct(productId);
+        return new BaseResponse<>("해당 상품 등록이 대기 상태로 변경됐습니다.");
+    }
+
+    /**
      * 관리자가 등록된 상품들의 요청들을 상태별(AuthorityStatus) 페이징 조회할 수 있음.
      * @param authorityStatus
      * @param pageNo
@@ -97,16 +108,5 @@ public class ProductController {
             @RequestParam(value = "pageNo", defaultValue = "0") int pageNo
     ) {
         return new BaseResponse<>(productApplication.getProductRequestsByStatus(authorityStatus, pageNo));
-    }
-
-    /**
-     * 관리자가 등록된 상품들의 승인 상태 '대기'로 변경.
-     * @param productId
-     * @return
-     */
-    @PatchMapping("/requests/{productId}/pending")
-    public BaseResponse<String> pendingProductRegister(@PathVariable Long productId) {
-        productApplication.pendingProduct(productId);
-        return new BaseResponse<>("해당 상품 등록이 대기 상태로 변경됐습니다.");
     }
 }

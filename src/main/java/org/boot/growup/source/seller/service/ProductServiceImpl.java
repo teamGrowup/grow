@@ -27,7 +27,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public Product registerProduct(PostProductRequestDTO postProductRequestDto, Seller seller) {
+    public Product postProduct(PostProductRequestDTO postProductRequestDto, Seller seller) {
         // 서브 카테고리 가져오기
         SubCategory subCategory = subCategoryRepository.findById(postProductRequestDto.getSubCategoryId())
                 .orElseThrow(() -> new BaseException(ErrorCode.SUBCATEGORY_NOT_FOUND));
@@ -51,6 +51,12 @@ public class ProductServiceImpl implements ProductService {
         return product;
     }
 
+    @Override
+    public Product getProductBySellerId(Long sellerId) {
+        return productRepository.findBySeller_Id(sellerId).orElseThrow(
+                () -> new BaseException(ErrorCode.PRODUCT_BY_SELLER_NOT_FOUND)
+        );
+    }
 
     // ProductRequestDTO의 ProductOptionDTO를 ProductOption으로 변환하는 메서드
     private List<ProductOption> convertToProductOptions(List<PostProductRequestDTO.ProductOptionDTO> productOptionDTOs, Product product) {
