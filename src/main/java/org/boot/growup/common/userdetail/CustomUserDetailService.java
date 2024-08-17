@@ -15,6 +15,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -36,20 +38,20 @@ public class CustomUserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Seller seller = sellerRepository.findByCpEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("해당하는 유저를 찾을 수 없습니다."));
+        Optional<Seller> seller = sellerRepository.findByCpEmail(username);
+        if (seller.isPresent()) {
+            CustomUserDetails userDetails = seller.get().toUserDetails();
+            log.info("판매자 권한 {}", userDetails.getAuthorities());
+            return userDetails;
+        }
 
-        CustomUserDetails userDetails = seller.toUserDetails();
-        log.info("판매자 권한 {}", userDetails.getAuthorities());
-        return userDetails;
-    }
+        Optional<Admin> admin = adminRepository.findByEmail(username);
+        if (admin.isPresent()) {
+            CustomUserDetails userDetails = admin.get().toUserDetails();
+            log.info("관리자 권한: {}", userDetails.getAuthorities());
+            return userDetails;
+        }
 
-    public UserDetails loadUserByUid(String username) throws UsernameNotFoundException {
-        Admin admin = adminRepository.findByUid(username)
-                .orElseThrow(() -> new UsernameNotFoundException("등록된 관리자가 아닙니다."));
-
-        CustomUserDetails userDetails = admin.toUserDetails();
-        log.info("관리자 권한: {}", userDetails.getAuthorities());
-        return userDetails;
+        throw new UsernameNotFoundException("해당하는 유저를 찾을 수 없습니다.");
     }
 }

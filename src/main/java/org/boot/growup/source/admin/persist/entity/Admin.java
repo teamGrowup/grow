@@ -20,8 +20,8 @@ public class Admin {
     @Column(name = "admin_id", nullable = false)
     private Long id;
 
-    @Column(name = "admin_uid", nullable = false, length = 300)
-    private String uid;
+    @Column(name = "admin_email", nullable = false, length = 300)
+    private String email;
 
     @Column(name = "admin_password", nullable = false, length = 60)
     private String password;
@@ -34,6 +34,6 @@ public class Admin {
     private Role role;
 
     public CustomUserDetails toUserDetails() {
-        return new CustomUserDetails(uid, password, role);
+        return new CustomUserDetails(email, password, role);
     }
 }

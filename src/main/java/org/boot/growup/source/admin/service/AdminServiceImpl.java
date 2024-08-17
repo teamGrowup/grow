@@ -25,7 +25,7 @@ public class AdminServiceImpl implements AdminService {
     @Transactional
     @Override
     public TokenDTO signIn(AdminSignInRequestDTO request) {
-        UserDetails userDetails = customUserDetailService.loadUserByUid(request.getUid());
+        UserDetails userDetails = customUserDetailService.loadUserByUsername(request.getEmail());
 
         if(!checkPassword(request.getPassword(), userDetails.getPassword())){ // 비밀번호 비교
             throw new BaseException(ErrorCode.BAD_REQUEST, "비밀번호가 일치하지 않습니다.");

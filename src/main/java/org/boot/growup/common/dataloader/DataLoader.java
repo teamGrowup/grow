@@ -328,8 +328,8 @@ public class DataLoader {
 
     public void adminInit(){
         Admin admin = Admin.builder()
-                .uid("root")
-                .password(passwordEncoder.encode("1234"))
+                .email("root@growteam.com")
+                .password(passwordEncoder.encode("12345678!!"))
                 .balance(0)
                 .role(Role.ADMIN)
                 .build();
