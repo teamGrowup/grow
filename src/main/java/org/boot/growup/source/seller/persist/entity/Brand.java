@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.boot.growup.common.enumerate.AuthorityStatus;
-import org.boot.growup.source.seller.dto.request.RegisterBrandRequestDTO;
+import org.boot.growup.source.seller.dto.request.PostBrandRequestDTO;
 
 @Entity
 @Getter
@@ -37,15 +37,15 @@ public class Brand {
     @JoinColumn(name = "seller_id")
     private Seller seller;
 
-    public static Brand from(RegisterBrandRequestDTO registerBrandRequestDTO) {
+    public static Brand from(PostBrandRequestDTO postBrandRequestDTO) {
         return Brand.builder()
-                .name(registerBrandRequestDTO.getName())
-                .description(registerBrandRequestDTO.getDescription())
+                .name(postBrandRequestDTO.getName())
+                .description(postBrandRequestDTO.getDescription())
                 .build();
     }
 
     /*
-        허가 상태 변경 (authorityStatus)
+    허가 상태 변경 (authorityStatus)
      */
 
     public void approve(){
@@ -61,7 +61,7 @@ public class Brand {
     }
 
     /*
-        판매자(대표자) 설정
+    판매자(대표자) 설정
      */
 
     public void designateSeller(Seller seller){
@@ -69,7 +69,7 @@ public class Brand {
     }
 
     /*
-        좋아요 수 설정
+    좋아요 수 설정
      */
 
     public void initLikesCnt(){
@@ -77,7 +77,7 @@ public class Brand {
     }
 
     /*
-        brand명 및 상세 설명 수정
+    brand명 및 상세 설명 수정
      */
     public void updateBrandInfo(String name, String description){
         this.name = name;

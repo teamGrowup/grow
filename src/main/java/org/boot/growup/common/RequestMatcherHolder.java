@@ -23,6 +23,7 @@ public class RequestMatcherHolder {
             RequestInfo.of(POST,"/customers/email/**", null),
             RequestInfo.of(POST,"/customers/oauth/**", null),
             RequestInfo.of(POST,"/sellers/email/**", null),
+            RequestInfo.of(POST,"/admins/login", null),
             RequestInfo.of(GET, "/login/**", null),
 
             RequestInfo.of(GET, "/customers/**", Role.CUSTOMER),
@@ -34,6 +35,11 @@ public class RequestMatcherHolder {
             RequestInfo.of(POST, "/sellers/**", Role.SELLER),
             RequestInfo.of(PATCH, "/sellers/**", Role.SELLER),
             RequestInfo.of(DELETE, "/sellers/**", Role.SELLER),
+
+            RequestInfo.of(GET, "/admins/**", Role.ADMIN),
+            RequestInfo.of(POST, "/admins/**", Role.ADMIN),
+            RequestInfo.of(PATCH, "/admins/**", Role.ADMIN),
+            RequestInfo.of(DELETE, "/admins/**", Role.ADMIN),
 
             // static resources
             RequestInfo.of(GET, "/error", null),

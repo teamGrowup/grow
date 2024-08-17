@@ -37,4 +37,3 @@ out/
 .vscode/
 src/main/resources/application-dev.yml
 src/test/resources/application-test.yml
-src/main/generated

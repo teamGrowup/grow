@@ -3,7 +3,7 @@ package org.boot.growup.source.seller.service;
 import org.boot.growup.common.error.BaseException;
 import org.boot.growup.common.error.ErrorCode;
 import org.boot.growup.common.enumerate.AuthorityStatus;
-import org.boot.growup.source.seller.dto.request.RegisterBrandRequestDTO;
+import org.boot.growup.source.seller.dto.request.PostBrandRequestDTO;
 import org.boot.growup.source.seller.persist.entity.Brand;
 import org.boot.growup.source.seller.persist.entity.Seller;
 import org.boot.growup.source.seller.persist.repository.BrandRepository;
@@ -36,9 +36,9 @@ class BrandServiceImplTest {
     @Autowired
     private SellerRepository sellerRepository;
 
-    RegisterBrandRequestDTO registerBrandRequestDTO1;
-    RegisterBrandRequestDTO registerBrandRequestDTO2;
-    RegisterBrandRequestDTO registerBrandRequestDTO3;
+    PostBrandRequestDTO postBrandRequestDTO1;
+    PostBrandRequestDTO postBrandRequestDTO2;
+    PostBrandRequestDTO postBrandRequestDTO3;
     Seller seller;
     Seller seller2;
 
@@ -47,15 +47,15 @@ class BrandServiceImplTest {
         sellerRepository.deleteAll();  // 기존 데이터 삭제
         brandRepository.deleteAll();
 
-        registerBrandRequestDTO1 = RegisterBrandRequestDTO.builder()
+        postBrandRequestDTO1 = PostBrandRequestDTO.builder()
                 .name("라퍼지스토어")
                 .description("라퍼지스토어(LAFUDGESTORE)는 다양한 사람들이 일상에서 편안하게 사용할 수 있는 제품을 전개합니다. 새롭게 변화되는 소재와 실루엣, 일상에 자연스레 스며드는 제품을 제작하여 지속적인 실속형 소비의 가치를 실천합니다.")
                 .build();
-        registerBrandRequestDTO2 = RegisterBrandRequestDTO.builder()
+        postBrandRequestDTO2 = PostBrandRequestDTO.builder()
                 .name("드로우핏")
                 .description("드로우핏(DRAW FIT)은 핏과 착용감을 중요하게 여기며 컨템포러리&모던 룩을 지향하는 브랜드입니다. 뛰어난 퀄리티의 좋은 소재를 다양하게 구성해 바느질까지 세심하게 신경 써서 완성하고 고유의 핏과 무드를 머금은 웨어러블한 디자인의 아이템을 합리적인 가격으로 소개합니다.")
                 .build();
-        registerBrandRequestDTO3 = RegisterBrandRequestDTO.builder()
+        postBrandRequestDTO3 = PostBrandRequestDTO.builder()
                 .name("라퍼지스토어")
                 .description("라퍼지스토어(LAFUDGESTORE)는 다양한 사람들이 일상에서 편안하게 사용할 수 있는 제품을 전개합니다. 새롭게 변화되는 소재와 실루엣, 일상에 자연스레 스며드는 제품을 제작하여 지속적인 실속형 소비의 가치를 실천합니다.")
                 .build();
@@ -82,36 +82,36 @@ class BrandServiceImplTest {
     }
 
     @Test
-    void registerBrand_Default_Success() {
+    void postBrand_Default_Success() {
         //given
         sellerRepository.save(seller);
 
         //when
-        brandServiceImpl.registerBrand(registerBrandRequestDTO1, seller);
+        brandServiceImpl.postBrand(postBrandRequestDTO1, seller);
         Brand brand = brandRepository.findBySeller_Id(seller.getId()).get();
 
         //then
         assertNotNull(brand);
-        assertEquals(registerBrandRequestDTO1.getName(), brand.getName());
-        assertEquals(registerBrandRequestDTO1.getDescription(), brand.getDescription());
+        assertEquals(postBrandRequestDTO1.getName(), brand.getName());
+        assertEquals(postBrandRequestDTO1.getDescription(), brand.getDescription());
     }
 
     @Test
-    void registerBrand_DuplicateName_ThrowsIllegalStateException() {
+    void postBrand_DuplicateName_ThrowsIllegalStateException() {
         //given
         sellerRepository.save(seller);
         sellerRepository.save(seller2);
-        brandServiceImpl.registerBrand(registerBrandRequestDTO1, seller);
+        brandServiceImpl.postBrand(postBrandRequestDTO1, seller);
 
         //when
-        BaseException e = assertThrows(BaseException.class, () -> brandServiceImpl.registerBrand(registerBrandRequestDTO3, seller2));
+        BaseException e = assertThrows(BaseException.class, () -> brandServiceImpl.postBrand(postBrandRequestDTO3, seller2));
 
         //then
         assertEquals(e.getErrorCode(), ErrorCode.BRAND_NAME_ALREADY_EXISTS);
     }
 
     @Test
-    public void readBrandBySellerId_Default_Success() {
+    public void getBrandBySellerId_Default_Success() {
         //given
         Brand brand = Brand.builder()
                 .name("라퍼지스토어")
@@ -125,7 +125,7 @@ class BrandServiceImplTest {
         brandRepository.save(brand);
 
         //when
-        Brand brandFound = brandServiceImpl.readBrandBySellerId(seller.getId());
+        Brand brandFound = brandServiceImpl.getBrandBySellerId(seller.getId());
 
         //then
         assertNotNull(brandFound);
@@ -134,29 +134,29 @@ class BrandServiceImplTest {
     }
 
     @Test
-    public void readBrandBySellerId_SellerHasNotBrand_ThrowBaseException() {
+    public void getBrandBySellerId_SellerHasNotBrand_ThrowBaseException() {
         //given
         //when
-        BaseException e = assertThrows(BaseException.class, () -> brandServiceImpl.readBrandBySellerId(2L));
+        BaseException e = assertThrows(BaseException.class, () -> brandServiceImpl.getBrandBySellerId(2L));
 
         //then
         assertEquals(e.getErrorCode(), ErrorCode.BRAND_BY_SELLER_NOT_FOUND);
     }
 
     @Test
-    public void updateBrand_Default_Success() {
+    public void patchBrand_Default_Success() {
         //given
         sellerRepository.save(seller);
-        brandServiceImpl.registerBrand(registerBrandRequestDTO1, seller);
+        brandServiceImpl.postBrand(postBrandRequestDTO1, seller);
 
         //when
-        brandServiceImpl.updateBrand(registerBrandRequestDTO3, seller);
+        brandServiceImpl.patchBrand(postBrandRequestDTO3, seller);
         Brand brand = brandRepository.findBySeller_Id(seller.getId()).get();
 
         //then
         assertNotNull(brand);
-        assertEquals(registerBrandRequestDTO3.getName(), brand.getName());
-        assertEquals(registerBrandRequestDTO3.getDescription(), brand.getDescription());
+        assertEquals(postBrandRequestDTO3.getName(), brand.getName());
+        assertEquals(postBrandRequestDTO3.getDescription(), brand.getDescription());
 
     }
 
@@ -164,7 +164,7 @@ class BrandServiceImplTest {
     public void changeBrandAuthority_Default_Success() {
         //given
         sellerRepository.save(seller);
-        Brand brandRegistered = brandServiceImpl.registerBrand(registerBrandRequestDTO1, seller);
+        Brand brandRegistered = brandServiceImpl.postBrand(postBrandRequestDTO1, seller);
 
         //when
         brandServiceImpl.changeBrandAuthority(brandRegistered.getId(), AuthorityStatus.DENIED);
@@ -174,7 +174,7 @@ class BrandServiceImplTest {
     }
 
     @Test
-    public void readBrandRequestsByStatus_Default_Success(){
+    public void getBrandRequestsByStatus_Default_Success(){
         //given
         //PENDING 상태의 브랜드 10개 생성
         Brand brand1 = Brand.builder()
@@ -255,8 +255,8 @@ class BrandServiceImplTest {
         brandRepository.saveAll(brandList);
 
         //when
-        List<Brand> brandFoundList = brandServiceImpl.readBrandRequestsByStatus(AuthorityStatus.PENDING, 0);
-        List<Brand> brandFoundList2 = brandServiceImpl.readBrandRequestsByStatus(AuthorityStatus.PENDING, 1);
+        List<Brand> brandFoundList = brandServiceImpl.getBrandRequestsByStatus(AuthorityStatus.PENDING, 0);
+        List<Brand> brandFoundList2 = brandServiceImpl.getBrandRequestsByStatus(AuthorityStatus.PENDING, 1);
 
         //then
         assertEquals(10, brandFoundList.size());
@@ -264,7 +264,7 @@ class BrandServiceImplTest {
     }
 
     @Test
-    public void readBrandRequestsByStatus_NoStatus_Success(){
+    public void getBrandRequestsByStatus_NoStatus_Success(){
         //given
         //PENDING 상태의 브랜드 10개 생성
         Brand brand1 = Brand.builder()
@@ -345,9 +345,29 @@ class BrandServiceImplTest {
         brandRepository.saveAll(brandList);
 
         //when
-        List<Brand> brandFoundList = brandServiceImpl.readBrandRequestsByStatus(null, 0);
+        List<Brand> brandFoundList = brandServiceImpl.getBrandRequestsByStatus(null, 0);
 
         //then
         assertEquals(10, brandFoundList.size());
+    }
+
+    @Test
+    public void getBrandById_Default_Success() {
+        //given
+        Brand brand1 = Brand.builder()
+                .name("브랜드1")
+                .description("브랜드1은 심플한 디자인과 고급스러운 소재를 활용한 제품을 선보입니다.")
+                .authorityStatus(AuthorityStatus.PENDING)
+                .likeCount(10)
+                .build();
+        brandRepository.save(brand1);
+
+
+        //when
+        Brand brandFound = brandServiceImpl.getBrandById(brand1.getId());
+
+        //then
+        assertNotNull(brandFound);
+        assertEquals(brand1, brandFound);
     }
 }

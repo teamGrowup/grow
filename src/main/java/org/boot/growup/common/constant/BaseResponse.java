@@ -13,7 +13,6 @@ import static org.boot.growup.common.error.ErrorCode.SUCCESS;
 @AllArgsConstructor
 @JsonPropertyOrder({"code", "isSuccess", "message", "data"})
 public class BaseResponse<T> {
-
     private final int code;
     private final Boolean isSuccess;
     private final String message;

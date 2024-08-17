@@ -2,6 +2,7 @@ package org.boot.growup.source.seller.service;
 
 import lombok.RequiredArgsConstructor;
 import org.boot.growup.common.ImageStore;
+import org.boot.growup.common.s3.S3Service;
 import org.boot.growup.source.seller.persist.entity.Brand;
 import org.boot.growup.source.seller.persist.entity.BrandImage;
 import org.boot.growup.source.seller.persist.repository.BrandImageRepository;
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -18,35 +19,11 @@ import java.util.List;
 public class BrandImageServiceImpl implements BrandImageService {
     private final BrandImageRepository brandImageRepository;
     private final ImageStore imageStore;
-
-//    private final AmazonS3Client amazonS3Client;
-//
-//    @Value("${cloud.aws.s3.bucket}") // TODO: 이미지 수정해주기
-//    private String bucket;
-//    @Value("${cloud.aws.region.static}")
-//    private String region;
-
-//   TODO: @Value("${file.dir.cafeteria}")
-    private String BrandImageDir = "/Users/gnues/Documents/grow/Images/brandImages/";
-
-//   TODO: file:
-//    dir:
-//    cafeteria: /Users/gnues/Documents/grow/Images/brandImages/
-
-    private String getFullPath(String filename){
-        return BrandImageDir + filename;
-    }
+    private final S3Service s3Service;
 
     @Transactional
     @Override
-    public void saveBrandImages(List<MultipartFile> brandImageFiles, Brand brand) {
-//      TODO : S3설정  String fileName = menuImage.getOriginalFilename();
-//        String fileUrl = "https://" + bucket + ".s3." + region + ".amazonaws.com/" + fileName;
-//        ObjectMetadata metadata= new ObjectMetadata();
-//        metadata.setContentType(menuImage.getContentType());
-//        metadata.setContentLength(menuImage.getSize());
-//        amazonS3Client.putObject(bucket, fileName, menuImage.getInputStream(), metadata);
-//        log.info("fileUrl={}",fileUrl);
+    public void postBrandImages(List<MultipartFile> brandImageFiles, Brand brand) {
 
         for(MultipartFile multipartFile : brandImageFiles){
             if(!multipartFile.isEmpty()){
@@ -58,17 +35,20 @@ public class BrandImageServiceImpl implements BrandImageService {
     }
 
     @Override
-    public List<BrandImage> readBrandImages(Long id) {
+    public List<BrandImage> getBrandImages(Long id) {
         return brandImageRepository.findBrandImageByBrand_Id(id);
     }
 
     @Transactional
     @Override
-    public void updateBrandImages(List<MultipartFile> brandImageFiles, Brand brand) {
-        // 1. 현재 등록된 브랜드 이미지를 지움.
+    public void patchBrandImages(List<MultipartFile> brandImageFiles, Brand brand) {
+        // 1. 현재 S3에 등록된 브랜드 이미지를 지움.
+        brandImageRepository.findBrandImageByBrand_Id(brand.getId()).forEach(m->s3Service.deleteFile(m.getPath()));
+
+        // 2. DB에 있는 브랜드 이미지 삭제.
         brandImageRepository.deleteBrandImageByBrand_Id(brand.getId());
 
-        // 2. 해당 브랜드에 이미지를 새로 등록함.
+        // 3. 해당 브랜드에 이미지를 새로 등록함.
         for(MultipartFile multipartFile : brandImageFiles){
             if(!multipartFile.isEmpty()){
                 BrandImage uploadImage = storeImage(multipartFile);
@@ -85,16 +65,16 @@ public class BrandImageServiceImpl implements BrandImageService {
 
         String originalFilename = multipartFile.getOriginalFilename(); // 원래 이름
         String storeFilename = imageStore.createStoreFileName(originalFilename); // 저장된 이름
-
+        String path;
         try {
-            multipartFile.transferTo(new File(getFullPath(storeFilename))); // 디렉토리에 파일 넘어가서 만들어짐.
-        }catch (Exception e){
-            throw new IllegalStateException("transferTo failed"); // TODO: 수정필요
+            path = s3Service.uploadFileAndGetUrl(multipartFile, storeFilename);
+        } catch (IOException e) {
+            throw new RuntimeException("S3 업로드 중 오류 발생", e);
         }
 
         return BrandImage.builder()
                 .originalImageName(originalFilename)
-                .path(storeFilename)
+                .path(path)
                 .build();
     }
 }
