@@ -44,7 +44,7 @@ public class SellerServiceImpl implements SellerService {
         sellerRepository.save(newSeller);
     }
 
-    public String encodingPassword(SellerSignUpRequestDTO request){
+    public String encodingPassword(SellerSignUpRequestDTO request) {
         return passwordEncoder.encode(request.getCpPassword());
     }
 
@@ -53,11 +53,11 @@ public class SellerServiceImpl implements SellerService {
     public TokenDTO signIn(SellerSignInRequestDTO request) {
         UserDetails userDetails = customUserDetailService.loadUserByUsername(request.getCpEmail());
 
-        if(!checkPassword(request.getCpPassword(), userDetails.getPassword())){ // 비밀번호 비교
+        if (!checkPassword(request.getCpPassword(), userDetails.getPassword())) { // 비밀번호 비교
             throw new BaseException(ErrorCode.BAD_REQUEST, "비밀번호가 일치하지 않습니다.");
         }
 
-        return jwtTokenProvider.generateToken(userDetails.getUsername(),userDetails.getAuthorities());
+        return jwtTokenProvider.generateToken(userDetails.getUsername(), userDetails.getAuthorities());
     }
 
     public boolean checkPassword(String rawPassword, String encodedPassword) {
