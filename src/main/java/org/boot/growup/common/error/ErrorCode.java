@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 @Getter
 @AllArgsConstructor
 public enum ErrorCode {
-
     /* 고정 코드 */
     SUCCESS(HttpStatus.OK, 200, true, "요청에 성공하였습니다."),
     BAD_REQUEST(HttpStatus.BAD_REQUEST, 400, false, "입력값을 확인해주세요."),
