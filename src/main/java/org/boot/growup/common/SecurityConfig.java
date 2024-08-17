@@ -51,6 +51,8 @@ public class SecurityConfig {
                                     requestMatcherHolder.getRequestMatchersByMinRole(Role.CUSTOMER)).hasRole("CUSTOMER")
                         .requestMatchers(
                                     requestMatcherHolder.getRequestMatchersByMinRole(Role.SELLER)).hasRole("SELLER")
+                        .requestMatchers(
+                                    requestMatcherHolder.getRequestMatchersByMinRole(Role.ADMIN)).hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
