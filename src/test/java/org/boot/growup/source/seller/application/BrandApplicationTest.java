@@ -4,7 +4,7 @@ import org.boot.growup.common.enumerate.AuthorityStatus;
 import org.boot.growup.source.seller.dto.request.PostBrandRequestDTO;
 import org.boot.growup.source.seller.dto.response.GetBrandDetailResponseDTO;
 import org.boot.growup.source.seller.dto.response.GetBrandRequestByStatusResponseDTO;
-import org.boot.growup.source.seller.dto.response.getSellerBrandResponseDTO;
+import org.boot.growup.source.seller.dto.response.GetSellerBrandResponseDTO;
 import org.boot.growup.source.seller.persist.entity.Brand;
 import org.boot.growup.source.seller.persist.entity.BrandImage;
 import org.boot.growup.source.seller.persist.entity.Seller;
@@ -122,17 +122,17 @@ class BrandApplicationTest {
         List<BrandImage> brandImages = List.of(brandImage1, brandImage2);
         given(brandService.getBrandBySellerId(1L)).willReturn(brand1);
         given(brandImageService.getBrandImages(brand1.getId())).willReturn(brandImages);
-        getSellerBrandResponseDTO dto = getSellerBrandResponseDTO.builder()
+        GetSellerBrandResponseDTO dto = GetSellerBrandResponseDTO.builder()
                 .name(brand1.getName())
                 .description(brand1.getDescription())
                 .brandImages(
-                        brandImages.stream().map(getSellerBrandResponseDTO.BrandImageDTO::from).toList()
+                        brandImages.stream().map(GetSellerBrandResponseDTO.BrandImageDTO::from).toList()
                 )
                 .build();
 
 
         //when
-        getSellerBrandResponseDTO res = brandApplication.getSellerBrand();
+        GetSellerBrandResponseDTO res = brandApplication.getSellerBrand();
 
         //then
         assertNotNull(res);

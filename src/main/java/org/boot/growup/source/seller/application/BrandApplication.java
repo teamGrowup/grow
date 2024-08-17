@@ -6,7 +6,7 @@ import org.boot.growup.common.enumerate.AuthorityStatus;
 import org.boot.growup.source.seller.dto.request.PostBrandRequestDTO;
 import org.boot.growup.source.seller.dto.response.GetBrandDetailResponseDTO;
 import org.boot.growup.source.seller.dto.response.GetBrandRequestByStatusResponseDTO;
-import org.boot.growup.source.seller.dto.response.getSellerBrandResponseDTO;
+import org.boot.growup.source.seller.dto.response.GetSellerBrandResponseDTO;
 import org.boot.growup.source.seller.persist.entity.Brand;
 import org.boot.growup.source.seller.persist.entity.BrandImage;
 import org.boot.growup.source.seller.persist.entity.Seller;
@@ -42,17 +42,17 @@ public class BrandApplication {
     /*
     판매자의 브랜드 조회
      */
-    public getSellerBrandResponseDTO getSellerBrand() {
+    public GetSellerBrandResponseDTO getSellerBrand() {
         Seller seller = sellerService.getCurrentSeller();
 
         Brand brand = brandService.getBrandBySellerId(seller.getId());
         List<BrandImage> brandImages = brandImageService.getBrandImages(brand.getId());
 
-        return getSellerBrandResponseDTO.builder()
+        return GetSellerBrandResponseDTO.builder()
                 .name(brand.getName())
                 .description(brand.getDescription())
                 .brandImages(
-                        brandImages.stream().map(getSellerBrandResponseDTO.BrandImageDTO::from).toList()
+                        brandImages.stream().map(GetSellerBrandResponseDTO.BrandImageDTO::from).toList()
                 )
                 .build();
     }

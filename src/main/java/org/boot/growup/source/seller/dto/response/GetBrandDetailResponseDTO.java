@@ -21,7 +21,6 @@ public class GetBrandDetailResponseDTO {
         private String originalImageName;
         private String path;
 
-
         public static BrandDetailDTO from(BrandImage m) {
             return BrandDetailDTO.builder()
                     .originalImageName(m.getOriginalImageName())

@@ -8,7 +8,7 @@ import org.boot.growup.source.seller.application.BrandApplication;
 import org.boot.growup.source.seller.dto.request.PostBrandRequestDTO;
 import org.boot.growup.source.seller.dto.response.GetBrandDetailResponseDTO;
 import org.boot.growup.source.seller.dto.response.GetBrandRequestByStatusResponseDTO;
-import org.boot.growup.source.seller.dto.response.getSellerBrandResponseDTO;
+import org.boot.growup.source.seller.dto.response.GetSellerBrandResponseDTO;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -41,9 +41,8 @@ public class BrandController {
      * @return ReadSellerBrandResponseDTO
      */
     @GetMapping("/sellers/brands")
-    public BaseResponse<getSellerBrandResponseDTO> getSellerBrand(){
-        var res = brandApplication.getSellerBrand();
-        return new BaseResponse<>(res);
+    public BaseResponse<GetSellerBrandResponseDTO> getSellerBrand(){
+        return new BaseResponse<>(brandApplication.getSellerBrand());
     }
 
     /**
