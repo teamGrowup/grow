@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.boot.growup.common.error.BaseException;
 import org.boot.growup.common.enumerate.AuthorityStatus;
 import org.boot.growup.common.error.ErrorCode;
-import org.boot.growup.source.seller.dto.request.RegisterBrandRequestDTO;
+import org.boot.growup.source.seller.dto.request.PostBrandRequestDTO;
 import org.boot.growup.source.seller.persist.entity.Brand;
 import org.boot.growup.source.seller.persist.entity.Seller;
 import org.boot.growup.source.seller.persist.repository.BrandRepository;
@@ -25,13 +25,13 @@ public class BrandServiceImpl implements BrandService {
     // seller 객체 넘겨주기.
     @Transactional
     @Override
-    public Brand registerBrand(RegisterBrandRequestDTO registerBrandRequestDTO, Seller seller) {
+    public Brand postBrand(PostBrandRequestDTO postBrandRequestDTO, Seller seller) {
 
-        if (brandRepository.findByName(registerBrandRequestDTO.getName()).isPresent()) {
+        if (brandRepository.findByName(postBrandRequestDTO.getName()).isPresent()) {
             throw new BaseException(ErrorCode.BRAND_NAME_ALREADY_EXISTS);
         }
 
-        Brand brand = Brand.from(registerBrandRequestDTO);
+        Brand brand = Brand.from(postBrandRequestDTO);
 
         brand.pending();
         brand.initLikesCnt();
@@ -42,7 +42,7 @@ public class BrandServiceImpl implements BrandService {
     }
 
     @Override
-    public Brand readBrandBySellerId(Long sellerId) {
+    public Brand getBrandBySellerId(Long sellerId) {
         return brandRepository.findBySeller_Id(sellerId).orElseThrow(
                 () -> new BaseException(ErrorCode.BRAND_BY_SELLER_NOT_FOUND)
         );
@@ -50,17 +50,18 @@ public class BrandServiceImpl implements BrandService {
 
     @Transactional
     @Override
-    public Brand updateBrand(RegisterBrandRequestDTO registerBrandRequestDTO, Seller seller) {
+    public Brand patchBrand(PostBrandRequestDTO postBrandRequestDTO, Seller seller) {
         Brand brand = brandRepository.findBySeller_Id(seller.getId()).orElseThrow(
                 () -> new BaseException(ErrorCode.BRAND_BY_SELLER_NOT_FOUND)
         );
 
         brand.pending(); // 대기 상태로 변경.
-        brand.updateBrandInfo(registerBrandRequestDTO.getName(), registerBrandRequestDTO.getDescription());
+        brand.updateBrandInfo(postBrandRequestDTO.getName(), postBrandRequestDTO.getDescription());
 
         return brand;
     }
 
+    @Transactional
     @Override
     public void changeBrandAuthority(Long brandId, AuthorityStatus status) {
         Brand brand = brandRepository.findById(brandId).orElseThrow(
@@ -75,7 +76,7 @@ public class BrandServiceImpl implements BrandService {
     }
 
     @Override
-    public List<Brand> readBrandRequestsByStatus(AuthorityStatus authorityStatus, int pageNo) {
+    public List<Brand> getBrandRequestsByStatus(AuthorityStatus authorityStatus, int pageNo) {
         Pageable pageable = PageRequest.of(pageNo, 10);
 
         if (ObjectUtils.isEmpty(authorityStatus)){
@@ -83,5 +84,12 @@ public class BrandServiceImpl implements BrandService {
         }
 
         return brandRepository.findByAuthorityStatus(authorityStatus, pageable);
+    }
+
+    @Override
+    public Brand getBrandById(Long brandId) {
+        return brandRepository.findById(brandId).orElseThrow(
+                () -> new BaseException(ErrorCode.BRAND_BY_ID_NOT_FOUND)
+        );
     }
 }

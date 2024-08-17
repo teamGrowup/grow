@@ -9,7 +9,18 @@ import java.util.List;
 
 @Service
 public interface BrandImageService {
-    void saveBrandImages(List<MultipartFile> brandImageFiles, Brand brand);
-    List<BrandImage> readBrandImages(Long id);
-    void updateBrandImages(List<MultipartFile> brandImageFiles, Brand brand);
+    /*
+    브랜드 이미지 저장
+     */
+    void postBrandImages(List<MultipartFile> brandImageFiles, Brand brand);
+
+    /*
+    브랜드 이미지 읽어오기
+     */
+    List<BrandImage> getBrandImages(Long id);
+
+    /*
+    브랜드 이미지 수정하기
+     */
+    void patchBrandImages(List<MultipartFile> brandImageFiles, Brand brand);
 }

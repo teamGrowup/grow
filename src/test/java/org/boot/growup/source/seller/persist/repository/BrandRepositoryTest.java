@@ -130,7 +130,7 @@ class BrandRepositoryTest {
         assertEquals(brand.getName(), brandDB.getName());
         assertEquals(brand.getDescription(), brandDB.getDescription());
         assertEquals(brand.getLikeCount(), brandDB.getLikeCount());
-        assertEquals(1L, brandDB.getId());
+        assertEquals(brand.getId(), brandDB.getId());
     }
 
     @Test
