@@ -4,7 +4,9 @@ import lombok.Builder;
 import lombok.Data;
 import org.boot.growup.source.board.persist.entity.Inquiry;
 import org.boot.growup.common.enumerate.InquiryCategory;
+import org.boot.growup.source.board.persist.entity.Reply;
 import org.springframework.data.domain.Page;
+import org.springframework.util.ObjectUtils;
 
 @Data
 @Builder
@@ -15,22 +17,50 @@ public class GetInquiryResponseDTO {
   private String title;
   private String content;
   private Boolean isAnswered;
-  private long customer;
+  private String author;
+  private ReplyDTO reply;
+
+  @Data
+  @Builder
+  public static class ReplyDTO {
+    private String title;
+    private String content;
+    private String author;
+
+    public static ReplyDTO from(Reply reply) {
+      return ReplyDTO.builder()
+              .title(reply.getTitle())
+              .content(reply.getContent())
+              .author(reply.getAdmin().getEmail())
+              .build();
+    }
+  }
 
   public static GetInquiryResponseDTO from(Inquiry inquiry) {
+    if (ObjectUtils.isEmpty(inquiry.getReply())) {
+      return GetInquiryResponseDTO.builder()
+              .id(inquiry.getId())
+              .category(inquiry.getCategory())
+              .title(inquiry.getTitle())
+              .content(inquiry.getContent())
+              .isAnswered(inquiry.getIsAnswered())
+              .author(inquiry.getCustomer().getName())
+              .build();
+    }
+
     return GetInquiryResponseDTO.builder()
         .id(inquiry.getId())
         .category(inquiry.getCategory())
         .title(inquiry.getTitle())
         .content(inquiry.getContent())
         .isAnswered(inquiry.getIsAnswered())
-        .customer(inquiry.getCustomer())
+        .author(inquiry.getCustomer().getName())
+        .reply(ReplyDTO.from(inquiry.getReply()))
         .build();
   }
 
-  /* Page<Entity> -> Page<DTO> 변환 처리 */
   public static Page<GetInquiryResponseDTO> pageFrom(Page<Inquiry> inquiryList) {
-    return inquiryList.map(m -> from(m));
+    return inquiryList.map(GetInquiryResponseDTO::from);
   }
 
 }

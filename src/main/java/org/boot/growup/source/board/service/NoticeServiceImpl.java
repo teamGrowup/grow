@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.boot.growup.common.error.BaseException;
 import org.boot.growup.common.error.ErrorCode;
+import org.boot.growup.source.admin.persist.entity.Admin;
 import org.boot.growup.source.board.dto.request.PostNoticeRequestDTO;
 import org.boot.growup.source.board.dto.response.GetNoticeResponseDTO;
 import org.boot.growup.source.board.persist.repository.NoticeRepository;
@@ -26,23 +27,13 @@ public class NoticeServiceImpl implements NoticeService {
 
   private final NoticeRepository noticeRepository;
 
-  /**
-   * 공지사항 등록
-   */
   @Transactional
   @Override
-  public Long postNotice(PostNoticeRequestDTO postNoticeRequestDTO, String admin) {
-
+  public Long postNotice(PostNoticeRequestDTO postNoticeRequestDTO, Admin admin) {
     Notice notice = Notice.of(postNoticeRequestDTO, admin);
-
-    Long id = noticeRepository.save(notice).getId();
-
-    return id;
+    return noticeRepository.save(notice).getId();
   }
 
-  /**
-   * 공지사항 조회
-   */
   @Override
   public Page<GetNoticeResponseDTO> getNotice(int pageNo) {
 
@@ -50,28 +41,19 @@ public class NoticeServiceImpl implements NoticeService {
     sorts.add(Sort.Order.desc("id")); // 정렬기준 (엔티티명 기준)
     Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(sorts)); // Pageable 설정
 
-    Page<Notice> noticeList = (Page<Notice>) noticeRepository.findAll(pageable);
+    Page<Notice> noticeList = noticeRepository.findAll(pageable);
 
-    Page<GetNoticeResponseDTO> result = GetNoticeResponseDTO.pageFrom(noticeList); // Entity -> DTO
-
-    return result;
+    return GetNoticeResponseDTO.pageFrom(noticeList);
   }
 
-  /**
-   * 공지사항 수정
-   */
   @Transactional
   @Override
-  public Long updateNotice(Long noticeId, PostNoticeRequestDTO postNoticeRequestDTO, String admin) {
-
-    // 1. 수정할 데이터 가져오기
+  public Long updateNotice(Long noticeId, PostNoticeRequestDTO postNoticeRequestDTO, Admin admin) {
     Notice beforeNotice = noticeRepository.findById(noticeId)
         .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND));
-
-    // 2. 데이터 변경
     beforeNotice.changeData(postNoticeRequestDTO, admin);
 
-    return noticeId;
+    return beforeNotice.getId();
   }
 
   @Override
@@ -87,7 +69,6 @@ public class NoticeServiceImpl implements NoticeService {
   @Override
   public Long deleteNotice(Long noticeId) {
 
-    // 존재 여부 확인
     if (!noticeRepository.existsById(noticeId)) {
       throw new BaseException(ErrorCode.NOTICE_NOT_FOUND);
     }

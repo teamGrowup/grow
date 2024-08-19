@@ -1,9 +1,5 @@
 package org.boot.growup.source.board.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.NotBlank;
-import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Data;
 import org.boot.growup.source.board.persist.entity.Notice;
@@ -19,20 +15,19 @@ public class GetNoticeResponseDTO {
 
   private String content;
 
-  private String admin;
+  private String author;
 
   public static GetNoticeResponseDTO from(Notice notice) {
     return GetNoticeResponseDTO.builder()
         .id(notice.getId())
         .title(notice.getTitle())
         .content(notice.getContent())
-        .admin(notice.getAdmin())
+        .author(notice.getAdmin().getEmail())
         .build();
   }
 
-    /* Page<Entity> -> Page<DTO> 변환 처리 */
   public static Page<GetNoticeResponseDTO> pageFrom(Page<Notice> noticeList) {
-    return noticeList.map(m -> from(m));
+    return noticeList.map(GetNoticeResponseDTO::from);
   }
 }
 

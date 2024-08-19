@@ -3,9 +3,9 @@ package org.boot.growup.source.board.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.boot.growup.common.error.BaseException;
 import org.boot.growup.common.constant.BaseResponse;
-import org.boot.growup.common.error.ErrorCode;
+import org.boot.growup.source.admin.persist.entity.Admin;
+import org.boot.growup.source.admin.service.AdminService;
 import org.boot.growup.source.board.dto.request.PostNoticeRequestDTO;
 import org.boot.growup.source.board.dto.response.GetNoticeResponseDTO;
 import org.boot.growup.source.board.service.NoticeService;
@@ -16,74 +16,72 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@RequestMapping("/board/notice")
 @RequiredArgsConstructor
 public class NoticeController {
 
   private final NoticeService noticeService;
+  private final AdminService adminService;
 
   /**
-   * 1. 공지사항 등록
+   * 공지사항 등록
+   * @param postNoticeRequestDTO 공지사항 등록 Form
+   * @return String
    */
-  @PostMapping
-  public BaseResponse<String> postNotice(
-      @Valid @RequestBody PostNoticeRequestDTO postNoticeRequestDTO) {
-
-    if (postNoticeRequestDTO == null) {
-      throw new BaseException(ErrorCode.BAD_REQUEST);
-    }
-
-    // 1. 수정한 관리자 정보 가져오기
-    String admin = "admin";
-
+  @PostMapping("/admins/board/notice")
+  public BaseResponse<String> postNotice(@Valid @RequestBody PostNoticeRequestDTO postNoticeRequestDTO) {
+    Admin admin = adminService.getCurrentAdmin();
     Long id = noticeService.postNotice(postNoticeRequestDTO, admin);
     return new BaseResponse<>("공지사항 등록 성공. 공지사항 ID : " + id.toString());
   }
 
   /**
-   * 2. 공지사항 목록 조회
+   * 공지사항 목록 조회
+   * @param pageNo
+   * @return Page<GetNoticeResponseDTO>
    */
-  @GetMapping
-  public BaseResponse<Page<GetNoticeResponseDTO>> getNotice(
-      @RequestParam(value="pageNo", defaultValue="0") int pageNo) {
+  @GetMapping("/customers/board/notice")
+  public BaseResponse<Page<GetNoticeResponseDTO>> getNotice(@RequestParam(value="pageNo", defaultValue="0") int pageNo) {
     Page<GetNoticeResponseDTO> result = noticeService.getNotice(pageNo);
     return new BaseResponse<>(result);
   }
 
   /**
-   * 3. 공지사항 수정
+   * 공지사항 수정
+   * @param noticeId
+   * @param postNoticeRequestDTO
+   * @return String
    */
-  @PatchMapping("/{noticeId}")
+  @PatchMapping("/admins/board/notice/{noticeId}")
   public BaseResponse<String> patchNotice(@PathVariable Long noticeId,
       @Valid @RequestBody PostNoticeRequestDTO postNoticeRequestDTO) {
-    // 1. 수정한 관리자 정보 가져오기
-    String admin = "admin";
-
+    Admin admin = adminService.getCurrentAdmin();
     Long id = noticeService.updateNotice(noticeId, postNoticeRequestDTO, admin);
     return new BaseResponse<>("공지사항 수정 성공. 공지사항 ID : " + id.toString());
   }
 
   /**
-   * 4. 공지사항 게시글 상세 조회
+   * 공지사항 게시글 상세 조회
+   * @param noticeId
+   * @return GetNoticeResponseDTO
    */
-  @GetMapping("/{noticeId}")
+  @GetMapping("/customers/board/notice/{noticeId}")
   public BaseResponse<GetNoticeResponseDTO> getNoticeDetail(@PathVariable Long noticeId) {
     GetNoticeResponseDTO result = noticeService.getNoticeDetail(noticeId);
     return new BaseResponse<>(result);
   }
 
   /**
-   * 5. 공지사항 게시글 삭제
+   * 공지사항 게시글 삭제
+   * @param noticeId
+   * @return Long
    */
-  @DeleteMapping("/{noticeId}")
-  public BaseResponse<String> deleteNotice(@PathVariable Long noticeId) {
-    noticeService.deleteNotice(noticeId);
-    return new BaseResponse<>("공지사항 삭제 성공. 삭제된 공지사항 ID : " + noticeId.toString());
+  @DeleteMapping("/admins/board/notice/{noticeId}")
+  public BaseResponse<Long> deleteNotice(@PathVariable Long noticeId) {
+    return new BaseResponse<>(noticeService.deleteNotice(noticeId));
   }
 }
