@@ -3,9 +3,13 @@ package org.boot.growup.common.dataloader;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.boot.growup.common.enumerate.AuthorityStatus;
+import org.boot.growup.common.enumerate.Gender;
+import org.boot.growup.common.enumerate.Provider;
 import org.boot.growup.common.enumerate.Role;
 import org.boot.growup.source.admin.persist.entity.Admin;
 import org.boot.growup.source.admin.persist.repository.AdminRepository;
+import org.boot.growup.source.customer.persist.entity.Customer;
+import org.boot.growup.source.customer.persist.repository.CustomerRepository;
 import org.boot.growup.source.seller.persist.entity.*;
 import org.boot.growup.source.seller.persist.repository.*;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -24,16 +28,55 @@ public class DataLoader {
     private final MainCategoryRepository mainCategoryRepository;
     private final SubCategoryRepository subCategoryRepository;
     private final PasswordEncoder passwordEncoder;
+    private final CustomerRepository customerRepository;
     private final AdminRepository adminRepository;
 
     @EventListener(ApplicationReadyEvent.class)
     @Transactional
     public void init() {
         sellerInit();
+        customerInit();
         brandInit();
         categoryInit();
         productInit();
         adminInit();
+    }
+
+    public void customerInit(){
+        /* 이메일 회원 */
+        Customer customer = Customer.builder()
+                .email("customer123@naver.com")
+                .password(passwordEncoder.encode("!a123456789"))
+                .phoneNumber("010-1234-5678")
+                .birthday("20001212")
+                .gender(Gender.MALE)
+                .address("용인시 기흥구 신정로 19")
+                .postCode("12345")
+                .nickname("오리")
+                .name("홍길동")
+                .provider(Provider.EMAIL)
+                .role(Role.CUSTOMER)
+                .profileUrl("awss3/이미지url")
+                .build();
+
+        /* 구글 회원 */
+        Customer customer2 = Customer.builder()
+                .email("customer456@google.com")
+                .password(passwordEncoder.encode("!a123456789"))
+                .phoneNumber("010-8765-4321")
+                .birthday("19991212")
+                .gender(Gender.FEMALE)
+                .address("서울특별시 용산")
+                .postCode("12345")
+                .nickname("까마귀")
+                .name("홍장미")
+                .provider(Provider.GOOGLE)
+                .role(Role.CUSTOMER)
+                .profileUrl("awss3/이미지url2")
+                .build();
+
+        customerRepository.save(customer);
+        customerRepository.save(customer2);
     }
 
     public void brandInit(){
