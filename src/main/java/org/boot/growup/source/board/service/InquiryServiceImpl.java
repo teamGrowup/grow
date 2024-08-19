@@ -30,9 +30,7 @@ public class InquiryServiceImpl implements InquiryService {
   @Transactional
   @Override
   public Long postInquiry(PostInquiryRequestDTO input, Customer customer) {
-    // DTO -> Entity
     Inquiry inquiry = Inquiry.of(input, customer);
-
     return inquiryRepository.save(inquiry).getId();
   }
 
@@ -40,26 +38,20 @@ public class InquiryServiceImpl implements InquiryService {
   public Page<GetInquiryResponseDTO> getInquiry(Long id, int pageNo) {
 
     List<Order> sorts = new ArrayList<>();
-    sorts.add(Sort.Order.desc("id")); // 정렬기준
-    Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(sorts)); // Pageable 설정
-
-    // 데이터 조회 (수정필요)
+    sorts.add(Sort.Order.desc("id"));
+    Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(sorts));
     Page<Inquiry> inquiryList = inquiryRepository.findByCustomer_Id(id, pageable);
 
     return GetInquiryResponseDTO.pageFrom(inquiryList);
   }
 
-  /**
-   * 미답변 문의 조회
-   */
   @Override
   public Page<GetInquiryResponseDTO> getUnansweredInquiry(int pageNo) {
 
     List<Order> sorts = new ArrayList<>();
-    sorts.add(Sort.Order.asc("id")); // 정렬기준
-    Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(sorts)); // Pageable 설정
+    sorts.add(Sort.Order.asc("id"));
+    Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(sorts));
 
-    // 데이터 조회
     Page<Inquiry> inquiryList = inquiryRepository.findByIsAnswered(false, pageable);
 
     return GetInquiryResponseDTO.pageFrom(inquiryList);

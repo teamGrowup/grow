@@ -40,9 +40,13 @@ public class Inquiry {
   @JoinColumn(name = "customer_id")
   private Customer customer;
 
+  @OneToOne
+  @JoinColumn(name = "reply_id")
+  private Reply reply;
+
   public static Inquiry of(PostInquiryRequestDTO input, Customer customer) {
     return Inquiry.builder()
-        .category(input.getInquiryCategory())
+        .category(input.getCategory())
         .title(input.getTitle())
         .content(input.getContent())
         .isAnswered(false)
@@ -51,7 +55,8 @@ public class Inquiry {
   }
 
   // 답변 등록 완료 처리
-  public void completeReply() {
+  public void completeReply(Reply reply) {
+    this.reply = reply;
     this.isAnswered = true;
   }
 }
