@@ -7,6 +7,7 @@ import org.boot.growup.common.oauth2.kakao.dto.KakaoAccountResponseDTO;
 import org.boot.growup.common.oauth2.naver.dto.NaverAccountResponseDTO;
 import org.boot.growup.source.customer.dto.request.*;
 import org.boot.growup.source.customer.dto.response.EmailCheckResponseDTO;
+import org.boot.growup.source.customer.persist.entity.Customer;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -55,4 +56,9 @@ public interface CustomerService {
     신규 가입자 네이버 Oauth2.0 로그인 > 추가 정보 입력
      */
     TokenDTO signInNaverAdditional(NaverAdditionalInfoRequestDTO request);
+
+    /*
+    현재 로그인한 소비자 조회
+     */
+    Customer getCurrentCustomer();
 }
