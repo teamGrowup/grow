@@ -22,7 +22,6 @@ import org.boot.growup.source.customer.dto.response.EmailCheckResponseDTO;
 import org.boot.growup.source.customer.persist.entity.Customer;
 import org.boot.growup.source.customer.persist.repository.CustomerRepository;
 
-import org.boot.growup.source.seller.persist.entity.Seller;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -225,7 +224,7 @@ public class CustomerServiceImpl implements CustomerService {
 
             if (authority.equals(Role.CUSTOMER.getKey())) {
                 return customerRepository.findByEmail(useremail).orElseThrow(
-                        () -> new BaseException(ErrorCode.SELLER_NOT_FOUND)
+                        () -> new BaseException(CUSTOMER_NOT_FOUND)
                 );
             }
 
