@@ -8,8 +8,9 @@ import org.boot.growup.common.error.BaseException;
 import org.boot.growup.common.error.ErrorCode;
 import org.boot.growup.source.board.dto.request.PostInquiryRequestDTO;
 import org.boot.growup.source.board.dto.response.GetInquiryResponseDTO;
-import org.boot.growup.source.board.persist.InquiryRepository;
+import org.boot.growup.source.board.persist.repository.InquiryRepository;
 import org.boot.growup.source.board.persist.entity.Inquiry;
+import org.boot.growup.source.customer.persist.entity.Customer;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,42 +24,33 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class InquiryServiceImpl implements InquiryService {
-
   private final InquiryRepository inquiryRepository;
 
   @Transactional
   @Override
-  public Long postInquiry(PostInquiryRequestDTO input, long customer) {
-    // DTO -> Entity
+  public Long postInquiry(PostInquiryRequestDTO input, Customer customer) {
     Inquiry inquiry = Inquiry.of(input, customer);
-
     return inquiryRepository.save(inquiry).getId();
   }
 
   @Override
-  public Page<GetInquiryResponseDTO> getInquiry(long id, int pageNo) {
+  public Page<GetInquiryResponseDTO> getInquiry(Long id, int pageNo) {
 
     List<Order> sorts = new ArrayList<>();
-    sorts.add(Sort.Order.desc("id")); // 정렬기준
-    Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(sorts)); // Pageable 설정
-
-    // 데이터 조회 (수정필요)
-    Page<Inquiry> inquiryList = inquiryRepository.findByCustomer(id, pageable);
+    sorts.add(Sort.Order.desc("id"));
+    Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(sorts));
+    Page<Inquiry> inquiryList = inquiryRepository.findByCustomer_Id(id, pageable);
 
     return GetInquiryResponseDTO.pageFrom(inquiryList);
   }
 
-  /**
-   * 미답변 문의 조회
-   */
   @Override
   public Page<GetInquiryResponseDTO> getUnansweredInquiry(int pageNo) {
 
     List<Order> sorts = new ArrayList<>();
-    sorts.add(Sort.Order.asc("id")); // 정렬기준
-    Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(sorts)); // Pageable 설정
+    sorts.add(Sort.Order.asc("id"));
+    Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(sorts));
 
-    // 데이터 조회
     Page<Inquiry> inquiryList = inquiryRepository.findByIsAnswered(false, pageable);
 
     return GetInquiryResponseDTO.pageFrom(inquiryList);

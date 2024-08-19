@@ -1,19 +1,13 @@
 package org.boot.growup.source.board.persist.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.boot.growup.common.enumerate.InquiryCategory;
 import org.boot.growup.source.board.dto.request.PostInquiryRequestDTO;
+import org.boot.growup.source.customer.persist.entity.Customer;
 import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
@@ -24,7 +18,6 @@ import org.hibernate.annotations.DynamicUpdate;
 @AllArgsConstructor
 @DynamicUpdate  // 변경된 필드만 수정
 public class Inquiry {
-
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "inquiry_id", nullable = false)
@@ -42,14 +35,17 @@ public class Inquiry {
 
   private Boolean isAnswered;
 
-//  @ManyToOne(fetch = FetchType.LAZY)
-//  @JoinColumn(name = "customer_id")
-//  private Customer customer;
-  private long customer;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "customer_id")
+  private Customer customer;
 
-  public static Inquiry of(PostInquiryRequestDTO input, long customer) {
+  @OneToOne
+  @JoinColumn(name = "reply_id")
+  private Reply reply;
+
+  public static Inquiry of(PostInquiryRequestDTO input, Customer customer) {
     return Inquiry.builder()
-        .category(input.getInquiryCategory())
+        .category(input.getCategory())
         .title(input.getTitle())
         .content(input.getContent())
         .isAnswered(false)
@@ -58,7 +54,8 @@ public class Inquiry {
   }
 
   // 답변 등록 완료 처리
-  public void completeReply() {
+  public void completeReply(Reply reply) {
+    this.reply = reply;
     this.isAnswered = true;
   }
 }

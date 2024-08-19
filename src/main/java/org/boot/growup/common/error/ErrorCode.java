@@ -57,6 +57,12 @@ public enum ErrorCode {
     /* Seller 관련 */
     SELLER_NOT_FOUND(HttpStatus.BAD_REQUEST,404, false, "해당 판매자를 찾을 수 없습니다."),
 
+    /* CUSTOMER 관련 */
+    CUSTOMER_NOT_FOUND(HttpStatus.BAD_REQUEST,404, false, "해당 소비자를 찾을 수 없습니다."),
+
+    /* Admin 관련 */
+    ADMIN_NOT_FOUND(HttpStatus.BAD_REQUEST,404, false, "해당 관리자를 찾을 수 없습니다."),
+
     /* Board 관련 */
     NOTICE_NOT_FOUND(HttpStatus.BAD_REQUEST, 404,false, "해당 공지사항을 찾을 수 없습니다."),
     INQUIRY_NOT_FOUND(HttpStatus.BAD_REQUEST, 404, false, "해당 문의를 찾을 수 없습니다.");
