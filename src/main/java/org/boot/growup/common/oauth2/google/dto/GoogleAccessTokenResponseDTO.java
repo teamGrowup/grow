@@ -1,9 +1,11 @@
 package org.boot.growup.common.oauth2.google.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class GoogleAccessTokenResponseDTO {
     @JsonProperty(value = "access_token")
     private final String accessToken;

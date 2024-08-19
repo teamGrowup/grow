@@ -19,21 +19,22 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
 
-@Component
 @Slf4j
+@Component
 public class JwtTokenProvider {
     private static final String AUTHORITIES_KEY = "auth";
     private final Key key;
     private final RedisDao redisDao;
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 60L; // 1시간
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7L; // 유효시간 : 일주일
+
     public JwtTokenProvider(@Value("${jwt.secret}") String secretKey, RedisDao redisDao){
         this.redisDao = redisDao;
         byte[] secretByteKey = DatatypeConverter.parseBase64Binary(secretKey);
         this.key = Keys.hmacShaKeyFor(secretByteKey);
     }
 
-    public TokenDto generateToken(String userEmail, Collection<? extends GrantedAuthority> authorities) {
+    public TokenDTO generateToken(String userEmail, Collection<? extends GrantedAuthority> authorities) {
         String authoritiesString = authorities.stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
@@ -58,7 +59,7 @@ public class JwtTokenProvider {
         // redis에 저장
         redisDao.setValues(userEmail, refreshToken, REFRESH_TOKEN_EXPIRE_TIME + 5000L);
 
-        return TokenDto.of(accessToken, refreshToken);
+        return TokenDTO.of(accessToken, refreshToken);
     }
 
     public Authentication getAuthentication(String token) {

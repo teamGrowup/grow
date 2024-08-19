@@ -3,19 +3,18 @@ package org.boot.growup.source.seller.persist.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.boot.growup.common.enumerate.AuthorityStatus;
-import org.boot.growup.source.seller.dto.request.ProductRequestDTO;
+import org.boot.growup.source.seller.dto.request.PostProductRequestDTO;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @Entity
 @Getter
-@Setter
 @Builder
 @Table(name = "product")
 @NoArgsConstructor
 @AllArgsConstructor
 public class Product {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "product_id", nullable = false)
@@ -57,31 +56,25 @@ public class Product {
     @JoinColumn(name = "brand_id", nullable = false)
     private Brand brand;
 
-    public static Product from(ProductRequestDTO productRequestDto) {
+    public static Product of(PostProductRequestDTO postProductRequestDto, Brand brand, SubCategory subCategory) {
         return Product.builder()
-                .name(productRequestDto.getName())
-                .description(productRequestDto.getDescription())
+                .name(postProductRequestDto.getName())
+                .description(postProductRequestDto.getDescription())
                 .authorityStatus(AuthorityStatus.PENDING) // 기본 상태를 PENDING으로 설정
-                .subCategory(SubCategory.builder().build())
+                .subCategory(subCategory)
+                .brand(brand)
                 .averageRating(0.0) // 초기 평균 평점
                 .likeCount(0) // 초기 좋아요 수
                 .build();
     }
 
-    public void setSubCategory(SubCategory subCategory) {
-        this.subCategory = subCategory;
-    }
-
     /*
-        판매자(대표자) 설정
+    판매자(대표자) 설정
      */
     public void designateSeller(Seller seller) {
         this.seller = seller;
     }
 
-    /*
-        허가 상태 변경
-     */
     public void approve() {
         this.authorityStatus = AuthorityStatus.APPROVED;
     }
@@ -102,7 +95,7 @@ public class Product {
         this.likeCount = 0; // 초기 좋아요 수
     }
     /*
-        상품 옵션 초기화
+    상품 옵션 초기화
      */
     public void initProductOptions(List<ProductOption> options) {
         this.productOptions.clear();
@@ -114,12 +107,17 @@ public class Product {
         }
     }
 
-    /*
-        product명 및 상세 설명 수정
-     */
-    public void updateProductInfo(String name, String description){
+    public void patchProductInfo(String name, String description) {
         this.name = name;
         this.description = description;
+    }
+
+    public void patchSubCategory(SubCategory subCategory) {
+        this.subCategory = subCategory;
+    }
+
+    public void patchBrand(Brand brand) {
+        this.brand = brand;
     }
 }
 

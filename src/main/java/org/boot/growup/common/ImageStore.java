@@ -19,6 +19,6 @@ public class ImageStore {
 
     public String extractExt(String originalFilename) {
         int pos = originalFilename.lastIndexOf(".");
-        return originalFilename.substring(pos+1); // 확장자명
+        return originalFilename.substring(pos + 1); // 확장자명
     }
 }

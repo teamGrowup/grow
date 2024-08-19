@@ -17,7 +17,6 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
-
     @Override
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,
@@ -45,7 +44,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
         httpServletResponse.setContentType(APPLICATION_JSON_VALUE);
 
-        BaseResponse<?> errorResponse = new BaseResponse(errorCode);
+        BaseResponse<?> errorResponse = new BaseResponse<>(errorCode);
         new ObjectMapper().writeValue(httpServletResponse.getWriter(), errorResponse);
     }
 }

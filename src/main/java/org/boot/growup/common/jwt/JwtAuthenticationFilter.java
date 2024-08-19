@@ -14,26 +14,26 @@ import org.boot.growup.common.error.ErrorCode;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.util.AntPathMatcher;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.security.SignatureException;
 
-@RequiredArgsConstructor
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final String TOKEN_HEADER = "Authorization";
     private static final String TOKEN_PREFIX = "Bearer ";
     private final JwtTokenProvider jwtTokenProvider;
     private final RequestMatcherHolder requestMatcherHolder;
+
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) { //이 필터 안걸치는 path
         return requestMatcherHolder.getRequestMatchersByMinRole(null).matches(request);
 
     }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
                 throws ServletException, IOException {
@@ -58,6 +58,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             log.error("JwtFilter - doFilterInternal() 오류발생");
             log.error("Exception Message : {}", e.getMessage());
             log.error("Exception StackTrace : {");
+            System.out.println(e);
             e.printStackTrace();
             log.error("}");
             log.error("================================================");

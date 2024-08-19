@@ -26,7 +26,7 @@ public class ProductImageServiceImpl implements ProductImageService {
     }
 
     @Transactional
-    public void saveProductImages(List<MultipartFile> productImages, Product product, Section section) {
+    public void postProductImages(List<MultipartFile> productImages, Product product, Section section) {
 
         for (MultipartFile multipartFile : productImages) {
             if (!multipartFile.isEmpty()) {
@@ -35,6 +35,11 @@ public class ProductImageServiceImpl implements ProductImageService {
                 productImageRepository.save(uploadImage); // 이미지 저장
             }
         }
+    }
+
+    @Override
+    public List<ProductImage> getProductImages(Long id) {
+        return productImageRepository.findProductImageByProduct_Id(id);
     }
 
     public ProductImage storeImage(MultipartFile multipartFile, Section section) {
@@ -60,9 +65,10 @@ public class ProductImageServiceImpl implements ProductImageService {
                 .section(Section.valueOf(section.name()))
                 .build(); // section은 설정하지 않음
     }
+
     @Transactional
     @Override
-    public void updateProductImages(List<MultipartFile> productImages, Product product, Section section) {
+    public void patchProductImages(List<MultipartFile> productImages, Product product, Section section) {
         // 1. 현재 등록된 상품 이미지를 지움.
         productImageRepository.deleteProductImageByProduct_Id(product.getId());
 

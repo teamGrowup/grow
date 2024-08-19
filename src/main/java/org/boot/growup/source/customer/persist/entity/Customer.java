@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.boot.growup.common.enumerate.Gender;
 import org.boot.growup.common.enumerate.Role;
-import org.boot.growup.common.oauth2.Provider;
+import org.boot.growup.common.enumerate.Provider;
 import org.boot.growup.common.oauth2.google.dto.GoogleAccountResponseDTO;
 import org.boot.growup.common.oauth2.kakao.dto.KakaoAccountResponseDTO;
 import org.boot.growup.common.oauth2.naver.dto.NaverAccountResponseDTO;
@@ -16,7 +16,6 @@ import org.boot.growup.source.customer.dto.request.CustomerSignUpRequestDTO;
 import org.boot.growup.source.customer.dto.request.GoogleAdditionalInfoRequestDTO;
 import org.boot.growup.source.customer.dto.request.KakaoAdditionalInfoRequestDTO;
 import org.boot.growup.source.customer.dto.request.NaverAdditionalInfoRequestDTO;
-import org.hibernate.validator.constraints.br.CPF;
 
 @Entity
 @Getter
@@ -68,9 +67,6 @@ public class Customer {
 
     private String profileUrl;
 
-
-
-
     public CustomUserDetails toUserDetails() {
         return new CustomUserDetails(email, password, role);
     }
@@ -107,6 +103,7 @@ public class Customer {
                 .role(Role.CUSTOMER)
                 .build();
     }
+
     /* 카카오 유저 회원가입 */
     public static Customer of(KakaoAdditionalInfoRequestDTO request, KakaoAccountResponseDTO kakaoAccount) {
         return Customer.builder()

@@ -41,7 +41,7 @@ class BrandImageServiceImplTest {
     }
 
     @Test
-    public void saveBrandImages_Default_Success() {
+    public void postBrandImages_Default_Success() {
         // given
         Brand brand = new Brand();
 
@@ -54,7 +54,7 @@ class BrandImageServiceImplTest {
         when(imageStore.createStoreFileName("test2.jpg")).thenReturn("uud-test2.jpg");
 
         // when
-        brandImageServiceImpl.saveBrandImages(List.of(file1, file2), brand);
+        brandImageServiceImpl.postBrandImages(List.of(file1, file2), brand);
 
         // then
         verify(imageStore, times(1)).createStoreFileName("test1.jpg");
@@ -64,12 +64,12 @@ class BrandImageServiceImplTest {
     }
 
     @Test
-    public void readBrandImages_Default_Success() {
+    public void getBrandImages_Default_Success() {
 
     }
 
     @Test
-    public void updateBrandImages_Default_Success() {
+    public void patchBrandImages_Default_Success() {
         // given
         Brand brand = Brand.builder().id(1L).build();
 
@@ -82,7 +82,7 @@ class BrandImageServiceImplTest {
         when(imageStore.createStoreFileName("test2.jpg")).thenReturn("uud-test2.jpg");
 
         // when
-        brandImageServiceImpl.updateBrandImages(List.of(file1, file2), brand);
+        brandImageServiceImpl.patchBrandImages(List.of(file1, file2), brand);
 
         // then
         verify(imageStore, times(1)).createStoreFileName("test1.jpg");

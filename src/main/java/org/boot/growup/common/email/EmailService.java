@@ -12,7 +12,6 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import java.util.Random;
 
-
 @Service
 @RequiredArgsConstructor
 public class EmailService {

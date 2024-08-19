@@ -30,7 +30,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class ProductServiceImplTest {
-
     @Autowired
     private ProductServiceImpl productService;
 
@@ -79,14 +78,22 @@ class ProductServiceImplTest {
                 .name("테스트 제품")
                 .description("테스트 설명")
                 .productOptions(List.of(
-                        new ProductRequestDTO.ProductOptionDTO("옵션1", 10, 1000),
-                        new ProductRequestDTO.ProductOptionDTO("옵션2", 5, 1500)
+                        ProductRequestDTO.ProductOptionDTO.builder() // 빌더 사용
+                                .optionName("옵션1")
+                                .optionStock(10)
+                                .optionPrice(1000)
+                                .build(),
+                        ProductRequestDTO.ProductOptionDTO.builder() // 빌더 사용
+                                .optionName("옵션2")
+                                .optionStock(5)
+                                .optionPrice(1500)
+                                .build()
                 ))
                 .subCategoryId(subCategory.getId()) // SubCategory ID 설정
                 .build();
 
         // when
-        Product savedProduct = productService.registerProduct(productRequestDto, seller);
+        Product savedProduct = productService.postProduct(postProductRequestDto, seller);
 
         // then
         assertNotNull(savedProduct);
@@ -140,7 +147,16 @@ class ProductServiceImplTest {
                 .name("업데이트된 제품")
                 .description("업데이트된 설명")
                 .productOptions(List.of(
-                        new ProductRequestDTO.ProductOptionDTO("업데이트된 옵션1", 20, 2000)
+                        ProductRequestDTO.ProductOptionDTO.builder() // 빌더 사용
+                                .optionName("옵션1")
+                                .optionStock(10)
+                                .optionPrice(1000)
+                                .build(),
+                        ProductRequestDTO.ProductOptionDTO.builder() // 빌더 사용
+                                .optionName("옵션2")
+                                .optionStock(5)
+                                .optionPrice(1500)
+                                .build()
                 ))
                 .subCategoryId(subCategory.getId()) // SubCategory ID 설정
                 .build();

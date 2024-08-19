@@ -14,7 +14,6 @@ import jakarta.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MainCategory {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "main_category_id", nullable = false)
