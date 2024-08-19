@@ -15,17 +15,14 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class ReplyServiceImpl implements ReplyService {
-
     private final ReplyRepository replyRepository;
 
     @Transactional
     @Override
     public Long postReply(PostReplyRequestDTO input, Admin admin, Inquiry inquiry) {
         Reply reply = Reply.of(input, admin);
-
         Long id = replyRepository.save(reply).getId();
         inquiry.completeReply(reply);
-
         return id;
     }
 }

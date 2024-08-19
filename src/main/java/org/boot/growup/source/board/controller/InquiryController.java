@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class InquiryController {
-
   private final InquiryService inquiryService;
   private final ReplyService replyService;
   private final CustomerService customerService;

@@ -11,7 +11,6 @@ import org.springframework.util.ObjectUtils;
 @Data
 @Builder
 public class GetInquiryResponseDTO {
-
   private Long id;
   private InquiryCategory category;
   private String title;

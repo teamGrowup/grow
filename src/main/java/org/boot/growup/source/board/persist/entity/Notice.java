@@ -17,7 +17,6 @@ import org.hibernate.annotations.DynamicUpdate;
 @AllArgsConstructor
 @DynamicUpdate  // 변경된 필드만 수정
 public class Notice {
-
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "notice_id", nullable = false)

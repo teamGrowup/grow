@@ -9,7 +9,6 @@ import org.boot.growup.common.enumerate.InquiryCategory;
 @Data
 @Builder
 public class PostInquiryRequestDTO {
-
   @NotBlank(message = "문의 제목은 필수 입력입니다.")
   private String title;
 

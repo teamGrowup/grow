@@ -24,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class NoticeServiceImpl implements NoticeService {
-
   private final NoticeRepository noticeRepository;
 
   @Transactional
@@ -36,7 +35,6 @@ public class NoticeServiceImpl implements NoticeService {
 
   @Override
   public Page<GetNoticeResponseDTO> getNotice(int pageNo) {
-
     List<Sort.Order> sorts = new ArrayList<>();
     sorts.add(Sort.Order.desc("id")); // 정렬기준 (엔티티명 기준)
     Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(sorts)); // Pageable 설정
@@ -58,7 +56,6 @@ public class NoticeServiceImpl implements NoticeService {
 
   @Override
   public GetNoticeResponseDTO getNoticeDetail(long noticeId) {
-
     Notice notice = noticeRepository.findById(noticeId)
         .orElseThrow(() -> new BaseException(ErrorCode.NOTICE_NOT_FOUND));
 
@@ -68,7 +65,6 @@ public class NoticeServiceImpl implements NoticeService {
   @Transactional
   @Override
   public Long deleteNotice(Long noticeId) {
-
     if (!noticeRepository.existsById(noticeId)) {
       throw new BaseException(ErrorCode.NOTICE_NOT_FOUND);
     }

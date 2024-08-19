@@ -18,7 +18,6 @@ import org.hibernate.annotations.DynamicUpdate;
 @AllArgsConstructor
 @DynamicUpdate  // 변경된 필드만 수정
 public class Inquiry {
-
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "inquiry_id", nullable = false)

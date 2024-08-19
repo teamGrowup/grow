@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class NoticeController {
-
   private final NoticeService noticeService;
   private final AdminService adminService;
 

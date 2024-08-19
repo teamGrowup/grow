@@ -8,13 +8,9 @@ import org.springframework.data.domain.Page;
 @Data
 @Builder
 public class GetNoticeResponseDTO {
-
   private Long id;
-
   private String title;
-
   private String content;
-
   private String author;
 
   public static GetNoticeResponseDTO from(Notice notice) {

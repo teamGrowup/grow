@@ -159,7 +159,7 @@ public class DataLoader {
     public void sellerInit(){
         Seller seller = Seller.builder()
                 .cpEmail("lafudgestore@naver.com")
-                .cpPassword(passwordEncoder.encode("password1234"))
+                .cpPassword(passwordEncoder.encode("!password1234"))
                 .phoneNumber("010-7797-8841") // 대표 전화번호
                 .epName("손준호") // 대표자명
                 .cpName("(주)슬로우스탠다드") // 상호명
@@ -173,7 +173,7 @@ public class DataLoader {
 
         Seller seller2 = Seller.builder()
                 .cpEmail("drawfit@naver.com")
-                .cpPassword(passwordEncoder.encode("password1234"))
+                .cpPassword(passwordEncoder.encode("!password1234"))
                 .phoneNumber("02-3394-8271") // 대표 전화번호
                 .epName("조현민") // 대표자명
                 .cpName("디알에프티 주식회사") // 상호명
