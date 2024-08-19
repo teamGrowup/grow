@@ -10,7 +10,6 @@ import org.boot.growup.source.board.persist.entity.Notice;
 @Data
 @Builder
 public class PostNoticeRequestDTO {
-
   @NotBlank(message = "제목은 필수 입력입니다.")
   private String title;
 
