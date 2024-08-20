@@ -4,9 +4,7 @@ import org.boot.growup.source.admin.persist.entity.Admin;
 import org.boot.growup.source.board.dto.request.PostNoticeRequestDTO;
 import org.boot.growup.source.board.dto.response.GetNoticeResponseDTO;
 import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
 
-@Service
 public interface NoticeService {
   /*
   공지사항 등록
@@ -21,7 +19,7 @@ public interface NoticeService {
   /*
   공지사항 수정
    */
-  Long updateNotice(Long noticeId, PostNoticeRequestDTO postNoticeRequestDTO, Admin admin);
+  Long patchNotice(Long noticeId, PostNoticeRequestDTO postNoticeRequestDTO, Admin admin);
 
   /*
   공지사항 상세 조회

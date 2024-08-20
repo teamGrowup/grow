@@ -1,7 +1,4 @@
-package org.boot.growup.source.board.service;
-
-import java.util.ArrayList;
-import java.util.List;
+package org.boot.growup.source.board.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,23 +7,24 @@ import org.boot.growup.common.error.ErrorCode;
 import org.boot.growup.source.admin.persist.entity.Admin;
 import org.boot.growup.source.board.dto.request.PostNoticeRequestDTO;
 import org.boot.growup.source.board.dto.response.GetNoticeResponseDTO;
-import org.boot.growup.source.board.persist.repository.NoticeRepository;
 import org.boot.growup.source.board.persist.entity.Notice;
+import org.boot.growup.source.board.persist.repository.NoticeRepository;
+import org.boot.growup.source.board.service.NoticeService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class NoticeServiceImpl implements NoticeService {
   private final NoticeRepository noticeRepository;
 
-  @Transactional
   @Override
   public Long postNotice(PostNoticeRequestDTO postNoticeRequestDTO, Admin admin) {
     Notice notice = Notice.of(postNoticeRequestDTO, admin);
@@ -44,12 +42,12 @@ public class NoticeServiceImpl implements NoticeService {
     return GetNoticeResponseDTO.pageFrom(noticeList);
   }
 
-  @Transactional
   @Override
-  public Long updateNotice(Long noticeId, PostNoticeRequestDTO postNoticeRequestDTO, Admin admin) {
+  public Long patchNotice(Long noticeId, PostNoticeRequestDTO postNoticeRequestDTO, Admin admin) {
     Notice beforeNotice = noticeRepository.findById(noticeId)
         .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND));
     beforeNotice.changeData(postNoticeRequestDTO, admin);
+    noticeRepository.save(beforeNotice);
 
     return beforeNotice.getId();
   }
@@ -62,7 +60,6 @@ public class NoticeServiceImpl implements NoticeService {
     return GetNoticeResponseDTO.from(notice);
   }
 
-  @Transactional
   @Override
   public Long deleteNotice(Long noticeId) {
     if (!noticeRepository.existsById(noticeId)) {

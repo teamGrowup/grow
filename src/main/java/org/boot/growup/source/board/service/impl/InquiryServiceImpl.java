@@ -1,15 +1,14 @@
-package org.boot.growup.source.board.service;
+package org.boot.growup.source.board.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.boot.growup.common.error.BaseException;
 import org.boot.growup.common.error.ErrorCode;
 import org.boot.growup.source.board.dto.request.PostInquiryRequestDTO;
 import org.boot.growup.source.board.dto.response.GetInquiryResponseDTO;
-import org.boot.growup.source.board.persist.repository.InquiryRepository;
 import org.boot.growup.source.board.persist.entity.Inquiry;
+import org.boot.growup.source.board.persist.repository.InquiryRepository;
+import org.boot.growup.source.board.service.InquiryService;
 import org.boot.growup.source.customer.persist.entity.Customer;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,16 +16,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class InquiryServiceImpl implements InquiryService {
   private final InquiryRepository inquiryRepository;
 
-  @Transactional
   @Override
   public Long postInquiry(PostInquiryRequestDTO input, Customer customer) {
     Inquiry inquiry = Inquiry.of(input, customer);
