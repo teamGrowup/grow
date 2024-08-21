@@ -7,7 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.boot.growup.auth.persist.entity.Seller;
 import org.boot.growup.common.constant.AuthorityStatus;
+import org.boot.growup.common.entity.BaseEntity;
 import org.boot.growup.product.dto.request.PostBrandRequestDTO;
+import org.hibernate.envers.AuditOverride;
 
 @Entity
 @Getter
@@ -15,7 +17,8 @@ import org.boot.growup.product.dto.request.PostBrandRequestDTO;
 @Table(name = "brand")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Brand {
+@AuditOverride(forClass = BaseEntity.class)
+public class Brand extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "brand_id", nullable = false)

@@ -27,7 +27,6 @@ public class BrandServiceImpl implements BrandService {
     @Transactional
     @Override
     public Brand postBrand(PostBrandRequestDTO postBrandRequestDTO, Seller seller) {
-
         if (brandRepository.findByName(postBrandRequestDTO.getName()).isPresent()) {
             throw new BaseException(ErrorCode.BRAND_NAME_ALREADY_EXISTS);
         }
