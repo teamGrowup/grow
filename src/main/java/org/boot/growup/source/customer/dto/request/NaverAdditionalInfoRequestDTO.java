@@ -1,13 +1,11 @@
 package org.boot.growup.source.customer.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
 import org.boot.growup.common.Regex;
-import org.boot.growup.common.enumerate.Gender;
 
 @Data
 @Builder

@@ -1,10 +1,9 @@
 package org.boot.growup.source.seller.service;
 
 import org.boot.growup.common.enumerate.AuthorityStatus;
-import org.boot.growup.source.seller.dto.request.ProductRequestDTO;
+import org.boot.growup.source.seller.dto.request.PostProductRequestDTO;
 import org.boot.growup.source.seller.persist.entity.MainCategory;
 import org.boot.growup.source.seller.persist.entity.Product;
-import org.boot.growup.source.seller.persist.entity.ProductOption;
 import org.boot.growup.source.seller.persist.entity.Seller;
 import org.boot.growup.source.seller.persist.entity.SubCategory;
 import org.boot.growup.source.seller.persist.repository.MainCategoryRepository;
@@ -12,13 +11,10 @@ import org.boot.growup.source.seller.persist.repository.ProductRepository;
 import org.boot.growup.source.seller.persist.repository.SellerRepository;
 import org.boot.growup.source.seller.persist.repository.SubCategoryRepository;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -74,16 +70,16 @@ class ProductServiceImplTest {
 
         subCategoryRepository.save(subCategory); // SubCategory 저장
 
-        ProductRequestDTO productRequestDto = ProductRequestDTO.builder()
+        PostProductRequestDTO postProductRequestDto = PostProductRequestDTO.builder()
                 .name("테스트 제품")
                 .description("테스트 설명")
                 .productOptions(List.of(
-                        ProductRequestDTO.ProductOptionDTO.builder() // 빌더 사용
+                        PostProductRequestDTO.ProductOptionDTO.builder() // 빌더 사용
                                 .optionName("옵션1")
                                 .optionStock(10)
                                 .optionPrice(1000)
                                 .build(),
-                        ProductRequestDTO.ProductOptionDTO.builder() // 빌더 사용
+                        PostProductRequestDTO.ProductOptionDTO.builder() // 빌더 사용
                                 .optionName("옵션2")
                                 .optionStock(5)
                                 .optionPrice(1500)
@@ -97,8 +93,8 @@ class ProductServiceImplTest {
 
         // then
         assertNotNull(savedProduct);
-        assertEquals(productRequestDto.getName(), savedProduct.getName());
-        assertEquals(productRequestDto.getDescription(), savedProduct.getDescription());
+        assertEquals(postProductRequestDto.getName(), savedProduct.getName());
+        assertEquals(postProductRequestDto.getDescription(), savedProduct.getDescription());
         assertEquals(2, savedProduct.getProductOptions().size()); // 옵션 수 확인
     }
 
@@ -143,16 +139,16 @@ class ProductServiceImplTest {
 
         productRepository.save(product); // Product 저장
 
-        ProductRequestDTO productRequestDto = ProductRequestDTO.builder()
+        PostProductRequestDTO productRequestDto = PostProductRequestDTO.builder()
                 .name("업데이트된 제품")
                 .description("업데이트된 설명")
                 .productOptions(List.of(
-                        ProductRequestDTO.ProductOptionDTO.builder() // 빌더 사용
+                        PostProductRequestDTO.ProductOptionDTO.builder() // 빌더 사용
                                 .optionName("옵션1")
                                 .optionStock(10)
                                 .optionPrice(1000)
                                 .build(),
-                        ProductRequestDTO.ProductOptionDTO.builder() // 빌더 사용
+                        PostProductRequestDTO.ProductOptionDTO.builder() // 빌더 사용
                                 .optionName("옵션2")
                                 .optionStock(5)
                                 .optionPrice(1500)
