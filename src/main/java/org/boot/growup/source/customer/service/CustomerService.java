@@ -7,6 +7,7 @@ import org.boot.growup.common.oauth2.kakao.dto.KakaoAccountResponseDTO;
 import org.boot.growup.common.oauth2.naver.dto.NaverAccountResponseDTO;
 import org.boot.growup.source.customer.dto.request.*;
 import org.boot.growup.source.customer.dto.response.EmailCheckResponseDTO;
+import org.boot.growup.source.customer.persist.entity.Customer;
 import org.springframework.stereotype.Service;
 
 public interface CustomerService {
@@ -64,4 +65,9 @@ public interface CustomerService {
     전화번호 인증 > 인증번호 검증
      */
     void postAuthCode(PostAuthCodeRequestDTO request);
+    
+    /*
+    현재 로그인한 소비자 조회
+     */
+    Customer getCurrentCustomer();
 }

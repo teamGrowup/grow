@@ -1,17 +1,35 @@
 package org.boot.growup.source.board.service;
 
-import java.util.List;
+import org.boot.growup.source.admin.persist.entity.Admin;
 import org.boot.growup.source.board.dto.request.PostNoticeRequestDTO;
 import org.boot.growup.source.board.dto.response.GetNoticeResponseDTO;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
 public interface NoticeService {
-  public Long postNotice(PostNoticeRequestDTO postNoticeRequestDTO, String admin);
-  public Page<GetNoticeResponseDTO> getNotice(int pageNo);
-  public Long updateNotice(Long noticeId, PostNoticeRequestDTO postNoticeRequestDTO, String admin);
-  public GetNoticeResponseDTO getNoticeDetail(long noticeId);
-  public Long deleteNotice(Long noticeId);
+  /*
+  공지사항 등록
+   */
+  Long postNotice(PostNoticeRequestDTO postNoticeRequestDTO, Admin admin);
+
+  /*
+  공지사항 목록 조회
+   */
+  Page<GetNoticeResponseDTO> getNotice(int pageNo);
+
+  /*
+  공지사항 수정
+   */
+  Long updateNotice(Long noticeId, PostNoticeRequestDTO postNoticeRequestDTO, Admin admin);
+
+  /*
+  공지사항 상세 조회
+   */
+  GetNoticeResponseDTO getNoticeDetail(long noticeId);
+
+  /*
+  공지사항 삭제
+   */
+  Long deleteNotice(Long noticeId);
 }

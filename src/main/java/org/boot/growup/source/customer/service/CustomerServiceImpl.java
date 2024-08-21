@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.boot.growup.common.email.EmailMessageDTO;
 import org.boot.growup.common.email.EmailService;
 import org.boot.growup.common.enumerate.UserAgree;
+import org.boot.growup.common.enumerate.Role;
 import org.boot.growup.common.error.BaseException;
 import org.boot.growup.common.error.ErrorCode;
 import org.boot.growup.common.jwt.JwtTokenProvider;
@@ -24,12 +25,17 @@ import org.boot.growup.source.customer.dto.response.EmailCheckResponseDTO;
 import org.boot.growup.source.customer.persist.entity.Customer;
 import org.boot.growup.source.customer.persist.repository.CustomerRepository;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import static org.boot.growup.common.error.ErrorCode.*;
 
@@ -226,5 +232,29 @@ public class CustomerServiceImpl implements CustomerService {
             throw new BaseException(ErrorCode.WRONG_AUTH_CODE);
         }
         redisDao.deleteValues(request.getPhoneNumber());
+    }
+
+    public Customer getCurrentCustomer() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+        log.info(user.getUsername(), user.getAuthorities().toString());
+        if (!ObjectUtils.isEmpty(user)) {
+            String useremail = user.getUsername();
+            String authority = user.getAuthorities().stream().findFirst().orElseThrow(
+                    () -> new BaseException(ErrorCode.INTERNAL_SERVER_ERROR)
+            ).toString();
+
+            log.info("useremail : {} | authority : {}", useremail, authority);
+
+            if (authority.equals(Role.CUSTOMER.getKey())) {
+                return customerRepository.findByEmail(useremail).orElseThrow(
+                        () -> new BaseException(CUSTOMER_NOT_FOUND)
+                );
+            }
+
+            throw new BaseException(ErrorCode.ACCESS_DENIED);
+        }
+
+        throw new BaseException(ErrorCode.ACCESS_DENIED);
     }
 }
