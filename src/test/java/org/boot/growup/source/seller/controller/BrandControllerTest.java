@@ -1,9 +1,10 @@
 package org.boot.growup.source.seller.controller;
 
-import org.boot.growup.common.jwt.JwtAuthenticationFilter;
-import org.boot.growup.common.jwt.JwtTokenProvider;
-import org.boot.growup.source.seller.application.BrandApplication;
-import org.boot.growup.source.seller.dto.response.GetSellerBrandResponseDTO;
+import org.boot.growup.auth.utils.JwtAuthenticationFilter;
+import org.boot.growup.auth.utils.JwtTokenProvider;
+import org.boot.growup.product.application.BrandApplication;
+import org.boot.growup.product.controller.BrandController;
+import org.boot.growup.product.dto.response.GetSellerBrandResponseDTO;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

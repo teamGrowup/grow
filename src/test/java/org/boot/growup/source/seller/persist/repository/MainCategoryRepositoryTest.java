@@ -1,6 +1,7 @@
 package org.boot.growup.source.seller.persist.repository;
 
-import org.boot.growup.source.seller.persist.entity.MainCategory;
+import org.boot.growup.product.persist.entity.MainCategory;
+import org.boot.growup.product.persist.repository.MainCategoryRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

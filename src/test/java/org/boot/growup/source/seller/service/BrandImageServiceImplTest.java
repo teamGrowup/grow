@@ -1,9 +1,10 @@
 package org.boot.growup.source.seller.service;
 
-import org.boot.growup.common.ImageStore;
-import org.boot.growup.source.seller.persist.entity.Brand;
-import org.boot.growup.source.seller.persist.entity.BrandImage;
-import org.boot.growup.source.seller.persist.repository.BrandImageRepository;
+import org.boot.growup.common.utils.ImageStore;
+import org.boot.growup.product.persist.entity.Brand;
+import org.boot.growup.product.persist.entity.BrandImage;
+import org.boot.growup.product.persist.repository.BrandImageRepository;
+import org.boot.growup.product.service.Impl.BrandImageServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
