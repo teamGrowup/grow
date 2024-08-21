@@ -59,7 +59,7 @@ public class CustomerController {
      * @body String
      * @response String
      */
-    @PostMapping("/email/validation")
+    @PostMapping("/email/validations")
     public BaseResponse<EmailCheckResponseDTO> checkEmail(
                 @Valid @RequestBody EmailCheckRequestDTO request) throws MessagingException {
         EmailCheckResponseDTO response = customerService.checkEmail(request);
@@ -154,10 +154,35 @@ public class CustomerController {
      * @body NaverAdditionalInfoRequestDTO
      * @response TokenDTO
      */
-    @PostMapping("/oauth/naver/additional-info")
+    @PostMapping("/oauth/naver/additional-infos")
     public BaseResponse<TokenDTO> signInNaverAdditional(
                 @Valid @RequestBody NaverAdditionalInfoRequestDTO request) {
         TokenDTO response = customerService.signInNaverAdditional(request);
         return new BaseResponse<>(response);
+    }
+
+    /**
+     * [POST]
+     * 전화번호 인증 요청
+     * @header null
+     * @body PostPhoneNumberRequestDTO
+     * @response void
+     */
+    @PostMapping("/phone-numbers/validations")
+    public void postPhoneNumber(@RequestBody PostPhoneNumberRequestDTO request) {
+        customerService.postPhoneNumber(request);
+    }
+
+
+    /**
+     * [POST]
+     * 인증번호 전송 및 검증
+     * @header null
+     * @body PostAuthCodeRequestDTO
+     * @response void
+     */
+    @PostMapping("/phone-numbers/validations/codes")
+    public void postAuthCode(@RequestBody PostAuthCodeRequestDTO request) {
+        customerService.postAuthCode(request);
     }
 }

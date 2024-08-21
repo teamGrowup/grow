@@ -5,6 +5,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -17,9 +18,9 @@ public class RedisDao {
         values.set(key, data);
     }
 
-    public void setValues(String userEmail, String refreshToken, Long time) {
+    public void setValues(String key, String data, Long time) {
         ValueOperations<String, Object> values = redisTemplate.opsForValue();
-        values.set(userEmail, refreshToken, time, TimeUnit.MILLISECONDS);
+        values.set(key, data, time, TimeUnit.MILLISECONDS);
     }
 
     public String getValues(String key) {

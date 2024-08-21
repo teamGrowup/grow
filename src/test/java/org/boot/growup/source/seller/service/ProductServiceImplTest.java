@@ -2,6 +2,7 @@ package org.boot.growup.source.seller.service;
 
 import org.boot.growup.common.enumerate.AuthorityStatus;
 import org.boot.growup.source.seller.dto.request.PostProductRequestDTO;
+
 import org.boot.growup.source.seller.persist.entity.*;
 import org.boot.growup.source.seller.persist.repository.*;
 import org.boot.growup.source.seller.service.Impl.ProductServiceImpl;
@@ -128,6 +129,7 @@ class ProductServiceImplTest {
                 .build();
         productRepository.save(product); // Product 저장
 
+
         PostProductRequestDTO postProductRequestDto = PostProductRequestDTO.builder()
                 .name("업데이트된 제품")
                 .description("업데이트된 설명")
@@ -136,6 +138,11 @@ class ProductServiceImplTest {
                                 .optionName("업데이트된 옵션")
                                 .optionStock(100)
                                 .optionPrice(2000)
+                                .build(),
+                        PostProductRequestDTO.ProductOptionDTO.builder() // 빌더 사용
+                                .optionName("옵션2")
+                                .optionStock(5)
+                                .optionPrice(1500)
                                 .build()
                 ))
                 .subCategoryId(subCategory.getId()) // SubCategory ID 설정

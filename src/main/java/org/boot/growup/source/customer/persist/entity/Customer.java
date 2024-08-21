@@ -65,7 +65,20 @@ public class Customer {
     @Column(name = "role", nullable = false)
     private Role role;
 
+    @Column(name = "profile_url", length = 300)
     private String profileUrl;
+
+    @Column(nullable = false)
+    private boolean isValidPhoneNumber;
+
+    @Column(nullable = false)
+    private boolean isValidEmail;
+
+    @Column(nullable = false)
+    private boolean isAgreeSendEmail;
+
+    @Column(nullable = false)
+    private boolean isAgreeSendSms;
 
     public CustomUserDetails toUserDetails() {
         return new CustomUserDetails(email, password, role);
@@ -85,6 +98,10 @@ public class Customer {
                 .name(request.getName())
                 .provider(Provider.EMAIL)
                 .role(Role.CUSTOMER)
+                .isValidPhoneNumber(request.isValidPhoneNumber())
+                .isValidEmail(request.isValidEmail())
+                .isAgreeSendEmail(request.isAgreeSendEmail())
+                .isAgreeSendSms(request.isAgreeSendSms())
                 .build();
     }
 
