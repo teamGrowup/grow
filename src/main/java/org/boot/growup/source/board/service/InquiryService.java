@@ -5,9 +5,7 @@ import org.boot.growup.source.board.dto.response.GetInquiryResponseDTO;
 import org.boot.growup.source.board.persist.entity.Inquiry;
 import org.boot.growup.source.customer.persist.entity.Customer;
 import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
 
-@Service
 public interface InquiryService {
   /*
   일대일 문의(Inquiry) 등록

@@ -40,7 +40,7 @@ public class NoticeController {
 
   /**
    * 공지사항 목록 조회
-   * @param pageNo
+   * @param pageNo 페이지 번호
    * @return Page<GetNoticeResponseDTO>
    */
   @GetMapping("/customers/board/notice")
@@ -51,21 +51,21 @@ public class NoticeController {
 
   /**
    * 공지사항 수정
-   * @param noticeId
-   * @param postNoticeRequestDTO
+   * @param noticeId 공지사항ID
+   * @param postNoticeRequestDTO 공지사항 수정 객체
    * @return String
    */
   @PatchMapping("/admins/board/notice/{noticeId}")
   public BaseResponse<String> patchNotice(@PathVariable Long noticeId,
       @Valid @RequestBody PostNoticeRequestDTO postNoticeRequestDTO) {
     Admin admin = adminService.getCurrentAdmin();
-    Long id = noticeService.updateNotice(noticeId, postNoticeRequestDTO, admin);
+    Long id = noticeService.patchNotice(noticeId, postNoticeRequestDTO, admin);
     return new BaseResponse<>("공지사항 수정 성공. 공지사항 ID : " + id.toString());
   }
 
   /**
    * 공지사항 게시글 상세 조회
-   * @param noticeId
+   * @param noticeId 공지사항ID
    * @return GetNoticeResponseDTO
    */
   @GetMapping("/customers/board/notice/{noticeId}")
@@ -76,7 +76,7 @@ public class NoticeController {
 
   /**
    * 공지사항 게시글 삭제
-   * @param noticeId
+   * @param noticeId 공지사항ID
    * @return Long
    */
   @DeleteMapping("/admins/board/notice/{noticeId}")
