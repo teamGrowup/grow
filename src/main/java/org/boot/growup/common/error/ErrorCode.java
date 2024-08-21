@@ -53,6 +53,7 @@ public enum ErrorCode {
     PRODUCT_NAME_ALREADY_EXISTS(HttpStatus.BAD_REQUEST,404, false, "해당 상품명은 이미 존재합니다."),
     PRODUCT_BY_SELLER_NOT_FOUND(HttpStatus.BAD_REQUEST, 404, false, "해당 셀러ID의 상품은 존재하지 않습니다."),
     SUBCATEGORY_NOT_FOUND(HttpStatus.BAD_REQUEST, 404, false, "유효하지 않은 서브 카테고리 ID입니다."),
+    PRODUCT_LIKE_NOT_FOUND(HttpStatus.BAD_REQUEST, 404, false, "좋아요 정보를 찾을 수 없습니다."),
 
     /* Brand 관련 */
     BRAND_NAME_ALREADY_EXISTS(HttpStatus.BAD_REQUEST,404, false, "해당 브랜드명은 이미 존재합니다."),

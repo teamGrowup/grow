@@ -64,6 +64,39 @@ public class ProductController {
     }
 
     /**
+     * 상품 삭제 요청
+     * @param productId 상품 ID
+     * @return BaseResponse<String>
+     */
+    @DeleteMapping("/sellers/products/{productId}")
+    public BaseResponse<String> deleteProduct(@PathVariable Long productId) {
+        productApplication.deleteProduct(productId);
+        return new BaseResponse<>("상품 삭제가 완료되었습니다.");
+    }
+
+    /**
+     * 상품 좋아요
+     * @param productId 상품 ID
+     * @return BaseResponse
+     */
+    @PostMapping("/customers/products/{productId}/like")
+    public BaseResponse<String> postLikeProduct(@PathVariable Long productId) {
+        productApplication.postProductLike(productId);
+        return new BaseResponse<>("상품의 좋아요가 완료되었습니다.");
+    }
+
+    /**
+     * 상품 좋아요 취소
+     * @param productId 상품 ID
+     * @return BaseResponse
+     */
+    @DeleteMapping("/customers/products/{productId}/like")
+    public BaseResponse<String> deleteLikeProduct(@PathVariable Long productId) {
+        productApplication.deleteProductLike(productId);
+        return new BaseResponse<>("상품의 좋아요가 취소되었습니다.");
+    }
+
+    /**
      * 관리자가 등록된 상품들의 승인 상태 '거부'로 변경.
      * @param productId
      * @return

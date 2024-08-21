@@ -5,14 +5,15 @@ import org.boot.growup.common.error.BaseException;
 import org.boot.growup.common.enumerate.AuthorityStatus;
 import org.boot.growup.common.error.ErrorCode;
 import org.boot.growup.common.enumerate.Section;
+import org.boot.growup.source.customer.persist.entity.Customer;
+import org.boot.growup.source.customer.service.CustomerService;
 import org.boot.growup.source.seller.dto.request.PostProductRequestDTO;
 import org.boot.growup.source.seller.dto.response.GetSellerProductResponseDTO;
 import org.boot.growup.source.seller.dto.response.GetProductDetailResponseDTO;
 import org.boot.growup.source.seller.dto.response.GetProductRequestByStatusResponseDTO;
 import org.boot.growup.source.seller.persist.entity.*;
 import org.boot.growup.source.seller.persist.repository.ProductRepository;
-import org.boot.growup.source.seller.persist.repository.SellerRepository;
-import org.boot.growup.source.seller.service.ProductImageServiceImpl;
+import org.boot.growup.source.seller.service.ProductImageService;
 import org.boot.growup.source.seller.service.ProductService;
 import org.boot.growup.source.seller.service.SellerService;
 import org.springframework.stereotype.Service;
@@ -23,18 +24,14 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class ProductApplication {
 
     private final ProductService productService;
-    private final ProductImageServiceImpl productImageService;
+    private final ProductImageService productImageService;
     private final SellerService sellerService;
+    private final CustomerService customerService;
     private final ProductRepository productRepository;
-    private final SellerRepository sellerRepository;
 
-    /*
-    상품 등록 및 이미지 저장
-     */
     @Transactional
     public void postProductWithImages(PostProductRequestDTO postProductRequestDto, List<MultipartFile> productImages) {
         Seller seller = sellerService.getCurrentSeller();
@@ -46,12 +43,7 @@ public class ProductApplication {
 
     }
 
-    /**
-     * 현재 판매자의 상품 목록을 조회
-     *
-     * @return 판매자의 상품 목록
-     */
-    public GetSellerProductResponseDTO getSellerProduct() {
+    public GetSellerProductResponseDTO getSellerProduct() { // 추가 예정
         Seller seller = sellerService.getCurrentSeller(); // 현재 판매자 정보 가져오기
 
         Product product = productService.getProductBySellerId(seller.getId()); // 판매자의 상품 목록 조회
@@ -88,28 +80,45 @@ public class ProductApplication {
         }
     }
 
-    @Transactional
+    public void deleteProduct(Long productId) {
+        productRepository.deleteById(productId);
+    }
+
     public void denyProduct(Long productId) {
         // 상품 상태를 DENIED로 변경
         productService.changeProductAuthority(productId, AuthorityStatus.DENIED);
     }
 
-    @Transactional
     public void approveProduct(Long productId) {
         // 상품 상태를 APPROVED로 변경
         productService.changeProductAuthority(productId, AuthorityStatus.APPROVED);
     }
 
-    @Transactional
     public void pendingProduct(Long productId) {
         // 상품 상태를 PENDING으로 변경
         productService.changeProductAuthority(productId, AuthorityStatus.PENDING);
     }
 
     public List<GetProductRequestByStatusResponseDTO> getProductRequestsByStatus(AuthorityStatus authorityStatus, int pageNo) {
-        List<Product> productList = productService.readProductRequestsByStatus(authorityStatus, pageNo);
+        List<Product> productList = productService.getProductRequestsByStatus(authorityStatus, pageNo);
         return productList.stream()
                 .map(GetProductRequestByStatusResponseDTO::from)
                 .toList();
+    }
+
+    /*
+    상품 좋아요 증가
+     */
+    public void postProductLike(Long productId) {
+        Customer customer = customerService.getCurrentCustomer(); // 현재 고객 정보 가져오기
+        productService.postProductLike(productId, customer);
+    }
+
+    /*
+    상품 좋아요 취소
+     */
+    public void deleteProductLike(Long productId) {
+        Customer customer = customerService.getCurrentCustomer(); // 현재 고객 정보 가져오기
+        productService.deleteProductLike(productId, customer);
     }
 }

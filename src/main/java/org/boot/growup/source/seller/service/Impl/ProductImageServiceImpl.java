@@ -1,4 +1,4 @@
-package org.boot.growup.source.seller.service;
+package org.boot.growup.source.seller.service.Impl;
 
 import lombok.RequiredArgsConstructor;
 import org.boot.growup.common.ImageStore;
@@ -6,6 +6,7 @@ import org.boot.growup.common.enumerate.Section;
 import org.boot.growup.source.seller.persist.entity.Product;
 import org.boot.growup.source.seller.persist.entity.ProductImage;
 import org.boot.growup.source.seller.persist.repository.ProductImageRepository;
+import org.boot.growup.source.seller.service.ProductImageService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,7 +15,6 @@ import java.io.File;
 import java.util.List;
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class ProductImageServiceImpl implements ProductImageService {
     private final ProductImageRepository productImageRepository;
     private final ImageStore imageStore;
@@ -25,7 +25,6 @@ public class ProductImageServiceImpl implements ProductImageService {
         return productImageDir + filename;
     }
 
-    @Transactional
     public void postProductImages(List<MultipartFile> productImages, Product product, Section section) {
 
         for (MultipartFile multipartFile : productImages) {

@@ -5,6 +5,7 @@ import org.boot.growup.common.enumerate.Section;
 import org.boot.growup.source.seller.persist.entity.Product;
 import org.boot.growup.source.seller.persist.entity.ProductImage;
 import org.boot.growup.source.seller.persist.repository.ProductImageRepository;
+import org.boot.growup.source.seller.service.Impl.ProductImageServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

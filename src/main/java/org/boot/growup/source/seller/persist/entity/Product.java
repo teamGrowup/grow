@@ -32,6 +32,9 @@ public class Product {
     @Column(name = "like_count")
     private Integer likeCount; // 좋아요 수
 
+    @Column(name = "delivery_fee")
+    private Integer deliveryFee; // 배송비
+
     @ManyToOne
     @JoinColumn(name = "subcategory_id", nullable = false)
     private SubCategory subCategory;
@@ -60,6 +63,7 @@ public class Product {
         return Product.builder()
                 .name(postProductRequestDto.getName())
                 .description(postProductRequestDto.getDescription())
+                .deliveryFee(postProductRequestDto.getDeliveryFee())
                 .authorityStatus(AuthorityStatus.PENDING) // 기본 상태를 PENDING으로 설정
                 .subCategory(subCategory)
                 .brand(brand)
@@ -94,6 +98,21 @@ public class Product {
     public void initLikeCount() {
         this.likeCount = 0; // 초기 좋아요 수
     }
+
+    // 좋아요 수 증가
+    public void likeCountPlus() {
+        if (this.likeCount == null) {
+            initLikeCount(); // 초기화 메서드 호출
+        }
+        this.likeCount++;
+    }
+
+    // 좋아요 수 감소
+    public void likeCountMinus() {
+        if (this.likeCount != null && this.likeCount > 0) {
+            this.likeCount--;
+        }
+    }
     /*
     상품 옵션 초기화
      */
@@ -119,5 +138,7 @@ public class Product {
     public void patchBrand(Brand brand) {
         this.brand = brand;
     }
+
+
 }
 

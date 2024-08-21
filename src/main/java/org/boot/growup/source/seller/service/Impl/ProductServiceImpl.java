@@ -1,19 +1,20 @@
-package org.boot.growup.source.seller.service;
+package org.boot.growup.source.seller.service.Impl;
 
 import lombok.RequiredArgsConstructor;
 import org.boot.growup.common.error.BaseException;
 import org.boot.growup.common.enumerate.AuthorityStatus;
 import org.boot.growup.common.error.ErrorCode;
+import org.boot.growup.source.customer.persist.entity.Customer;
 import org.boot.growup.source.seller.dto.request.PostProductRequestDTO;
 import org.boot.growup.source.seller.persist.entity.*;
 import org.boot.growup.source.seller.persist.repository.BrandRepository;
+import org.boot.growup.source.seller.persist.repository.ProductLikeRepository;
 import org.boot.growup.source.seller.persist.repository.ProductRepository;
 import org.boot.growup.source.seller.persist.repository.SubCategoryRepository;
+import org.boot.growup.source.seller.service.ProductService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import jakarta.transaction.Transactional;
 
 import java.util.List;
 
@@ -23,9 +24,9 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final SubCategoryRepository subCategoryRepository;
     private final BrandRepository brandRepository;
+    private final ProductLikeRepository productLikeRepository;
 
     @Override
-    @Transactional
     public Product postProduct(PostProductRequestDTO postProductRequestDto, Seller seller) {
         // 서브 카테고리 가져오기
         SubCategory subCategory = subCategoryRepository.findById(postProductRequestDto.getSubCategoryId())
@@ -69,7 +70,6 @@ public class ProductServiceImpl implements ProductService {
                 .toList();
     }
 
-    @Transactional
     @Override
     public Product patchProduct(PostProductRequestDTO postProductRequestDto, Seller seller, Long productId) {
         // 판매자ID와 상품 ID로 상품 조회
@@ -90,7 +90,6 @@ public class ProductServiceImpl implements ProductService {
         return product;
     }
 
-    @Transactional
     @Override
     public void changeProductAuthority(Long productId, AuthorityStatus status) {
         Product product = productRepository.findById(productId)
@@ -104,7 +103,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> readProductRequestsByStatus(AuthorityStatus authorityStatus, int pageNo) {
+    public List<Product> getProductRequestsByStatus(AuthorityStatus authorityStatus, int pageNo) {
         Pageable pageable = PageRequest.of(pageNo, 10);
 
         if (authorityStatus == null) {
@@ -112,5 +111,34 @@ public class ProductServiceImpl implements ProductService {
         }
 
         return productRepository.findByAuthorityStatus(authorityStatus, pageable);
+    }
+
+    public void postProductLike(Long productId, Customer customer) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new BaseException(ErrorCode.PRODUCT_NOT_FOUND));
+
+        ProductLike productLike = ProductLike.builder()
+                .customer(customer)
+                .product(product)
+                .build();
+
+        product.likeCountPlus();
+
+        productLikeRepository.save(productLike);
+    }
+
+    public void deleteProductLike(Long productId, Customer customer) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new BaseException(ErrorCode.PRODUCT_NOT_FOUND));
+
+        // 좋아요 정보 찾기
+        ProductLike productLike = productLikeRepository.findByCustomerAndProduct(customer, product)
+                .orElseThrow(() -> new BaseException(ErrorCode.PRODUCT_LIKE_NOT_FOUND));
+
+        // 좋아요 수 감소
+        product.likeCountMinus();
+
+        // 좋아요 정보 삭제
+        productLikeRepository.delete(productLike);
     }
 }
