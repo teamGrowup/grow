@@ -127,7 +127,7 @@ public class ProductApplication {
      * @param productId 상품 ID
      */
     @Transactional
-    public void likeProduct(Long productId) {
+    public void postProductLike(Long productId) {
         Customer customer = customerService.getCurrentCustomer(); // 현재 고객 정보 가져오기
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new BaseException(ErrorCode.PRODUCT_NOT_FOUND));
@@ -150,7 +150,7 @@ public class ProductApplication {
      * @param productId 상품 ID
      */
     @Transactional
-    public void unlikeProduct(Long productId) {
+    public void deleteProductLike(Long productId) {
         Customer customer = customerService.getCurrentCustomer(); // 현재 고객 정보 가져오기
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new BaseException(ErrorCode.PRODUCT_NOT_FOUND));

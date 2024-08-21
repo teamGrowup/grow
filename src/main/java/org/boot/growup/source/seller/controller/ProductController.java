@@ -77,22 +77,22 @@ public class ProductController {
     /**
      * 상품 좋아요
      * @param productId 상품 ID
-     * @return ResponseEntity
+     * @return BaseResponse
      */
     @PostMapping("/customers/products/{productId}/like")
-    public BaseResponse<String> likeProduct(@PathVariable Long productId) {
-        productApplication.likeProduct(productId);
+    public BaseResponse<String> postLikeProduct(@PathVariable Long productId) {
+        productApplication.postProductLike(productId);
         return new BaseResponse<>("상품의 좋아요가 완료되었습니다.");
     }
 
     /**
      * 상품 좋아요 취소
      * @param productId 상품 ID
-     * @return ResponseEntity
+     * @return BaseResponse
      */
     @DeleteMapping("/customers/products/{productId}/like")
-    public BaseResponse<String> unlikeProduct(@PathVariable Long productId) {
-        productApplication.unlikeProduct(productId);
+    public BaseResponse<String> deleteLikeProduct(@PathVariable Long productId) {
+        productApplication.deleteProductLike(productId);
         return new BaseResponse<>("상품의 좋아요가 취소되었습니다.");
     }
 
