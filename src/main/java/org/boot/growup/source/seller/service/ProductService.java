@@ -4,11 +4,9 @@ import org.boot.growup.common.enumerate.AuthorityStatus;
 import org.boot.growup.source.seller.dto.request.PostProductRequestDTO;
 import org.boot.growup.source.seller.persist.entity.Product;
 import org.boot.growup.source.seller.persist.entity.Seller;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
 public interface ProductService {
     /*
     상품 등록
@@ -33,5 +31,5 @@ public interface ProductService {
     /*
     권한 상태에 따른 상품 검색
      */
-    List<Product> readProductRequestsByStatus(AuthorityStatus authorityStatus, int pageNo);
+    List<Product> getProductRequestsByStatus(AuthorityStatus authorityStatus, int pageNo);
 }

@@ -1,4 +1,4 @@
-package org.boot.growup.source.seller.service;
+package org.boot.growup.source.seller.service.Impl;
 
 import lombok.RequiredArgsConstructor;
 import org.boot.growup.common.error.BaseException;
@@ -9,11 +9,10 @@ import org.boot.growup.source.seller.persist.entity.*;
 import org.boot.growup.source.seller.persist.repository.BrandRepository;
 import org.boot.growup.source.seller.persist.repository.ProductRepository;
 import org.boot.growup.source.seller.persist.repository.SubCategoryRepository;
+import org.boot.growup.source.seller.service.ProductService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import jakarta.transaction.Transactional;
 
 import java.util.List;
 
@@ -25,7 +24,6 @@ public class ProductServiceImpl implements ProductService {
     private final BrandRepository brandRepository;
 
     @Override
-    @Transactional
     public Product postProduct(PostProductRequestDTO postProductRequestDto, Seller seller) {
         // 서브 카테고리 가져오기
         SubCategory subCategory = subCategoryRepository.findById(postProductRequestDto.getSubCategoryId())
@@ -69,7 +67,6 @@ public class ProductServiceImpl implements ProductService {
                 .toList();
     }
 
-    @Transactional
     @Override
     public Product patchProduct(PostProductRequestDTO postProductRequestDto, Seller seller, Long productId) {
         // 판매자ID와 상품 ID로 상품 조회
@@ -90,7 +87,6 @@ public class ProductServiceImpl implements ProductService {
         return product;
     }
 
-    @Transactional
     @Override
     public void changeProductAuthority(Long productId, AuthorityStatus status) {
         Product product = productRepository.findById(productId)
@@ -104,7 +100,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> readProductRequestsByStatus(AuthorityStatus authorityStatus, int pageNo) {
+    public List<Product> getProductRequestsByStatus(AuthorityStatus authorityStatus, int pageNo) {
         Pageable pageable = PageRequest.of(pageNo, 10);
 
         if (authorityStatus == null) {

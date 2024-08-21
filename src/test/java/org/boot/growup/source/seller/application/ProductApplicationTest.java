@@ -11,7 +11,7 @@ import org.boot.growup.source.seller.dto.MainCategoryDTO;
 import org.boot.growup.source.seller.persist.repository.BrandRepository;
 import org.boot.growup.source.seller.persist.repository.ProductRepository;
 import org.boot.growup.source.seller.persist.repository.SellerRepository;
-import org.boot.growup.source.seller.service.ProductImageServiceImpl;
+import org.boot.growup.source.seller.service.Impl.ProductImageServiceImpl;
 import org.boot.growup.source.seller.service.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

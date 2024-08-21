@@ -5,14 +5,16 @@ import org.boot.growup.common.error.BaseException;
 import org.boot.growup.common.enumerate.AuthorityStatus;
 import org.boot.growup.common.error.ErrorCode;
 import org.boot.growup.common.enumerate.Section;
+import org.boot.growup.source.customer.persist.entity.Customer;
+import org.boot.growup.source.customer.service.CustomerService;
 import org.boot.growup.source.seller.dto.request.PostProductRequestDTO;
 import org.boot.growup.source.seller.dto.response.GetSellerProductResponseDTO;
 import org.boot.growup.source.seller.dto.response.GetProductDetailResponseDTO;
 import org.boot.growup.source.seller.dto.response.GetProductRequestByStatusResponseDTO;
 import org.boot.growup.source.seller.persist.entity.*;
+import org.boot.growup.source.seller.persist.repository.ProductLikeRepository;
 import org.boot.growup.source.seller.persist.repository.ProductRepository;
-import org.boot.growup.source.seller.persist.repository.SellerRepository;
-import org.boot.growup.source.seller.service.ProductImageServiceImpl;
+import org.boot.growup.source.seller.service.ProductImageService;
 import org.boot.growup.source.seller.service.ProductService;
 import org.boot.growup.source.seller.service.SellerService;
 import org.springframework.stereotype.Service;
@@ -27,14 +29,12 @@ import java.util.List;
 public class ProductApplication {
 
     private final ProductService productService;
-    private final ProductImageServiceImpl productImageService;
+    private final ProductImageService productImageService;
     private final SellerService sellerService;
+    private final CustomerService customerService;
     private final ProductRepository productRepository;
-    private final SellerRepository sellerRepository;
+    private final ProductLikeRepository productLikeRepository;
 
-    /*
-    상품 등록 및 이미지 저장
-     */
     @Transactional
     public void postProductWithImages(PostProductRequestDTO postProductRequestDto, List<MultipartFile> productImages) {
         Seller seller = sellerService.getCurrentSeller();
@@ -88,6 +88,15 @@ public class ProductApplication {
         }
     }
 
+    /**
+     * 상품 삭제
+     * @param productId 상품 ID
+     */
+    @Transactional
+    public void deleteProduct(Long productId) {
+        productRepository.deleteById(productId);
+    }
+
     @Transactional
     public void denyProduct(Long productId) {
         // 상품 상태를 DENIED로 변경
@@ -107,9 +116,53 @@ public class ProductApplication {
     }
 
     public List<GetProductRequestByStatusResponseDTO> getProductRequestsByStatus(AuthorityStatus authorityStatus, int pageNo) {
-        List<Product> productList = productService.readProductRequestsByStatus(authorityStatus, pageNo);
+        List<Product> productList = productService.getProductRequestsByStatus(authorityStatus, pageNo);
         return productList.stream()
                 .map(GetProductRequestByStatusResponseDTO::from)
                 .toList();
+    }
+
+    /**
+     * 상품 좋아요 증가
+     * @param productId 상품 ID
+     */
+    @Transactional
+    public void likeProduct(Long productId) {
+        Customer customer = customerService.getCurrentCustomer(); // 현재 고객 정보 가져오기
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new BaseException(ErrorCode.PRODUCT_NOT_FOUND));
+
+        // 좋아요 엔티티 생성
+        ProductLike productLike = ProductLike.builder()
+                .customer(customer)
+                .product(product)
+                .build();
+
+        // 좋아요 수 증가
+        product.likeCountPlus();
+
+        // 좋아요 정보 저장
+        productLikeRepository.save(productLike);
+    }
+
+    /**
+     * 상품 좋아요 감소
+     * @param productId 상품 ID
+     */
+    @Transactional
+    public void unlikeProduct(Long productId) {
+        Customer customer = customerService.getCurrentCustomer(); // 현재 고객 정보 가져오기
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new BaseException(ErrorCode.PRODUCT_NOT_FOUND));
+
+        // 좋아요 정보 찾기
+        ProductLike productLike = productLikeRepository.findByCustomerAndProduct(customer, product)
+                .orElseThrow(() -> new BaseException(ErrorCode.LIKE_NOT_FOUND));
+
+        // 좋아요 수 감소
+        product.likeCountMinus();
+
+        // 좋아요 정보 삭제
+        productLikeRepository.delete(productLike);
     }
 }
