@@ -1,8 +1,17 @@
 package org.boot.growup.source.seller.persist.repository;
 
-import org.boot.growup.common.enumerate.Section;
-import org.boot.growup.source.seller.persist.entity.*;
-import org.boot.growup.common.enumerate.AuthorityStatus;
+import org.boot.growup.auth.persist.repository.SellerRepository;
+import org.boot.growup.auth.persist.entity.Seller;
+import org.boot.growup.common.constant.Section;
+import org.boot.growup.product.persist.entity.MainCategory;
+import org.boot.growup.product.persist.entity.Product;
+import org.boot.growup.product.persist.entity.ProductImage;
+import org.boot.growup.product.persist.entity.SubCategory;
+import org.boot.growup.product.persist.repository.MainCategoryRepository;
+import org.boot.growup.product.persist.repository.ProductImageRepository;
+import org.boot.growup.product.persist.repository.ProductRepository;
+import org.boot.growup.product.persist.repository.SubCategoryRepository;
+import org.boot.growup.common.constant.AuthorityStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

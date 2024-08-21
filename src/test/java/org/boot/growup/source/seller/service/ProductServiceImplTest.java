@@ -1,11 +1,19 @@
 package org.boot.growup.source.seller.service;
 
-import org.boot.growup.common.enumerate.AuthorityStatus;
-import org.boot.growup.source.seller.dto.request.PostProductRequestDTO;
+import org.boot.growup.auth.persist.repository.SellerRepository;
+import org.boot.growup.auth.persist.entity.Seller;
+import org.boot.growup.common.constant.AuthorityStatus;
+import org.boot.growup.product.dto.request.PostProductRequestDTO;
 
-import org.boot.growup.source.seller.persist.entity.*;
-import org.boot.growup.source.seller.persist.repository.*;
-import org.boot.growup.source.seller.service.Impl.ProductServiceImpl;
+import org.boot.growup.product.persist.entity.Brand;
+import org.boot.growup.product.persist.entity.MainCategory;
+import org.boot.growup.product.persist.entity.Product;
+import org.boot.growup.product.persist.entity.SubCategory;
+import org.boot.growup.product.persist.repository.BrandRepository;
+import org.boot.growup.product.persist.repository.MainCategoryRepository;
+import org.boot.growup.product.persist.repository.ProductRepository;
+import org.boot.growup.product.persist.repository.SubCategoryRepository;
+import org.boot.growup.product.service.Impl.ProductServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

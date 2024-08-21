@@ -1,11 +1,11 @@
 package org.boot.growup.source.seller.service;
 
-import org.boot.growup.common.ImageStore;
-import org.boot.growup.common.enumerate.Section;
-import org.boot.growup.source.seller.persist.entity.Product;
-import org.boot.growup.source.seller.persist.entity.ProductImage;
-import org.boot.growup.source.seller.persist.repository.ProductImageRepository;
-import org.boot.growup.source.seller.service.Impl.ProductImageServiceImpl;
+import org.boot.growup.common.utils.ImageStore;
+import org.boot.growup.common.constant.Section;
+import org.boot.growup.product.persist.entity.Product;
+import org.boot.growup.product.persist.entity.ProductImage;
+import org.boot.growup.product.persist.repository.ProductImageRepository;
+import org.boot.growup.product.service.Impl.ProductImageServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

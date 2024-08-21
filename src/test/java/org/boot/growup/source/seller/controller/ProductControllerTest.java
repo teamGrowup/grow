@@ -1,13 +1,14 @@
 package org.boot.growup.source.seller.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.boot.growup.common.enumerate.Section;
-import org.boot.growup.common.jwt.JwtAuthenticationFilter;
-import org.boot.growup.common.jwt.JwtTokenProvider;
-import org.boot.growup.source.seller.application.ProductApplication;
-import org.boot.growup.source.seller.dto.request.PostProductRequestDTO;
-import org.boot.growup.source.seller.dto.response.GetProductDetailResponseDTO;
-import org.boot.growup.common.enumerate.AuthorityStatus;
+import org.boot.growup.common.constant.Section;
+import org.boot.growup.auth.utils.JwtAuthenticationFilter;
+import org.boot.growup.auth.utils.JwtTokenProvider;
+import org.boot.growup.product.application.ProductApplication;
+import org.boot.growup.product.controller.ProductController;
+import org.boot.growup.product.dto.request.PostProductRequestDTO;
+import org.boot.growup.product.dto.response.GetProductDetailResponseDTO;
+import org.boot.growup.common.constant.AuthorityStatus;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

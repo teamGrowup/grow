@@ -1,6 +1,7 @@
 package org.boot.growup.source.seller.persist.repository;
 
-import org.boot.growup.source.seller.persist.entity.Seller;
+import org.boot.growup.auth.persist.repository.SellerRepository;
+import org.boot.growup.auth.persist.entity.Seller;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
