@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import org.boot.growup.common.enumerate.Gender;
 import org.boot.growup.common.enumerate.Role;
 import org.boot.growup.common.enumerate.Provider;
-import org.boot.growup.common.enumerate.UserAgree;
 import org.boot.growup.common.oauth2.google.dto.GoogleAccountResponseDTO;
 import org.boot.growup.common.oauth2.kakao.dto.KakaoAccountResponseDTO;
 import org.boot.growup.common.oauth2.naver.dto.NaverAccountResponseDTO;
@@ -66,24 +65,20 @@ public class Customer {
     @Column(name = "role", nullable = false)
     private Role role;
 
-    @Column(name = "photo_url", length = 300)
-    private String photoUrl;
+    @Column(name = "profile_url", length = 300)
+    private String profileUrl;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private UserAgree isValidPhoneNumber;
+    private boolean isValidPhoneNumber;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private UserAgree isValidEmail;
+    private boolean isValidEmail;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private UserAgree isAgreeSendEmail;
+    private boolean isAgreeSendEmail;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private UserAgree isAgreeSendSms;
+    private boolean isAgreeSendSms;
 
     public CustomUserDetails toUserDetails() {
         return new CustomUserDetails(email, password, role);
@@ -103,10 +98,10 @@ public class Customer {
                 .name(request.getName())
                 .provider(Provider.EMAIL)
                 .role(Role.CUSTOMER)
-                .isValidPhoneNumber(request.getIsValidPhoneNumber())
-                .isValidEmail(request.getIsValidEmail())
-                .isAgreeSendEmail(request.getIsAgreeSendEmail())
-                .isAgreeSendSms(request.getIsAgreeSendSms())
+                .isValidPhoneNumber(request.isValidPhoneNumber())
+                .isValidEmail(request.isValidEmail())
+                .isAgreeSendEmail(request.isAgreeSendEmail())
+                .isAgreeSendSms(request.isAgreeSendSms())
                 .build();
     }
 

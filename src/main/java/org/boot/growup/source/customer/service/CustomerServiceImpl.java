@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.boot.growup.common.email.EmailMessageDTO;
 import org.boot.growup.common.email.EmailService;
-import org.boot.growup.common.enumerate.UserAgree;
 import org.boot.growup.common.enumerate.Role;
 import org.boot.growup.common.error.BaseException;
 import org.boot.growup.common.error.ErrorCode;
@@ -34,9 +33,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
-import org.springframework.transaction.annotation.Transactional;
+
 import org.springframework.util.ObjectUtils;
-import java.security.SecureRandom;
 
 import static org.boot.growup.common.error.ErrorCode.*;
 
@@ -55,7 +53,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public void signUp(CustomerSignUpRequestDTO request) {
-        if(request.getIsValidPhoneNumber() == UserAgree.FALSE) {
+        if(!request.isValidPhoneNumber()) {
             throw new BaseException(INVALID_PHONE_NUMBER);
         }
         /* 비밀번호 암호화 */
@@ -230,7 +228,7 @@ public class CustomerServiceImpl implements CustomerService {
     public void postAuthCode(PostAuthCodeRequestDTO request) {
         String storedAuthCode = redisDao.getValues(request.getPhoneNumber());
         if(!storedAuthCode.equals(request.getAuthCode())) {
-            throw new BaseException(ErrorCode.WRONG_AUTH_CODE);
+            throw new BaseException(ErrorCode.PHONE_WRONG_AUTH_CODE);
         }
         redisDao.deleteValues(request.getPhoneNumber());
     }
