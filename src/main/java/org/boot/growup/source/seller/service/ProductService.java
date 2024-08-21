@@ -1,6 +1,7 @@
 package org.boot.growup.source.seller.service;
 
 import org.boot.growup.common.enumerate.AuthorityStatus;
+import org.boot.growup.source.customer.persist.entity.Customer;
 import org.boot.growup.source.seller.dto.request.PostProductRequestDTO;
 import org.boot.growup.source.seller.persist.entity.Product;
 import org.boot.growup.source.seller.persist.entity.Seller;
@@ -32,4 +33,14 @@ public interface ProductService {
     권한 상태에 따른 상품 검색
      */
     List<Product> getProductRequestsByStatus(AuthorityStatus authorityStatus, int pageNo);
+
+    /*
+    상품 좋아요 증가
+     */
+    void postProductLike(Long productId, Customer customer);
+
+    /*
+    상품 좋아요 감소
+     */
+    void deleteProductLike(Long productId, Customer customer);
 }

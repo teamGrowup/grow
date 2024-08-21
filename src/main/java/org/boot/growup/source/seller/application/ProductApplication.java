@@ -12,7 +12,6 @@ import org.boot.growup.source.seller.dto.response.GetSellerProductResponseDTO;
 import org.boot.growup.source.seller.dto.response.GetProductDetailResponseDTO;
 import org.boot.growup.source.seller.dto.response.GetProductRequestByStatusResponseDTO;
 import org.boot.growup.source.seller.persist.entity.*;
-import org.boot.growup.source.seller.persist.repository.ProductLikeRepository;
 import org.boot.growup.source.seller.persist.repository.ProductRepository;
 import org.boot.growup.source.seller.service.ProductImageService;
 import org.boot.growup.source.seller.service.ProductService;
@@ -25,7 +24,6 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class ProductApplication {
 
     private final ProductService productService;
@@ -33,7 +31,6 @@ public class ProductApplication {
     private final SellerService sellerService;
     private final CustomerService customerService;
     private final ProductRepository productRepository;
-    private final ProductLikeRepository productLikeRepository;
 
     @Transactional
     public void postProductWithImages(PostProductRequestDTO postProductRequestDto, List<MultipartFile> productImages) {
@@ -46,12 +43,7 @@ public class ProductApplication {
 
     }
 
-    /**
-     * 현재 판매자의 상품 목록을 조회
-     *
-     * @return 판매자의 상품 목록
-     */
-    public GetSellerProductResponseDTO getSellerProduct() {
+    public GetSellerProductResponseDTO getSellerProduct() { // 추가 예정
         Seller seller = sellerService.getCurrentSeller(); // 현재 판매자 정보 가져오기
 
         Product product = productService.getProductBySellerId(seller.getId()); // 판매자의 상품 목록 조회
@@ -88,28 +80,20 @@ public class ProductApplication {
         }
     }
 
-    /**
-     * 상품 삭제
-     * @param productId 상품 ID
-     */
-    @Transactional
     public void deleteProduct(Long productId) {
         productRepository.deleteById(productId);
     }
 
-    @Transactional
     public void denyProduct(Long productId) {
         // 상품 상태를 DENIED로 변경
         productService.changeProductAuthority(productId, AuthorityStatus.DENIED);
     }
 
-    @Transactional
     public void approveProduct(Long productId) {
         // 상품 상태를 APPROVED로 변경
         productService.changeProductAuthority(productId, AuthorityStatus.APPROVED);
     }
 
-    @Transactional
     public void pendingProduct(Long productId) {
         // 상품 상태를 PENDING으로 변경
         productService.changeProductAuthority(productId, AuthorityStatus.PENDING);
@@ -122,47 +106,19 @@ public class ProductApplication {
                 .toList();
     }
 
-    /**
-     * 상품 좋아요 증가
-     * @param productId 상품 ID
+    /*
+    상품 좋아요 증가
      */
-    @Transactional
     public void postProductLike(Long productId) {
         Customer customer = customerService.getCurrentCustomer(); // 현재 고객 정보 가져오기
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new BaseException(ErrorCode.PRODUCT_NOT_FOUND));
-
-        // 좋아요 엔티티 생성
-        ProductLike productLike = ProductLike.builder()
-                .customer(customer)
-                .product(product)
-                .build();
-
-        // 좋아요 수 증가
-        product.likeCountPlus();
-
-        // 좋아요 정보 저장
-        productLikeRepository.save(productLike);
+        productService.postProductLike(productId, customer);
     }
 
-    /**
-     * 상품 좋아요 감소
-     * @param productId 상품 ID
+    /*
+    상품 좋아요 취소
      */
-    @Transactional
     public void deleteProductLike(Long productId) {
         Customer customer = customerService.getCurrentCustomer(); // 현재 고객 정보 가져오기
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new BaseException(ErrorCode.PRODUCT_NOT_FOUND));
-
-        // 좋아요 정보 찾기
-        ProductLike productLike = productLikeRepository.findByCustomerAndProduct(customer, product)
-                .orElseThrow(() -> new BaseException(ErrorCode.LIKE_NOT_FOUND));
-
-        // 좋아요 수 감소
-        product.likeCountMinus();
-
-        // 좋아요 정보 삭제
-        productLikeRepository.delete(productLike);
+        productService.deleteProductLike(productId, customer);
     }
 }

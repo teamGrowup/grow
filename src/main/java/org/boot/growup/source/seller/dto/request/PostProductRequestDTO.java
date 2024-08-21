@@ -16,7 +16,7 @@ public class PostProductRequestDTO {
     @NotBlank(message = "상품 설명은 필수입니다.")
     private String description;
 
-    private Integer deliveryFee;
+    private int deliveryFee;
 
     private Long subCategoryId;
 
