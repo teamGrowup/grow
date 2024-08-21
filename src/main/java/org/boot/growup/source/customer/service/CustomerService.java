@@ -9,7 +9,6 @@ import org.boot.growup.source.customer.dto.request.*;
 import org.boot.growup.source.customer.dto.response.EmailCheckResponseDTO;
 import org.springframework.stereotype.Service;
 
-@Service
 public interface CustomerService {
     /*
     구매자 이메일 회원가입
@@ -55,4 +54,14 @@ public interface CustomerService {
     신규 가입자 네이버 Oauth2.0 로그인 > 추가 정보 입력
      */
     TokenDTO signInNaverAdditional(NaverAdditionalInfoRequestDTO request);
+
+    /*
+    전화번호 인증요청
+     */
+    void postPhoneNumber(PostPhoneNumberRequestDTO request);
+
+    /*
+    전화번호 인증 > 인증번호 검증
+     */
+    void postAuthCode(PostAuthCodeRequestDTO request);
 }

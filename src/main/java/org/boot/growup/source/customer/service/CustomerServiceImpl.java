@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.boot.growup.common.email.EmailMessageDTO;
 import org.boot.growup.common.email.EmailService;
+import org.boot.growup.common.enumerate.UserAgree;
 import org.boot.growup.common.error.BaseException;
 import org.boot.growup.common.error.ErrorCode;
 import org.boot.growup.common.jwt.JwtTokenProvider;
@@ -15,6 +16,8 @@ import org.boot.growup.common.enumerate.Provider;
 import org.boot.growup.common.oauth2.google.dto.GoogleAccountResponseDTO;
 import org.boot.growup.common.oauth2.kakao.dto.KakaoAccountResponseDTO;
 import org.boot.growup.common.oauth2.naver.dto.NaverAccountResponseDTO;
+import org.boot.growup.common.redis.RedisDao;
+import org.boot.growup.common.sms.SmsUtil;
 import org.boot.growup.common.userdetail.CustomUserDetailService;
 import org.boot.growup.source.customer.dto.request.*;
 import org.boot.growup.source.customer.dto.response.EmailCheckResponseDTO;
@@ -26,14 +29,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.springframework.stereotype.Service;
 
-import org.springframework.transaction.annotation.Transactional;
+import java.security.SecureRandom;
 
 import static org.boot.growup.common.error.ErrorCode.*;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository customerRepository;
     private final PasswordEncoder passwordEncoder;
@@ -41,10 +43,14 @@ public class CustomerServiceImpl implements CustomerService {
     private final JwtTokenProvider jwtTokenProvider;
     private final EmailService emailService;
     private final HttpSession session;
+    private final SmsUtil smsUtil;
+    private final RedisDao redisDao;
 
-    @Transactional
     @Override
     public void signUp(CustomerSignUpRequestDTO request) {
+        if(request.getIsValidPhoneNumber() == UserAgree.FALSE) {
+            throw new BaseException(INVALID_PHONE_NUMBER);
+        }
         /* 비밀번호 암호화 */
         String encodedPassword = encodingPassword(request);
         log.info("SignUp Method => before pw : {} | after store pw : {}"
@@ -59,7 +65,6 @@ public class CustomerServiceImpl implements CustomerService {
         return passwordEncoder.encode(request.getPassword());
     }
 
-    @Transactional
     @Override
     public TokenDTO signIn(CustomerSignInRequestDTO request) {
         UserDetails userDetails = customUserDetailService.loadUserByUsernameAndProvider(request.getEmail(), Provider.EMAIL);
@@ -75,7 +80,6 @@ public class CustomerServiceImpl implements CustomerService {
         return passwordEncoder.matches(rawPassword, encodedPassword);
     }
 
-    @Transactional
     @Override
     public EmailCheckResponseDTO checkEmail(EmailCheckRequestDTO request) throws MessagingException {
         EmailMessageDTO emailMessage = EmailMessageDTO.from(request);
@@ -85,7 +89,6 @@ public class CustomerServiceImpl implements CustomerService {
                 .build();
     }
 
-    @Transactional
     @Override
     public TokenDTO signInGoogle(GoogleAccountResponseDTO googleAccount) {
         return customerRepository
@@ -108,7 +111,6 @@ public class CustomerServiceImpl implements CustomerService {
 
     }
 
-    @Transactional
     @Override
     public TokenDTO signInGoogleAdditional(GoogleAdditionalInfoRequestDTO request) {
         GoogleAccountResponseDTO googleAccount = (GoogleAccountResponseDTO) session.getAttribute("googleAccount");
@@ -125,7 +127,6 @@ public class CustomerServiceImpl implements CustomerService {
         return jwtTokenProvider.generateToken(userDetails.getUsername(),userDetails.getAuthorities());
     }
 
-    @Transactional
     @Override
     public TokenDTO signInKakao(KakaoAccountResponseDTO kakaoAccount) {
         return customerRepository
@@ -148,7 +149,6 @@ public class CustomerServiceImpl implements CustomerService {
                 });
     }
 
-    @Transactional
     @Override
     public TokenDTO signInKakaoAdditional(KakaoAdditionalInfoRequestDTO request) {
         KakaoAccountResponseDTO kakaoAccount = (KakaoAccountResponseDTO) session.getAttribute("kakaoAccount");
@@ -165,7 +165,6 @@ public class CustomerServiceImpl implements CustomerService {
         return jwtTokenProvider.generateToken(userDetails.getUsername(),userDetails.getAuthorities());
     }
 
-    @Transactional
     @Override
     public TokenDTO signInNaver(NaverAccountResponseDTO naverAccount) {
         return customerRepository
@@ -187,7 +186,6 @@ public class CustomerServiceImpl implements CustomerService {
                 });
     }
 
-    @Transactional
     @Override
     public TokenDTO signInNaverAdditional(NaverAdditionalInfoRequestDTO request) {
         NaverAccountResponseDTO naverAccount = (NaverAccountResponseDTO) session.getAttribute("naverAccount");
@@ -202,5 +200,31 @@ public class CustomerServiceImpl implements CustomerService {
                 naverAccount.getResponse().getEmail(), Provider.NAVER);
 
         return jwtTokenProvider.generateToken(userDetails.getUsername(),userDetails.getAuthorities());
+    }
+
+    @Override
+    public void postPhoneNumber(PostPhoneNumberRequestDTO request) {
+        String parsedPhoneNumber = request.getPhoneNumber().replaceAll("-","");
+        String authCode = createAuthCode();
+
+        smsUtil.sendMessage(parsedPhoneNumber, authCode);
+
+        redisDao.setValues(request.getPhoneNumber(), authCode, 1000 * 60 * 5L);
+
+    }
+
+    private String createAuthCode() {
+        SecureRandom random = new SecureRandom();
+        int authCode = random.nextInt(900000) + 100000; // 100000 ~ 999999 범위의 숫자 생성
+        return String.valueOf(authCode);
+    }
+
+    @Override
+    public void postAuthCode(PostAuthCodeRequestDTO request) {
+        String storedAuthCode = redisDao.getValues(request.getPhoneNumber());
+        if(!storedAuthCode.equals(request.getAuthCode())) {
+            throw new BaseException(ErrorCode.WRONG_AUTH_CODE);
+        }
+        redisDao.deleteValues(request.getPhoneNumber());
     }
 }

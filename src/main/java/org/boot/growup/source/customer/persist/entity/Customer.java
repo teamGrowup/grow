@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.boot.growup.common.enumerate.Gender;
 import org.boot.growup.common.enumerate.Role;
 import org.boot.growup.common.enumerate.Provider;
+import org.boot.growup.common.enumerate.UserAgree;
 import org.boot.growup.common.oauth2.google.dto.GoogleAccountResponseDTO;
 import org.boot.growup.common.oauth2.kakao.dto.KakaoAccountResponseDTO;
 import org.boot.growup.common.oauth2.naver.dto.NaverAccountResponseDTO;
@@ -65,7 +66,24 @@ public class Customer {
     @Column(name = "role", nullable = false)
     private Role role;
 
-    private String profileUrl;
+    @Column(name = "photo_url", length = 300)
+    private String photoUrl;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UserAgree isValidPhoneNumber;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UserAgree isValidEmail;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UserAgree isAgreeSendEmail;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UserAgree isAgreeSendSms;
 
     public CustomUserDetails toUserDetails() {
         return new CustomUserDetails(email, password, role);
@@ -85,6 +103,10 @@ public class Customer {
                 .name(request.getName())
                 .provider(Provider.EMAIL)
                 .role(Role.CUSTOMER)
+                .isValidPhoneNumber(request.getIsValidPhoneNumber())
+                .isValidEmail(request.getIsValidEmail())
+                .isAgreeSendEmail(request.getIsAgreeSendEmail())
+                .isAgreeSendSms(request.getIsAgreeSendSms())
                 .build();
     }
 

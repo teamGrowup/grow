@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import org.boot.growup.common.Regex;
 import org.boot.growup.common.enumerate.Gender;
+import org.boot.growup.common.enumerate.UserAgree;
 
 @Data
 @Builder
@@ -43,5 +44,13 @@ public class CustomerSignUpRequestDTO {
     @NotBlank(message = "닉네임은 필수 입력 값입니다")
     @Pattern(regexp = Regex.NICKNAME, message = "닉네임은 한글, 영어, 숫자만 포함하며, 최대 20글자입니다")
     private String nickname;
+
+    private UserAgree isValidPhoneNumber;
+
+    private UserAgree isValidEmail;
+
+    private UserAgree isAgreeSendEmail;
+
+    private UserAgree isAgreeSendSms;
 }
 

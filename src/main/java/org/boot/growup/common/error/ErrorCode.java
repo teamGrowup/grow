@@ -28,6 +28,10 @@ public enum ErrorCode {
     /* Email Send */
     USER_EMAIL_SEND_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 500, false, "이메일 전송 중 오류가 발생했습니다."),
 
+    /* Phone Number Verify */
+    WRONG_AUTH_CODE(HttpStatus.BAD_REQUEST, 400, false, "인증번호가 틀립니다."),
+    INVALID_PHONE_NUMBER(HttpStatus.FORBIDDEN, 403, false, "인증되지 않은 전화번호 입니다."),
+
     /* Oauth2.0 */
     NOT_FOUND_GOOGLE_ACCESS_TOKEN_RESPONSE(HttpStatus.INTERNAL_SERVER_ERROR, 500, false, "구글 액세스 토큰 요청에 실패했습니다."),
     NOT_FOUND_KAKAO_ACCESS_TOKEN_RESPONSE(HttpStatus.INTERNAL_SERVER_ERROR,500,false,"카카오 액세스 토큰 요청에 실패했습니다."),

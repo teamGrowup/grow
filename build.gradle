@@ -89,7 +89,8 @@ dependencies {
     // S3
     implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.6.RELEASE'
 
-
+    // Verify Phone Number
+    implementation 'net.nurigo:sdk:4.3.0'
 }
 
 tasks.named('test') {
