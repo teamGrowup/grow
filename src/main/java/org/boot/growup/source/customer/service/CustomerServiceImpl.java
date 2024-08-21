@@ -33,6 +33,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import java.security.SecureRandom;
@@ -234,7 +235,6 @@ public class CustomerServiceImpl implements CustomerService {
         redisDao.deleteValues(request.getPhoneNumber());
     }
 
-    @Override
     public Customer getCurrentCustomer() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();

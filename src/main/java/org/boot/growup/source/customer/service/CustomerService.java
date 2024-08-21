@@ -8,7 +8,6 @@ import org.boot.growup.common.oauth2.naver.dto.NaverAccountResponseDTO;
 import org.boot.growup.source.customer.dto.request.*;
 import org.boot.growup.source.customer.dto.response.EmailCheckResponseDTO;
 import org.boot.growup.source.customer.persist.entity.Customer;
-import org.springframework.stereotype.Service;
 
 public interface CustomerService {
     /*
