@@ -9,8 +9,10 @@ import org.boot.growup.common.constant.ErrorCode;
 import org.boot.growup.common.constant.Section;
 import org.boot.growup.auth.persist.entity.Customer;
 import org.boot.growup.auth.service.CustomerService;
+import org.boot.growup.product.dto.response.GetSellerProductsResponseDTO;
 import org.boot.growup.product.persist.entity.Product;
 import org.boot.growup.product.persist.entity.ProductImage;
+import org.boot.growup.product.persist.entity.ProductOption;
 import org.boot.growup.product.persist.repository.ProductRepository;
 import org.boot.growup.product.dto.request.PostProductRequestDTO;
 import org.boot.growup.product.dto.response.GetSellerProductResponseDTO;
@@ -43,20 +45,38 @@ public class ProductApplication {
 
     }
 
-    public GetSellerProductResponseDTO getSellerProduct() { // 추가 예정
+    public GetSellerProductsResponseDTO getSellerProducts() {
         Seller seller = sellerService.getCurrentSeller(); // 현재 판매자 정보 가져오기
 
-        Product product = productService.getProductBySellerId(seller.getId()); // 판매자의 상품 목록 조회
-        List<ProductImage> productImages = productService.getProductImages(product.getId());
-        
-        return GetSellerProductResponseDTO.builder()
-                .name(product.getName())
-                .description(product.getDescription())
-                .productImages(
-                        productImages.stream().map(GetSellerProductResponseDTO.ProductImageDTO::from).toList()
-                )
-                .build();
+        List<Product> products = productService.getProductsBySellerId(seller.getId()); // 판매자의 모든 상품 목록 조회
+
+        List<GetSellerProductResponseDTO> productResponses = products.stream()
+                .map(product -> {
+                    List<ProductImage> productImages = productService.getProductImages(product.getId());
+                    List<ProductOption> productOptions = productService.getProductOptions(product.getId()); // 상품 옵션 조회
+
+                    return GetSellerProductResponseDTO.builder()
+                            .name(product.getName())
+                            .description(product.getDescription())
+                            .productImages(
+                                    productImages.stream()
+                                            .map(GetSellerProductResponseDTO.ProductImageDTO::from)
+                                            .toList()
+                            )
+                            .productOption(
+                                    productOptions.stream()
+                                            .map(GetProductDetailResponseDTO.ProductOptionDTO::from)
+                                            .toList()
+                            ) // 상품 옵션 추가
+                            .build();
+                }).toList();
+
+        return GetSellerProductsResponseDTO.builder()
+                .products(productResponses)
+                .build(); // 여러 상품에 대한 응답 DTO
     }
+
+
 
     public GetProductDetailResponseDTO getProductDetail(Long productId) {
         Product product = productRepository.findById(productId)

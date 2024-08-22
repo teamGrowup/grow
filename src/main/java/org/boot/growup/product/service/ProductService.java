@@ -7,6 +7,7 @@ import org.boot.growup.product.dto.request.PostProductRequestDTO;
 import org.boot.growup.product.persist.entity.Product;
 import org.boot.growup.auth.persist.entity.Seller;
 import org.boot.growup.product.persist.entity.ProductImage;
+import org.boot.growup.product.persist.entity.ProductOption;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -18,14 +19,19 @@ public interface ProductService {
     Product postProduct(PostProductRequestDTO postProductRequestDto, Seller seller);
 
     /*
-        SellerId로 Product 정보 가져오기
+    SellerId로 Product 가져오기
     */
-    Product getProductBySellerId(Long sellerId);
+    List<Product> getProductsBySellerId(Long sellerId);
 
     /*
     등록된 상품 수정
      */
     Product patchProduct(PostProductRequestDTO postProductRequestDto, Seller seller, Long productId);
+
+    /*
+     상품옵션 조회
+     */
+    List<ProductOption> getProductOptions(Long id);
 
     /*
     등록된 상품의 권한 변경 > 허가, 대기, 거부

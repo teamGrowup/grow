@@ -30,6 +30,7 @@ public class ProductServiceImpl implements ProductService {
     private final BrandRepository brandRepository;
     private final ProductLikeRepository productLikeRepository;
     private final ProductImageRepository productImageRepository;
+    private final ProductOptionRepository productOptionRepository;
     private final ImageStore imageStore;
     private final S3Service s3Service;
 
@@ -60,10 +61,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product getProductBySellerId(Long sellerId) {
-        return productRepository.findBySeller_Id(sellerId).orElseThrow(
-                () -> new BaseException(ErrorCode.PRODUCT_BY_SELLER_NOT_FOUND)
-        );
+    public List<Product> getProductsBySellerId(Long sellerId) {
+        List<Product> products = productRepository.findBySeller_Id(sellerId);
+
+        // 리스트가 비어 있는 경우 예외 발생
+        if (products.isEmpty()) {
+            throw new BaseException(ErrorCode.PRODUCT_BY_SELLER_NOT_FOUND);
+        }
+        return products;
     }
 
     // ProductRequestDTO의 ProductOptionDTO를 ProductOption으로 변환하는 메서드
@@ -96,6 +101,11 @@ public class ProductServiceImpl implements ProductService {
         // 상품 저장
         productRepository.save(product);
         return product;
+    }
+
+    @Override
+    public List<ProductOption> getProductOptions(Long productId) {
+        return productOptionRepository.findByProductId(productId);
     }
 
     @Override

@@ -6,8 +6,7 @@ import org.boot.growup.common.model.BaseResponse;
 import org.boot.growup.common.constant.AuthorityStatus;
 import org.boot.growup.product.application.ProductApplication;
 import org.boot.growup.product.dto.request.PostProductRequestDTO;
-import org.boot.growup.product.dto.response.GetProductDetailResponseDTO;
-import org.boot.growup.product.dto.response.GetProductRequestByStatusResponseDTO;
+import org.boot.growup.product.dto.response.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -44,6 +43,15 @@ public class ProductController {
     public BaseResponse<GetProductDetailResponseDTO> getProductDetail(@PathVariable Long productId) {
         GetProductDetailResponseDTO productDetail = productApplication.getProductDetail(productId);
         return new BaseResponse<>(productDetail);
+    }
+
+    /**
+     * 현재 판매자의 상품 정보 조회
+     * @return GetSellerProductsResponseDTO
+     */
+    @GetMapping("/sellers/products")
+    public BaseResponse<GetSellerProductsResponseDTO> getSellerProducts(){
+        return new BaseResponse<>(productApplication.getSellerProducts());
     }
 
     /**

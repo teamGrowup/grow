@@ -38,7 +38,7 @@ public class BrandController {
 
     /**
      * 현재 판매자의 브랜드 정보 조회
-     * @return ReadSellerBrandResponseDTO
+     * @return GetSellerBrandResponseDTO
      */
     @GetMapping("/sellers/brands")
     public BaseResponse<GetSellerBrandResponseDTO> getSellerBrand(){
