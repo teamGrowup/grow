@@ -1,6 +1,8 @@
 package org.boot.growup.common.config;
 
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.boot.growup.common.model.EmailProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -8,42 +10,24 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import java.util.Properties;
 
+@Slf4j
 @Configuration
+@RequiredArgsConstructor
 public class EmailConfig {
-    @Value("${spring.mail.host}")
-    private String host;
-
-    @Value("${spring.mail.port}")
-    private int port;
-
-    @Value("${spring.mail.username}")
-    private String username;
-
-    @Value("${spring.mail.password}")
-    private String password;
-
-    @Value("${spring.mail.properties.mail.smtp.auth}")
-    private boolean smtpAuth;
-
-    @Value("${spring.mail.properties.mail.smtp.starttls.enable}")
-    private boolean starttlsEnable;
-
-    @Value("${spring.mail.properties.mail.smtp.timeout}")
-    private int timeout;
-
+    private final EmailProperty emailProperty;
     @Bean
     public JavaMailSender javaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setHost(host);
-        mailSender.setPort(port);
-        mailSender.setUsername(username);
-        mailSender.setPassword(password);
+        mailSender.setHost(emailProperty.getHost());
+        mailSender.setPort(emailProperty.getPort());
+        mailSender.setUsername(emailProperty.getUsername());
+        mailSender.setPassword(emailProperty.getPassword());
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
-        props.put("mail.smtp.auth", String.valueOf(smtpAuth));
-        props.put("mail.smtp.starttls.enable", String.valueOf(starttlsEnable));
-        props.put("mail.smtp.timeout", String.valueOf(timeout));
+        props.put("mail.smtp.auth", String.valueOf(emailProperty.getSmtp().isAuth()));
+        props.put("mail.smtp.starttls.enable", String.valueOf(emailProperty.getSmtp().getStarttls().isEnable()));
+        props.put("mail.smtp.timeout", String.valueOf(emailProperty.getSmtp().getTimeout()));
 
         return mailSender;
     }

@@ -4,7 +4,7 @@ import io.jsonwebtoken.*;
 import jakarta.xml.bind.DatatypeConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.boot.growup.common.model.TokenDTO;
-import org.boot.growup.common.model.RedisDao;
+import org.boot.growup.common.model.RedisDAO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,11 +25,11 @@ import java.util.stream.Collectors;
 public class JwtTokenProvider {
     private static final String AUTHORITIES_KEY = "auth";
     private final Key key;
-    private final RedisDao redisDao;
+    private final RedisDAO redisDao;
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 60L; // 1시간
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7L; // 유효시간 : 일주일
 
-    public JwtTokenProvider(@Value("${jwt.secret}") String secretKey, RedisDao redisDao){
+    public JwtTokenProvider(@Value("${jwt.secret}") String secretKey, RedisDAO redisDao){
         this.redisDao = redisDao;
         byte[] secretByteKey = DatatypeConverter.parseBase64Binary(secretKey);
         this.key = Keys.hmacShaKeyFor(secretByteKey);

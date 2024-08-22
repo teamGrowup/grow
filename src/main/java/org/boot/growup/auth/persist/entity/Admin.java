@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.boot.growup.common.constant.Role;
 import org.boot.growup.auth.model.User;
+import org.boot.growup.common.entity.BaseEntity;
+import org.hibernate.envers.AuditOverride;
 
 @Entity
 @Getter
@@ -14,7 +16,8 @@ import org.boot.growup.auth.model.User;
 @Table(name = "admin")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Admin {
+@AuditOverride(forClass = BaseEntity.class)
+public class Admin extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "admin_id", nullable = false)

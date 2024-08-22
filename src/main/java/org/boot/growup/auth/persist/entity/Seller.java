@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
 import org.boot.growup.common.constant.Role;
 import org.boot.growup.auth.model.User;
 import org.boot.growup.auth.model.dto.request.SellerSignUpRequestDTO;
+import org.boot.growup.common.entity.BaseEntity;
 import org.boot.growup.product.persist.entity.Brand;
+import org.hibernate.envers.AuditOverride;
 
 @Entity
 @Getter
@@ -16,7 +18,8 @@ import org.boot.growup.product.persist.entity.Brand;
 @Table(name = "seller")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Seller {
+@AuditOverride(forClass = BaseEntity.class)
+public class Seller extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "seller_id", nullable = false)

@@ -5,32 +5,30 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
+import org.boot.growup.common.model.S3Property;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Getter
 @Configuration
+@RequiredArgsConstructor
 public class S3Config {
-  // TODO: SiteProperty 만들기
-  @Value("${cloud.aws.credentials.access-key}")
-  private String accessKey;
+    private final S3Property s3Property;
 
-  @Value("${cloud.aws.credentials.secret-key}")
-  private String secretKey;
+    @Bean
+    public AmazonS3Client amazonS3Client() {
+        BasicAWSCredentials awsCredentials = new BasicAWSCredentials(
+                    s3Property.getCredentials().getAccessKey(),
+                    s3Property.getCredentials().getSecretKey());
 
-  @Value("${cloud.aws.region.static}")
-  private String region;
+        return (AmazonS3Client) AmazonS3ClientBuilder.standard()
+                .withRegion(String.valueOf(s3Property.getRegion()))
+                .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
+                .build();
+    }
 
-  @Value("${cloud.aws.s3.bucket}")
-  private String bucket;
-
-  @Bean
-  public AmazonS3Client amazonS3Client() {
-    BasicAWSCredentials awsCredentials = new BasicAWSCredentials(accessKey, secretKey);
-    return (AmazonS3Client) AmazonS3ClientBuilder.standard()
-        .withRegion(region)
-        .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
-        .build();
-  }
+    public String getBucket() {
+        return String.valueOf(s3Property.getS3().getBucket());
+    }
 }

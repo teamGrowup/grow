@@ -18,7 +18,7 @@ import org.boot.growup.common.constant.Provider;
 import org.boot.growup.auth.model.dto.response.GoogleAccountResponseDTO;
 import org.boot.growup.auth.model.dto.response.KakaoAccountResponseDTO;
 import org.boot.growup.auth.model.dto.response.NaverAccountResponseDTO;
-import org.boot.growup.common.model.RedisDao;
+import org.boot.growup.common.model.RedisDAO;
 import org.boot.growup.auth.utils.SmsUtil;
 import org.boot.growup.auth.service.UserService;
 import org.boot.growup.auth.model.dto.response.EmailCheckResponseDTO;
@@ -50,7 +50,7 @@ public class CustomerServiceImpl implements CustomerService {
     private final EmailService emailService;
     private final HttpSession session;
     private final SmsUtil smsUtil;
-    private final RedisDao redisDao;
+    private final RedisDAO redisDao;
 
     @Override
     public void signUp(CustomerSignUpRequestDTO request) {

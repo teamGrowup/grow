@@ -16,6 +16,8 @@ import org.boot.growup.auth.model.dto.request.CustomerSignUpRequestDTO;
 import org.boot.growup.auth.model.dto.request.GoogleAdditionalInfoRequestDTO;
 import org.boot.growup.auth.model.dto.request.KakaoAdditionalInfoRequestDTO;
 import org.boot.growup.auth.model.dto.request.NaverAdditionalInfoRequestDTO;
+import org.boot.growup.common.entity.BaseEntity;
+import org.hibernate.envers.AuditOverride;
 
 @Entity
 @Getter
@@ -23,7 +25,8 @@ import org.boot.growup.auth.model.dto.request.NaverAdditionalInfoRequestDTO;
 @Table(name = "customer")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Customer {
+@AuditOverride(forClass = BaseEntity.class)
+public class Customer extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "customer_id", nullable = false)
