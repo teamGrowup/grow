@@ -125,7 +125,7 @@ public class Customer extends BaseEntity {
                 .phoneNumber(request.getPhoneNumber())
                 .birthday(request.getBirthday())
                 .gender(Gender.valueOf(request.getGender().name()))
-                .nickname(kakaoAccount.getProperties().get("nickname"))
+                .nickname(request.getNickname())
                 .name(request.getName())
                 .provider(Provider.KAKAO)
                 .role(Role.CUSTOMER)

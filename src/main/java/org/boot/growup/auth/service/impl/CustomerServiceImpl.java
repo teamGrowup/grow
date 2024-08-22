@@ -217,6 +217,14 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public void postPhoneNumber(PostPhoneNumberRequestDTO request) {
+        /* 이메일 회원가입의 경우, 이미 가입된 유저인지 확인 */
+        customerRepository.findByPhoneNumberAndIsValidPhoneNumberAndProvider(
+                        request.getPhoneNumber(), true, Provider.EMAIL)
+                .ifPresent(customer -> {
+                    /* 이미 가입된 유저라면 가입된 이메일을 반환 */
+                    throw new BaseException(USER_ALREADY_REGISTERED, customer.getEmail());
+                });
+
         String parsedPhoneNumber = request.getPhoneNumber().replaceAll("-","");
         String authCode = createAuthCode();
         smsUtil.sendMessage(parsedPhoneNumber, authCode);
