@@ -12,7 +12,6 @@ import org.boot.growup.product.service.BrandService;
 import org.boot.growup.product.dto.response.GetBrandDetailResponseDTO;
 import org.boot.growup.product.dto.response.GetSellerBrandResponseDTO;
 import org.boot.growup.auth.persist.entity.Seller;
-import org.boot.growup.product.service.BrandImageService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,7 +24,6 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class BrandApplication {
     private final BrandService brandService;
-    private final BrandImageService brandImageService;
     private final SellerService sellerService;
 
     /*
@@ -36,7 +34,7 @@ public class BrandApplication {
         Seller seller = sellerService.getCurrentSeller();
 
         Brand brand = brandService.postBrand(postBrandRequestDTO, seller);
-        brandImageService.postBrandImages(brandImageFiles, brand);
+        brandService.postBrandImages(brandImageFiles, brand);
     }
 
     /*
@@ -46,7 +44,7 @@ public class BrandApplication {
         Seller seller = sellerService.getCurrentSeller();
 
         Brand brand = brandService.getBrandBySellerId(seller.getId());
-        List<BrandImage> brandImages = brandImageService.getBrandImages(brand.getId());
+        List<BrandImage> brandImages = brandService.getBrandImages(brand.getId());
 
         return GetSellerBrandResponseDTO.builder()
                 .name(brand.getName())
@@ -65,7 +63,7 @@ public class BrandApplication {
         Seller seller = sellerService.getCurrentSeller();
 
         Brand brand = brandService.patchBrand(postBrandRequestDTO, seller);
-        brandImageService.patchBrandImages(brandImageFiles, brand);
+        brandService.patchBrandImages(brandImageFiles, brand);
     }
 
     /*
@@ -111,7 +109,7 @@ public class BrandApplication {
      */
     public GetBrandDetailResponseDTO getBrandDetail(Long brandId) {
         Brand brand = brandService.getBrandById(brandId);
-        List<BrandImage> brandImages = brandImageService.getBrandImages(brand.getId());
+        List<BrandImage> brandImages = brandService.getBrandImages(brand.getId());
         return GetBrandDetailResponseDTO.of(brand, brandImages);
     }
 }

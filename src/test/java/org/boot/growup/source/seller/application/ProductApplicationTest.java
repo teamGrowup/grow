@@ -13,7 +13,6 @@ import org.boot.growup.product.dto.MainCategoryDTO;
 import org.boot.growup.product.persist.repository.BrandRepository;
 import org.boot.growup.product.persist.repository.ProductRepository;
 import org.boot.growup.auth.persist.repository.SellerRepository;
-import org.boot.growup.product.service.Impl.ProductImageServiceImpl;
 import org.boot.growup.product.service.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,9 +36,6 @@ class ProductApplicationTest {
 
     @Mock
     private ProductService productService;
-
-    @Mock
-    private ProductImageServiceImpl productImageService;
 
     @Mock
     private ProductRepository productRepository;
@@ -157,7 +153,7 @@ class ProductApplicationTest {
         // then
         verify(sellerRepository).findById(seller.getId());
         verify(productService).postProduct(any(), eq(seller));
-        verify(productImageService).postProductImages(mockFiles, product, Section.PRODUCT_IMAGE);
+        verify(productService).postProductImages(mockFiles, product, Section.PRODUCT_IMAGE);
     }
 
 
@@ -191,7 +187,7 @@ class ProductApplicationTest {
         // then
         verify(sellerRepository).findById(seller.getId());
         verify(productService).patchProduct(postProductRequestDTO, seller, product.getId());
-        verify(productImageService).patchProductImages(mockFiles, product, Section.PRODUCT_IMAGE);
+        verify(productService).patchProductImages(mockFiles, product, Section.PRODUCT_IMAGE);
     }
 
 }

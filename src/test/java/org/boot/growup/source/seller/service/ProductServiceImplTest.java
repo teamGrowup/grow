@@ -3,28 +3,30 @@ package org.boot.growup.source.seller.service;
 import org.boot.growup.auth.persist.repository.SellerRepository;
 import org.boot.growup.auth.persist.entity.Seller;
 import org.boot.growup.common.constant.AuthorityStatus;
+import org.boot.growup.common.constant.Section;
+import org.boot.growup.common.utils.ImageStore;
 import org.boot.growup.product.dto.request.PostProductRequestDTO;
 
-import org.boot.growup.product.persist.entity.Brand;
-import org.boot.growup.product.persist.entity.MainCategory;
-import org.boot.growup.product.persist.entity.Product;
-import org.boot.growup.product.persist.entity.SubCategory;
-import org.boot.growup.product.persist.repository.BrandRepository;
-import org.boot.growup.product.persist.repository.MainCategoryRepository;
-import org.boot.growup.product.persist.repository.ProductRepository;
-import org.boot.growup.product.persist.repository.SubCategoryRepository;
+import org.boot.growup.product.persist.entity.*;
+import org.boot.growup.product.persist.repository.*;
 import org.boot.growup.product.service.Impl.ProductServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
 
 @SpringBootTest
 @Transactional
@@ -49,13 +51,26 @@ class ProductServiceImplTest {
     @Autowired
     private BrandRepository brandRepository;
 
+    @Mock
+    private ProductImageRepository productImageRepository;
+
+    @Mock
+    private ImageStore imageStore;
+
     private Seller seller;
     private MainCategory mainCategory;
     private SubCategory subCategory;
     private Brand brand;
+    private final String testDir = "C:\\Users\\xcv41\\IdeaProjects\\grow\\src\\main\\java\\org\\boot\\growup\\source\\seller";
+
 
     @BeforeEach
     public void setup() {
+        File dir = new File(testDir);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+
         seller = Seller.builder()
                 .cpEmail("test@seller.com")
                 .cpPassword("password")
@@ -165,5 +180,43 @@ class ProductServiceImplTest {
         assertEquals(postProductRequestDto.getName(), updatedProduct.getName());
         assertEquals(postProductRequestDto.getDescription(), updatedProduct.getDescription());
         assertEquals(brand.getId(), updatedProduct.getBrand().getId()); // 브랜드 확인
+    }
+
+    @Test
+    public void saveProductImages_Success() {
+        // given
+        Product product = new Product();
+        MockMultipartFile file1 = new MockMultipartFile("file", "product1.jpg", "image/jpeg", "test image content".getBytes());
+        MockMultipartFile file2 = new MockMultipartFile("file", "product2.jpg", "image/jpeg", "test image content".getBytes());
+
+        // createStoreFileName 메서드 Mock 설정
+        when(imageStore.createStoreFileName("product1.jpg")).thenReturn("stored-product1.jpg");
+        when(imageStore.createStoreFileName("product2.jpg")).thenReturn("stored-product2.jpg");
+
+        // when
+        productService.postProductImages(List.of(file1, file2), product, Section.PRODUCT_IMAGE);
+
+        // then
+        verify(productImageRepository, times(2)).save(any(ProductImage.class));
+    }
+
+    @Test
+    public void patchProductImages_Success() {
+        //given
+        Product product = new Product();
+        MockMultipartFile file1 = new MockMultipartFile("file", "product1.jpg", "image/jpeg", "test image content".getBytes());
+        MockMultipartFile file2 = new MockMultipartFile("file", "product2.jpg", "image/jpeg", "test image content".getBytes());
+
+        // createStoreFileName 메서드 Mock 설정
+        when(imageStore.createStoreFileName("product1.jpg")).thenReturn("stored-product1.jpg");
+        when(imageStore.createStoreFileName("product2.jpg")).thenReturn("stored-product2.jpg");
+
+
+        // when
+        productService.patchProductImages(List.of(file1, file2), product, Section.PRODUCT_IMAGE);
+
+        // then
+        verify(productImageRepository, times(1)).deleteProductImageByProduct_Id(product.getId());
+        verify(productImageRepository, times(2)).save(any(ProductImage.class));
     }
 }

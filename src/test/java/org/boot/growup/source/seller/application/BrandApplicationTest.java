@@ -11,7 +11,6 @@ import org.boot.growup.product.persist.entity.BrandImage;
 import org.boot.growup.auth.persist.entity.Seller;
 import org.boot.growup.product.persist.repository.BrandRepository;
 import org.boot.growup.auth.persist.repository.SellerRepository;
-import org.boot.growup.product.service.BrandImageService;
 import org.boot.growup.product.service.Impl.BrandServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,9 +43,6 @@ class BrandApplicationTest {
 
     @Mock
     private BrandServiceImpl brandService;
-
-    @Mock
-    private BrandImageService brandImageService;
 
     @Mock
     private SellerRepository sellerRepository;
@@ -114,7 +110,7 @@ class BrandApplicationTest {
 
         //then
         verify(brandService).postBrand(postBrandRequestDTO1, seller);
-        verify(brandImageService).postBrandImages(mockFiles, brand1);
+        verify(brandService).postBrandImages(mockFiles, brand1);
     }
 
     @Test
@@ -122,7 +118,7 @@ class BrandApplicationTest {
         //given
         List<BrandImage> brandImages = List.of(brandImage1, brandImage2);
         given(brandService.getBrandBySellerId(1L)).willReturn(brand1);
-        given(brandImageService.getBrandImages(brand1.getId())).willReturn(brandImages);
+        given(brandService.getBrandImages(brand1.getId())).willReturn(brandImages);
         GetSellerBrandResponseDTO dto = GetSellerBrandResponseDTO.builder()
                 .name(brand1.getName())
                 .description(brand1.getDescription())
@@ -154,7 +150,7 @@ class BrandApplicationTest {
 
         //then
         verify(brandService).patchBrand(postBrandRequestDTO2, seller);
-        verify(brandImageService).patchBrandImages(mockFiles, brand1);
+        verify(brandService).patchBrandImages(mockFiles, brand1);
     }
 
     @Test
@@ -236,7 +232,7 @@ class BrandApplicationTest {
     public void getBrandDetail_Default_Success() {
         //given
         given(brandService.getBrandById(1L)).willReturn(brand1);
-        given(brandImageService.getBrandImages(brand1.getId())).willReturn(List.of(brandImage1, brandImage2));
+        given(brandService.getBrandImages(brand1.getId())).willReturn(List.of(brandImage1, brandImage2));
 
         //when
         GetBrandDetailResponseDTO res = brandApplication.getBrandDetail(1L);

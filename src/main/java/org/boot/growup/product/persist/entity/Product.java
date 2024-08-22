@@ -31,10 +31,10 @@ public class Product {
     private Double averageRating; // 평균 평점
 
     @Column(name = "like_count")
-    private Integer likeCount; // 좋아요 수
+    private int likeCount; // 좋아요 수
 
     @Column(name = "delivery_fee")
-    private Integer deliveryFee; // 배송비
+    private int deliveryFee; // 배송비
 
     @ManyToOne
     @JoinColumn(name = "subcategory_id", nullable = false)
@@ -100,20 +100,22 @@ public class Product {
         this.likeCount = 0; // 초기 좋아요 수
     }
 
+    public void initDeliveryFee() {
+        this.deliveryFee = 0; // 초기 배송비
+    }
+
     // 좋아요 수 증가
     public void likeCountPlus() {
-        if (this.likeCount == null) {
-            initLikeCount(); // 초기화 메서드 호출
-        }
         this.likeCount++;
     }
 
     // 좋아요 수 감소
     public void likeCountMinus() {
-        if (this.likeCount != null && this.likeCount > 0) {
+        if (this.likeCount > 0) {
             this.likeCount--;
         }
     }
+
     /*
     상품 옵션 초기화
      */

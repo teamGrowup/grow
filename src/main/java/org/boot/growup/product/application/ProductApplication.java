@@ -16,7 +16,6 @@ import org.boot.growup.product.dto.request.PostProductRequestDTO;
 import org.boot.growup.product.dto.response.GetSellerProductResponseDTO;
 import org.boot.growup.product.dto.response.GetProductDetailResponseDTO;
 import org.boot.growup.product.dto.response.GetProductRequestByStatusResponseDTO;
-import org.boot.growup.product.service.ProductImageService;
 import org.boot.growup.product.service.ProductService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +28,6 @@ import java.util.List;
 public class ProductApplication {
 
     private final ProductService productService;
-    private final ProductImageService productImageService;
     private final SellerService sellerService;
     private final CustomerService customerService;
     private final ProductRepository productRepository;
@@ -41,7 +39,7 @@ public class ProductApplication {
         Section section = Section.PRODUCT_IMAGE; // 적절한 섹션으로 변경
         Product product = productService.postProduct(postProductRequestDto, seller);
 
-        productImageService.postProductImages(productImages, product, section);
+        productService.postProductImages(productImages, product, section);
 
     }
 
@@ -49,7 +47,7 @@ public class ProductApplication {
         Seller seller = sellerService.getCurrentSeller(); // 현재 판매자 정보 가져오기
 
         Product product = productService.getProductBySellerId(seller.getId()); // 판매자의 상품 목록 조회
-        List<ProductImage> productImages = productImageService.getProductImages(product.getId());
+        List<ProductImage> productImages = productService.getProductImages(product.getId());
         
         return GetSellerProductResponseDTO.builder()
                 .name(product.getName())
@@ -76,7 +74,7 @@ public class ProductApplication {
         Product product = productService.patchProduct(postProductRequestDto, seller, productId);
 
         if (productImages != null && !productImages.isEmpty()) {
-            productImageService.patchProductImages(productImages, product, section);
+            productService.patchProductImages(productImages, product, section);
         } else {
             System.out.println("업데이트할 상품 이미지가 없습니다. 기존 이미지를 유지합니다.");
         }

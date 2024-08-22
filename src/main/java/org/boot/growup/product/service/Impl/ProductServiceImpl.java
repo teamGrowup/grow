@@ -2,21 +2,24 @@ package org.boot.growup.product.service.Impl;
 
 import lombok.RequiredArgsConstructor;
 import org.boot.growup.auth.persist.entity.Seller;
+import org.boot.growup.common.constant.Section;
 import org.boot.growup.common.model.BaseException;
 import org.boot.growup.common.constant.AuthorityStatus;
 import org.boot.growup.common.constant.ErrorCode;
 import org.boot.growup.auth.persist.entity.Customer;
+import org.boot.growup.common.utils.ImageStore;
+import org.boot.growup.common.utils.S3Service;
 import org.boot.growup.product.persist.entity.*;
-import org.boot.growup.product.persist.repository.BrandRepository;
-import org.boot.growup.product.persist.repository.ProductRepository;
-import org.boot.growup.product.persist.repository.SubCategoryRepository;
+import org.boot.growup.product.persist.repository.*;
 import org.boot.growup.product.service.ProductService;
 import org.boot.growup.product.dto.request.PostProductRequestDTO;
-import org.boot.growup.product.persist.repository.ProductLikeRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -26,6 +29,9 @@ public class ProductServiceImpl implements ProductService {
     private final SubCategoryRepository subCategoryRepository;
     private final BrandRepository brandRepository;
     private final ProductLikeRepository productLikeRepository;
+    private final ProductImageRepository productImageRepository;
+    private final ImageStore imageStore;
+    private final S3Service s3Service;
 
     @Override
     public Product postProduct(PostProductRequestDTO postProductRequestDto, Seller seller) {
@@ -46,6 +52,7 @@ public class ProductServiceImpl implements ProductService {
         product.pending();
         product.initAverageRating();
         product.initLikeCount();
+        product.initDeliveryFee();
         product.designateSeller(seller); // 판매자 설정.
 
         productRepository.save(product);
@@ -141,5 +148,64 @@ public class ProductServiceImpl implements ProductService {
 
         // 좋아요 정보 삭제
         productLikeRepository.delete(productLike);
+    }
+
+    public void postProductImages(List<MultipartFile> productImages, Product product, Section section) {
+        for (MultipartFile multipartFile : productImages) {
+            if (!multipartFile.isEmpty()) {
+                ProductImage uploadImage = storeImage(multipartFile, section); // 이미지 저장 로직
+                uploadImage.designateProduct(product); // 상품 설정
+                productImageRepository.save(uploadImage); // 이미지 저장
+            }
+        }
+    }
+
+    @Override
+    public List<ProductImage> getProductImages(Long id) {
+        return productImageRepository.findProductImageByProduct_Id(id);
+    }
+
+    public ProductImage storeImage(MultipartFile multipartFile, Section section) {
+        if (multipartFile.isEmpty()) {
+            throw new IllegalStateException("이미지가 없습니다.");
+        }
+
+        String originalFilename = multipartFile.getOriginalFilename(); // 원래 이름
+        String storeFilename = imageStore.createStoreFileName(originalFilename); // 저장된 이름
+        String path;
+
+        try {
+            path = s3Service.uploadFileAndGetUrl(multipartFile, storeFilename); // S3에 업로드
+        } catch (IOException e) {
+            throw new RuntimeException("S3 업로드 중 오류 발생", e);
+        }
+
+        // 로그 출력
+        System.out.println("Section value: " + section);
+
+        return ProductImage.builder()
+                .originalImageName(originalFilename)
+                .path(path) // S3 경로 저장
+                .section(section) // 섹션 설정
+                .build();
+    }
+
+    @Transactional
+    @Override
+    public void patchProductImages(List<MultipartFile> productImages, Product product, Section section) {
+        // 1. 현재 S3에 등록된 상품 이미지를 지움.
+        productImageRepository.findProductImageByProduct_Id(product.getId()).forEach(m -> s3Service.deleteFile(m.getPath()));
+
+        // 2. DB에 있는 상품 이미지 삭제.
+        productImageRepository.deleteProductImageByProduct_Id(product.getId());
+
+        // 3. 해당 상품에 이미지를 새로 등록함.
+        for (MultipartFile multipartFile : productImages) {
+            if (!multipartFile.isEmpty()) {
+                ProductImage uploadImage = storeImage(multipartFile, section); // 이미지 저장 로직
+                uploadImage.designateProduct(product); // 상품 설정
+                productImageRepository.save(uploadImage); // 이미지 저장
+            }
+        }
     }
 }
