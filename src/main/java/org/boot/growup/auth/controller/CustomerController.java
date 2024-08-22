@@ -174,7 +174,6 @@ public class CustomerController {
         customerService.postPhoneNumber(request);
     }
 
-
     /**
      * [POST]
      * 인증번호 전송 및 검증
@@ -185,5 +184,17 @@ public class CustomerController {
     @PostMapping("/phone-numbers/validations/codes")
     public void postAuthCode(@RequestBody PostAuthCodeRequestDTO request) {
         customerService.postAuthCode(request);
+    }
+
+    /**
+     * [POST]
+     * 문자 인증완료 후 회원가입 중도포기
+     * @header null
+     * @body PostPhoneNumberRequestDTO
+     * @response void
+     */
+    @PostMapping("/email/register/cancel")
+    public void deletePhoneNumber(@RequestBody PostPhoneNumberRequestDTO request) {
+        customerService.deletePhoneNumber(request);
     }
 }

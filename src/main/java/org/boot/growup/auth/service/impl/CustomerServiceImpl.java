@@ -54,17 +54,24 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public void signUp(CustomerSignUpRequestDTO request) {
-        if(!request.isValidPhoneNumber()) {
+        /* 전화번호 인증정보 참조 */
+        boolean isValidPhoneNumber = Boolean.parseBoolean(redisDao.getValues(request.getPhoneNumber()));
+        log.info("isValidPhoneNumber : {}", isValidPhoneNumber);
+        if(!isValidPhoneNumber) {
             throw new BaseException(INVALID_PHONE_NUMBER);
         }
+
         /* 비밀번호 암호화 */
         String encodedPassword = encodingPassword(request);
         log.info("SignUp Method => before pw : {} | after store pw : {}"
                 , request.getPassword()
                 , encodedPassword);
+
         /* 데이터 삽입 */
-        Customer newCustomer = Customer.of(request, encodedPassword);
+        Customer newCustomer = Customer.of(request, encodedPassword, isValidPhoneNumber);
         customerRepository.save(newCustomer);
+
+        redisDao.deleteValues(request.getPhoneNumber());
     }
 
     public String encodingPassword(CustomerSignUpRequestDTO request){
@@ -212,11 +219,8 @@ public class CustomerServiceImpl implements CustomerService {
     public void postPhoneNumber(PostPhoneNumberRequestDTO request) {
         String parsedPhoneNumber = request.getPhoneNumber().replaceAll("-","");
         String authCode = createAuthCode();
-
         smsUtil.sendMessage(parsedPhoneNumber, authCode);
-
         redisDao.setValues(request.getPhoneNumber(), authCode, 1000 * 60 * 5L);
-
     }
 
     private String createAuthCode() {
@@ -231,7 +235,7 @@ public class CustomerServiceImpl implements CustomerService {
         if(!storedAuthCode.equals(request.getAuthCode())) {
             throw new BaseException(ErrorCode.PHONE_WRONG_AUTH_CODE);
         }
-        redisDao.deleteValues(request.getPhoneNumber());
+        redisDao.setValues(request.getPhoneNumber(), String.valueOf(true), 1000 * 60 * 30L);
     }
 
     public Customer getCurrentCustomer() {
@@ -256,5 +260,10 @@ public class CustomerServiceImpl implements CustomerService {
         }
 
         throw new BaseException(ErrorCode.ACCESS_DENIED);
+    }
+
+    @Override
+    public void deletePhoneNumber(PostPhoneNumberRequestDTO request) {
+        redisDao.deleteValues(request.getPhoneNumber());
     }
 }

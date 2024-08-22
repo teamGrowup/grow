@@ -69,4 +69,9 @@ public interface CustomerService {
     현재 로그인한 소비자 조회
      */
     Customer getCurrentCustomer();
+
+    /*
+    전화번호 인증정보 제거
+     */
+    void deletePhoneNumber(PostPhoneNumberRequestDTO request);
 }

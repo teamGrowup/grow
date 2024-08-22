@@ -15,7 +15,7 @@ public class CustomerSignUpRequestDTO {
     private String email;
 
     @NotBlank(message = "비밀번호는 필수 입력 값입니다")
-    @Pattern(regexp = Regex.PASSWORD, message = "비밀번호는 8~16자, 영문 대소문자, 숫자, @ 및 ! 특수문자를 포함해야 합니다.")
+    @Pattern(regexp = Regex.PASSWORD, message = "비밀번호는 8 ~ 16자, 영문 대소문자, 숫자, @ 및 ! 특수문자를 포함해야 합니다.")
     private String password;
 
     @NotBlank(message = "전화번호는 필수 입력 값입니다")
@@ -25,20 +25,17 @@ public class CustomerSignUpRequestDTO {
 
     @NotBlank(message = "생년월일은 필수 입력 값입니다")
     @Pattern(regexp = Regex.BIRTHDAY, message = "생년월일은 8자리여야 합니다(yyyymmdd)")
-    @Size(max = 8, message = "생년월일은 최대 8글자 입니다")
     private String birthday;
 
     @NotNull(message = "성별은 필수 입력 값입니다")
     private Gender gender;
 
-    @Pattern(regexp = Regex.NAME, message = "이름은 한글과 영문만 포함하며, 최대 10글자입니다")
+    @Pattern(regexp = Regex.NAME, message = "이름은 10글자 이내의 한글과 영문만 포함해야합니다.")
     private String name;
 
     @NotBlank(message = "닉네임은 필수 입력 값입니다")
-    @Pattern(regexp = Regex.NICKNAME, message = "닉네임은 한글, 영어, 숫자만 포함하며, 최대 20글자입니다")
+    @Pattern(regexp = Regex.NICKNAME, message = "닉네임은 20글자 이내의 한글, 영어, 숫자만 포함해야합니다.")
     private String nickname;
-
-    private boolean isValidPhoneNumber;
 
     private boolean isValidEmail;
 

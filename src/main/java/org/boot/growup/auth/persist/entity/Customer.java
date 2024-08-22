@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.boot.growup.auth.model.dto.request.PostAuthCodeRequestDTO;
 import org.boot.growup.common.constant.Gender;
 import org.boot.growup.common.constant.Role;
 import org.boot.growup.common.constant.Provider;
@@ -30,7 +31,7 @@ public class Customer extends BaseEntity {
     @Column(name = "customer_id", nullable = false)
     private Long id;
 
-    @Column(length = 300)
+    @Column(nullable = false, length = 300)
     private String email;
 
     @Column(length = 60)
@@ -39,7 +40,7 @@ public class Customer extends BaseEntity {
     @Column(nullable = false, length = 13)
     private String phoneNumber;
 
-    @Column(length = 8)
+    @Column(nullable = false, length = 8)
     private String birthday;
 
     @Enumerated(EnumType.STRING)
@@ -51,10 +52,10 @@ public class Customer extends BaseEntity {
     @Column(length = 5)
     private String postCode;
 
-    @Column(length = 20)
+    @Column(nullable = false, length = 20)
     private String nickname;
 
-    @Column(length = 10)
+    @Column(nullable = false, length = 10)
     private String name;
 
     @Enumerated(EnumType.STRING)
@@ -62,19 +63,22 @@ public class Customer extends BaseEntity {
     private Provider provider;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "role")
+    @Column(nullable = false)
     private Role role;
 
-    @Column(name = "profile_url", length = 300)
+    @Column(length = 300)
     private String profileUrl;
 
     @Column(nullable = false)
     private boolean isValidPhoneNumber;
 
+    @Column(nullable = false)
     private boolean isValidEmail;
 
+    @Column(nullable = false)
     private boolean isAgreeSendEmail;
 
+    @Column(nullable = false)
     private boolean isAgreeSendSms;
 
     public User toUserDetails() {
@@ -82,7 +86,7 @@ public class Customer extends BaseEntity {
     }
 
     /* 이메일 유저 회원가입 */
-    public static Customer of(CustomerSignUpRequestDTO request, String encodedPassword) {
+    public static Customer of(CustomerSignUpRequestDTO request, String encodedPassword, boolean isValidPhoneNumber) {
         return Customer.builder()
                 .email(request.getEmail())
                 .password(encodedPassword)
@@ -93,7 +97,7 @@ public class Customer extends BaseEntity {
                 .name(request.getName())
                 .provider(Provider.EMAIL)
                 .role(Role.CUSTOMER)
-                .isValidPhoneNumber(request.isValidPhoneNumber())
+                .isValidPhoneNumber(isValidPhoneNumber)
                 .isValidEmail(request.isValidEmail())
                 .isAgreeSendEmail(request.isAgreeSendEmail())
                 .isAgreeSendSms(request.isAgreeSendSms())
