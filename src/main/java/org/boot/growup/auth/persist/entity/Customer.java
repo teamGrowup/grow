@@ -13,9 +13,7 @@ import org.boot.growup.auth.model.dto.response.KakaoAccountResponseDTO;
 import org.boot.growup.auth.model.dto.response.NaverAccountResponseDTO;
 import org.boot.growup.auth.model.User;
 import org.boot.growup.auth.model.dto.request.CustomerSignUpRequestDTO;
-import org.boot.growup.auth.model.dto.request.GoogleAdditionalInfoRequestDTO;
-import org.boot.growup.auth.model.dto.request.KakaoAdditionalInfoRequestDTO;
-import org.boot.growup.auth.model.dto.request.NaverAdditionalInfoRequestDTO;
+import org.boot.growup.auth.model.dto.request.Oauth2AdditionalInfoRequestDTO;
 import org.boot.growup.common.entity.BaseEntity;
 import org.hibernate.envers.AuditOverride;
 
@@ -32,7 +30,7 @@ public class Customer extends BaseEntity {
     @Column(name = "customer_id", nullable = false)
     private Long id;
 
-    @Column(nullable = false, length = 300)
+    @Column(length = 300)
     private String email;
 
     @Column(length = 60)
@@ -41,23 +39,22 @@ public class Customer extends BaseEntity {
     @Column(nullable = false, length = 13)
     private String phoneNumber;
 
-    @Column(nullable = false, length = 8)
+    @Column(length = 8)
     private String birthday;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private Gender gender;
 
-    @Column(nullable = false, length = 100)
+    @Column(length = 100)
     private String address;
 
-    @Column(nullable = false, length = 5)
+    @Column(length = 5)
     private String postCode;
 
-    @Column(nullable = false, length = 20)
+    @Column(length = 20)
     private String nickname;
 
-    @Column(nullable = false, length = 10)
+    @Column(length = 10)
     private String name;
 
     @Enumerated(EnumType.STRING)
@@ -65,7 +62,7 @@ public class Customer extends BaseEntity {
     private Provider provider;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "role", nullable = false)
+    @Column(name = "role")
     private Role role;
 
     @Column(name = "profile_url", length = 300)
@@ -74,13 +71,10 @@ public class Customer extends BaseEntity {
     @Column(nullable = false)
     private boolean isValidPhoneNumber;
 
-    @Column(nullable = false)
     private boolean isValidEmail;
 
-    @Column(nullable = false)
     private boolean isAgreeSendEmail;
 
-    @Column(nullable = false)
     private boolean isAgreeSendSms;
 
     public User toUserDetails() {
@@ -95,8 +89,6 @@ public class Customer extends BaseEntity {
                 .phoneNumber(request.getPhoneNumber())
                 .birthday(request.getBirthday())
                 .gender(Gender.valueOf(request.getGender().name()))
-                .address(request.getAddress())
-                .postCode(request.getPostCode())
                 .nickname(request.getNickname())
                 .name(request.getName())
                 .provider(Provider.EMAIL)
@@ -109,30 +101,26 @@ public class Customer extends BaseEntity {
     }
 
     /* 구글 유저 회원가입 */
-    public static Customer of(GoogleAdditionalInfoRequestDTO request, GoogleAccountResponseDTO googleAccount) {
+    public static Customer of(Oauth2AdditionalInfoRequestDTO request, GoogleAccountResponseDTO googleAccount) {
         return Customer.builder()
                 .email(googleAccount.getEmail())
                 .phoneNumber(request.getPhoneNumber())
                 .birthday(request.getBirthday())
                 .gender(Gender.valueOf(request.getGender().name()))
-                .address(request.getAddress())
-                .postCode(request.getPostCode())
-                .nickname(googleAccount.getGivenName())
-                .name(googleAccount.getName())
+                .nickname(request.getNickname())
+                .name(request.getName())
                 .provider(Provider.GOOGLE)
                 .role(Role.CUSTOMER)
                 .build();
     }
 
     /* 카카오 유저 회원가입 */
-    public static Customer of(KakaoAdditionalInfoRequestDTO request, KakaoAccountResponseDTO kakaoAccount) {
+    public static Customer of(Oauth2AdditionalInfoRequestDTO request, KakaoAccountResponseDTO kakaoAccount) {
         return Customer.builder()
                 .email(kakaoAccount.getKakaoAccount().getEmail())
                 .phoneNumber(request.getPhoneNumber())
                 .birthday(request.getBirthday())
                 .gender(Gender.valueOf(request.getGender().name()))
-                .address(request.getAddress())
-                .postCode(request.getPostCode())
                 .nickname(kakaoAccount.getProperties().get("nickname"))
                 .name(request.getName())
                 .provider(Provider.KAKAO)
@@ -141,16 +129,14 @@ public class Customer extends BaseEntity {
     }
 
     /* 네이버 유저 회원가입 */
-    public static Customer of(NaverAdditionalInfoRequestDTO request, NaverAccountResponseDTO naverAccount) {
+    public static Customer of(Oauth2AdditionalInfoRequestDTO request, NaverAccountResponseDTO naverAccount) {
         return Customer.builder()
                 .email(naverAccount.getResponse().getEmail())
                 .phoneNumber(request.getPhoneNumber())
                 .birthday(request.getBirthday())
-                .gender(Gender.valueOf(naverAccount.getResponse().getGender().equals("M") ? "MALE" : "FEMALE"))
-                .address(request.getAddress())
-                .postCode(request.getPostCode())
+                .gender(Gender.valueOf(request.getGender().name()))
                 .nickname(request.getNickname())
-                .name(naverAccount.getResponse().getName())
+                .name(request.getName())
                 .provider(Provider.NAVER)
                 .role(Role.CUSTOMER)
                 .build();

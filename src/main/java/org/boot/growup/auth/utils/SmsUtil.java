@@ -7,7 +7,7 @@ import net.nurigo.sdk.message.model.Message;
 import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
 import net.nurigo.sdk.message.response.SingleMessageSentResponse;
 import net.nurigo.sdk.message.service.DefaultMessageService;
-import org.boot.growup.common.model.SmsProperty;
+import org.boot.growup.common.config.property.SmsProperty;
 import org.springframework.stereotype.Component;
 
 @Component

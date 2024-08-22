@@ -8,7 +8,7 @@ import org.boot.growup.auth.service.GoogleOauthService;
 import org.boot.growup.common.model.BaseException;
 import org.boot.growup.auth.model.dto.response.GoogleAccessTokenResponseDTO;
 import org.boot.growup.auth.model.dto.response.GoogleAccountResponseDTO;
-import org.boot.growup.common.model.Oauth2Property;
+import org.boot.growup.common.config.property.Oauth2Property;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 

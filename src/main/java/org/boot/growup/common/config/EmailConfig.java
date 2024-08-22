@@ -2,7 +2,7 @@ package org.boot.growup.common.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.boot.growup.common.model.EmailProperty;
+import org.boot.growup.common.config.property.EmailProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;

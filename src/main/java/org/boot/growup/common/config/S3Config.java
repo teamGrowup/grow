@@ -6,7 +6,7 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.boot.growup.common.model.S3Property;
+import org.boot.growup.common.config.property.S3Property;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

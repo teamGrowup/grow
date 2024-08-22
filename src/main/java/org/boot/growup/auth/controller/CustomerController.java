@@ -70,11 +70,11 @@ public class CustomerController {
      * [POST]
      * 구글 로그인 Oauth2.0
      * @header null
-     * @body OauthSignInRequestDTO
+     * @body Oauth2SignInRequestDTO
      * @response TokenDTO
      */
     @PostMapping("/oauth/google")
-    public BaseResponse<TokenDTO> signInGoogle(@Valid @RequestBody OauthSignInRequestDTO request) {
+    public BaseResponse<TokenDTO> signInGoogle(@Valid @RequestBody Oauth2SignInRequestDTO request) {
         /* 인가코드를 받아서 Google에 AccessToken 요청 -> 받은 AccessToken으로 Google 사용자 정보 요청 */
         String accessToken = googleOauthServiceImpl.requestGoogleAccessToken(request.getAuthCode());
         GoogleAccountResponseDTO googleAccount = googleOauthServiceImpl.requestGoogleAccount(accessToken);
@@ -89,12 +89,12 @@ public class CustomerController {
      * [POST]
      * 구글 로그인 Oauth2.0 - 초기 사용자 회원가입 처리
      * @header null
-     * @body GoogleAdditionalInfoRequestDTO
+     * @body Oauth2AdditionalInfoRequestDTO
      * @response TokenDTO
      */
-    @PostMapping("/oauth/google/additional-info")
+    @PostMapping("/oauth/google/additional-infos")
     public BaseResponse<TokenDTO> signInGoogleAdditional(
-                @Valid @RequestBody GoogleAdditionalInfoRequestDTO request) {
+                @Valid @RequestBody Oauth2AdditionalInfoRequestDTO request) {
         TokenDTO response = customerService.signInGoogleAdditional(request);
         return new BaseResponse<>(response);
     }
@@ -103,11 +103,11 @@ public class CustomerController {
      * [POST]
      * 카카오 로그인 Oauth2.0
      * @header null
-     * @body OauthSignInRequestDTO
+     * @body Oauth2SignInRequestDTO
      * @response TokenDTO
      */
     @PostMapping("/oauth/kakao")
-    public BaseResponse<TokenDTO> signInKakao(@Valid @RequestBody OauthSignInRequestDTO request) {
+    public BaseResponse<TokenDTO> signInKakao(@Valid @RequestBody Oauth2SignInRequestDTO request) {
         // TODO: 과정 하나로 합치기
         String accessToken = kakaoOauthServiceImpl.requestKakaoAccessToken(request.getAuthCode());
         KakaoAccountResponseDTO kakaoAccount = kakaoOauthServiceImpl.requestKakaoAccount(accessToken);
@@ -121,12 +121,12 @@ public class CustomerController {
      * [POST]
      * 카카오 로그인 Oauth2.0 - 초기 사용자 회원가입 처리
      * @header null
-     * @body KakaoAdditionalInfoRequestDTO
+     * @body Oauth2AdditionalInfoRequestDTO
      * @response TokenDTO
      */
-    @PostMapping("/oauth/kakao/additional-info")
+    @PostMapping("/oauth/kakao/additional-infos")
     public BaseResponse<TokenDTO> signInKakaoAdditional(
-            @Valid @RequestBody KakaoAdditionalInfoRequestDTO request) {
+            @Valid @RequestBody Oauth2AdditionalInfoRequestDTO request) {
         TokenDTO response = customerService.signInKakaoAdditional(request);
         return new BaseResponse<>(response);
     }
@@ -135,11 +135,11 @@ public class CustomerController {
      * [POST]
      * 네이버 로그인 Oauth2.0
      * @header null
-     * @body OauthSignInRequestDTO
+     * @body Oauth2SignInRequestDTO
      * @response TokenDTO
      */
     @PostMapping("/oauth/naver")
-    public BaseResponse<TokenDTO> signInNaver(@Valid @RequestBody OauthSignInRequestDTO request) {
+    public BaseResponse<TokenDTO> signInNaver(@Valid @RequestBody Oauth2SignInRequestDTO request) {
         String accessToken = naverOauthServiceImpl.requestNaverAccessToken(request.getAuthCode());
         NaverAccountResponseDTO naverAccount = naverOauthServiceImpl.requestNaverAccount(accessToken);
         log.info("Naver User : {}", naverAccount);
@@ -152,12 +152,12 @@ public class CustomerController {
      * [POST]
      * 네이버 로그인 Oauth2.0 - 초기 사용자 회원가입 처리
      * @header null
-     * @body NaverAdditionalInfoRequestDTO
+     * @body Oauth2AdditionalInfoRequestDTO
      * @response TokenDTO
      */
     @PostMapping("/oauth/naver/additional-infos")
     public BaseResponse<TokenDTO> signInNaverAdditional(
-                @Valid @RequestBody NaverAdditionalInfoRequestDTO request) {
+                @Valid @RequestBody Oauth2AdditionalInfoRequestDTO request) {
         TokenDTO response = customerService.signInNaverAdditional(request);
         return new BaseResponse<>(response);
     }

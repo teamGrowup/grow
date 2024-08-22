@@ -2,7 +2,7 @@ package org.boot.growup.auth.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.boot.growup.common.model.Oauth2Property;
+import org.boot.growup.common.config.property.Oauth2Property;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;

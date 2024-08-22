@@ -118,7 +118,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public TokenDTO signInGoogleAdditional(GoogleAdditionalInfoRequestDTO request) {
+    public TokenDTO signInGoogleAdditional(Oauth2AdditionalInfoRequestDTO request) {
         GoogleAccountResponseDTO googleAccount = (GoogleAccountResponseDTO) session.getAttribute("googleAccount");
         if(googleAccount == null) {
             throw new BaseException(SESSION_NOT_FOUND);
@@ -156,7 +156,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public TokenDTO signInKakaoAdditional(KakaoAdditionalInfoRequestDTO request) {
+    public TokenDTO signInKakaoAdditional(Oauth2AdditionalInfoRequestDTO request) {
         KakaoAccountResponseDTO kakaoAccount = (KakaoAccountResponseDTO) session.getAttribute("kakaoAccount");
         if(kakaoAccount == null) {
             throw new BaseException(SESSION_NOT_FOUND);
@@ -193,7 +193,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public TokenDTO signInNaverAdditional(NaverAdditionalInfoRequestDTO request) {
+    public TokenDTO signInNaverAdditional(Oauth2AdditionalInfoRequestDTO request) {
         NaverAccountResponseDTO naverAccount = (NaverAccountResponseDTO) session.getAttribute("naverAccount");
         if(naverAccount == null) {
             throw new BaseException(SESSION_NOT_FOUND);

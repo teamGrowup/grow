@@ -33,7 +33,7 @@ public interface CustomerService {
     /*
     신규 가입자 구글 Oauth2.0 로그인 > 추가 정보 입력
      */
-    TokenDTO signInGoogleAdditional(GoogleAdditionalInfoRequestDTO request);
+    TokenDTO signInGoogleAdditional(Oauth2AdditionalInfoRequestDTO request);
 
     /*
     카카오 Oauth2.0 로그인
@@ -43,7 +43,7 @@ public interface CustomerService {
     /*
     신규 가입자 카카오 Oauth2.0 로그인 > 추가 정보 입력
      */
-    TokenDTO signInKakaoAdditional(KakaoAdditionalInfoRequestDTO request);
+    TokenDTO signInKakaoAdditional(Oauth2AdditionalInfoRequestDTO request);
 
     /*
     네이버 Oauth2.0 로그인
@@ -53,7 +53,7 @@ public interface CustomerService {
     /*
     신규 가입자 네이버 Oauth2.0 로그인 > 추가 정보 입력
      */
-    TokenDTO signInNaverAdditional(NaverAdditionalInfoRequestDTO request);
+    TokenDTO signInNaverAdditional(Oauth2AdditionalInfoRequestDTO request);
 
     /*
     전화번호 인증요청
