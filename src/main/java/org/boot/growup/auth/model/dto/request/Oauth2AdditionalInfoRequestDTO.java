@@ -31,4 +31,10 @@ public class Oauth2AdditionalInfoRequestDTO {
     @NotBlank(message = "닉네임은 필수 입력 값입니다")
     @Pattern(regexp = Regex.NICKNAME, message = "닉네임은 한글, 영어, 숫자만 포함하며, 최대 20글자입니다")
     private String nickname;
+
+    private boolean isValidEmail;
+
+    private boolean isAgreeSendEmail;
+
+    private boolean isAgreeSendSms;
 }

@@ -105,7 +105,7 @@ public class Customer extends BaseEntity {
     }
 
     /* 구글 유저 회원가입 */
-    public static Customer of(Oauth2AdditionalInfoRequestDTO request, GoogleAccountResponseDTO googleAccount) {
+    public static Customer of(Oauth2AdditionalInfoRequestDTO request, GoogleAccountResponseDTO googleAccount, boolean isValidPhoneNumber) {
         return Customer.builder()
                 .email(googleAccount.getEmail())
                 .phoneNumber(request.getPhoneNumber())
@@ -115,11 +115,15 @@ public class Customer extends BaseEntity {
                 .name(request.getName())
                 .provider(Provider.GOOGLE)
                 .role(Role.CUSTOMER)
+                .isValidPhoneNumber(isValidPhoneNumber)
+                .isValidEmail(request.isValidEmail())
+                .isAgreeSendEmail(request.isAgreeSendEmail())
+                .isAgreeSendSms(request.isAgreeSendSms())
                 .build();
     }
 
     /* 카카오 유저 회원가입 */
-    public static Customer of(Oauth2AdditionalInfoRequestDTO request, KakaoAccountResponseDTO kakaoAccount) {
+    public static Customer of(Oauth2AdditionalInfoRequestDTO request, KakaoAccountResponseDTO kakaoAccount, boolean isValidPhoneNumber) {
         return Customer.builder()
                 .email(kakaoAccount.getKakaoAccount().getEmail())
                 .phoneNumber(request.getPhoneNumber())
@@ -129,11 +133,15 @@ public class Customer extends BaseEntity {
                 .name(request.getName())
                 .provider(Provider.KAKAO)
                 .role(Role.CUSTOMER)
+                .isValidPhoneNumber(isValidPhoneNumber)
+                .isValidEmail(request.isValidEmail())
+                .isAgreeSendEmail(request.isAgreeSendEmail())
+                .isAgreeSendSms(request.isAgreeSendSms())
                 .build();
     }
 
     /* 네이버 유저 회원가입 */
-    public static Customer of(Oauth2AdditionalInfoRequestDTO request, NaverAccountResponseDTO naverAccount) {
+    public static Customer of(Oauth2AdditionalInfoRequestDTO request, NaverAccountResponseDTO naverAccount, boolean isValidPhoneNumber) {
         return Customer.builder()
                 .email(naverAccount.getResponse().getEmail())
                 .phoneNumber(request.getPhoneNumber())
@@ -143,6 +151,10 @@ public class Customer extends BaseEntity {
                 .name(request.getName())
                 .provider(Provider.NAVER)
                 .role(Role.CUSTOMER)
+                .isValidPhoneNumber(isValidPhoneNumber)
+                .isValidEmail(request.isValidEmail())
+                .isAgreeSendEmail(request.isAgreeSendEmail())
+                .isAgreeSendSms(request.isAgreeSendSms())
                 .build();
     }
 }

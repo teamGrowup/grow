@@ -130,8 +130,16 @@ public class CustomerServiceImpl implements CustomerService {
         if(googleAccount == null) {
             throw new BaseException(SESSION_NOT_FOUND);
         }
+
+        /* 전화번호 인증정보 참조 */
+        boolean isValidPhoneNumber = Boolean.parseBoolean(redisDao.getValues(request.getPhoneNumber()));
+        log.info("isValidPhoneNumber : {}", isValidPhoneNumber);
+        if(!isValidPhoneNumber) {
+            throw new BaseException(INVALID_PHONE_NUMBER);
+        }
+
         /* 데이터 삽입 */
-        Customer newCustomer = Customer.of(request, googleAccount);
+        Customer newCustomer = Customer.of(request, googleAccount, isValidPhoneNumber);
         customerRepository.save(newCustomer);
 
         UserDetails userDetails = userService.loadUserByUsernameAndProvider(
@@ -168,8 +176,16 @@ public class CustomerServiceImpl implements CustomerService {
         if(kakaoAccount == null) {
             throw new BaseException(SESSION_NOT_FOUND);
         }
+
+        /* 전화번호 인증정보 참조 */
+        boolean isValidPhoneNumber = Boolean.parseBoolean(redisDao.getValues(request.getPhoneNumber()));
+        log.info("isValidPhoneNumber : {}", isValidPhoneNumber);
+        if(!isValidPhoneNumber) {
+            throw new BaseException(INVALID_PHONE_NUMBER);
+        }
+
         /* 데이터 삽입 */
-        Customer newCustomer = Customer.of(request, kakaoAccount);
+        Customer newCustomer = Customer.of(request, kakaoAccount, isValidPhoneNumber);
         customerRepository.save(newCustomer);
 
         UserDetails userDetails = userService.loadUserByUsernameAndProvider(
@@ -205,8 +221,16 @@ public class CustomerServiceImpl implements CustomerService {
         if(naverAccount == null) {
             throw new BaseException(SESSION_NOT_FOUND);
         }
+
+        /* 전화번호 인증정보 참조 */
+        boolean isValidPhoneNumber = Boolean.parseBoolean(redisDao.getValues(request.getPhoneNumber()));
+        log.info("isValidPhoneNumber : {}", isValidPhoneNumber);
+        if(!isValidPhoneNumber) {
+            throw new BaseException(INVALID_PHONE_NUMBER);
+        }
+
         /* 데이터 삽입 */
-        Customer newCustomer = Customer.of(request, naverAccount);
+        Customer newCustomer = Customer.of(request, naverAccount, isValidPhoneNumber);
         customerRepository.save(newCustomer);
 
         UserDetails userDetails = userService.loadUserByUsernameAndProvider(
@@ -217,9 +241,9 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public void postPhoneNumber(PostPhoneNumberRequestDTO request) {
-        /* 이메일 회원가입의 경우, 이미 가입된 유저인지 확인 */
+        /* 이미 가입된 유저인지 확인 */
         customerRepository.findByPhoneNumberAndIsValidPhoneNumberAndProvider(
-                        request.getPhoneNumber(), true, Provider.EMAIL)
+                        request.getPhoneNumber(), true, Provider.valueOf(request.getProvider().name()))
                 .ifPresent(customer -> {
                     /* 이미 가입된 유저라면 가입된 이메일을 반환 */
                     throw new BaseException(USER_ALREADY_REGISTERED, customer.getEmail());
