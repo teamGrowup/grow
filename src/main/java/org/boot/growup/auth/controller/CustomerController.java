@@ -78,7 +78,7 @@ public class CustomerController {
         /* 인가코드를 받아서 Google에 AccessToken 요청 -> 받은 AccessToken으로 Google 사용자 정보 요청 */
         String accessToken = googleOauthServiceImpl.requestGoogleAccessToken(request.getAuthCode());
         GoogleAccountResponseDTO googleAccount = googleOauthServiceImpl.requestGoogleAccount(accessToken);
-        log.info("Google User : {}", googleAccount);
+        log.info("Google UserModel : {}", googleAccount);
 
         /* Google 사용자 정보를 userService에서 회원가입 및 로그인 처리 */
         TokenDTO response = customerService.signInGoogle(googleAccount);
@@ -111,7 +111,7 @@ public class CustomerController {
         // TODO: 과정 하나로 합치기
         String accessToken = kakaoOauthServiceImpl.requestKakaoAccessToken(request.getAuthCode());
         KakaoAccountResponseDTO kakaoAccount = kakaoOauthServiceImpl.requestKakaoAccount(accessToken);
-        log.info("Kakao User : {}", kakaoAccount);
+        log.info("Kakao UserModel : {}", kakaoAccount);
 
         TokenDTO response = customerService.signInKakao(kakaoAccount);
         return new BaseResponse<>(response);
@@ -142,7 +142,7 @@ public class CustomerController {
     public BaseResponse<TokenDTO> signInNaver(@Valid @RequestBody Oauth2SignInRequestDTO request) {
         String accessToken = naverOauthServiceImpl.requestNaverAccessToken(request.getAuthCode());
         NaverAccountResponseDTO naverAccount = naverOauthServiceImpl.requestNaverAccount(accessToken);
-        log.info("Naver User : {}", naverAccount);
+        log.info("Naver UserModel : {}", naverAccount);
 
         TokenDTO response = customerService.signInNaver(naverAccount);
         return new BaseResponse<>(response);

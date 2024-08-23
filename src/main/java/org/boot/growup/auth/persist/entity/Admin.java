@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.boot.growup.common.constant.Role;
-import org.boot.growup.auth.model.User;
+import org.boot.growup.auth.model.UserModel;
 import org.boot.growup.common.entity.BaseEntity;
 import org.hibernate.envers.AuditOverride;
 
@@ -36,7 +36,7 @@ public class Admin extends BaseEntity {
     @Column(name = "role", nullable = false)
     private Role role;
 
-    public User toUserDetails() {
-        return new User(email, password, role);
+    public UserModel toUserDetails() {
+        return new UserModel(email, password, role);
     }
 }

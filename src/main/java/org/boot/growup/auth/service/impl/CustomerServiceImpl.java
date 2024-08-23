@@ -5,10 +5,10 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.boot.growup.auth.model.UserModel;
 import org.boot.growup.auth.model.dto.request.*;
 import org.boot.growup.auth.service.CustomerService;
 import org.boot.growup.common.model.EmailMessageDTO;
-import org.boot.growup.auth.service.EmailService;
 import org.boot.growup.common.constant.Role;
 import org.boot.growup.common.model.BaseException;
 import org.boot.growup.common.constant.ErrorCode;
@@ -20,7 +20,6 @@ import org.boot.growup.auth.model.dto.response.KakaoAccountResponseDTO;
 import org.boot.growup.auth.model.dto.response.NaverAccountResponseDTO;
 import org.boot.growup.common.model.RedisDAO;
 import org.boot.growup.auth.utils.SmsUtil;
-import org.boot.growup.auth.service.UserService;
 import org.boot.growup.auth.model.dto.response.EmailCheckResponseDTO;
 import org.boot.growup.auth.persist.entity.Customer;
 import org.boot.growup.auth.persist.repository.CustomerRepository;
@@ -29,6 +28,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.springframework.stereotype.Service;
@@ -45,9 +45,8 @@ import static org.boot.growup.common.constant.ErrorCode.*;
 public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository customerRepository;
     private final PasswordEncoder passwordEncoder;
-    private final UserService userService;
     private final JwtTokenProvider jwtTokenProvider;
-    private final EmailService emailService;
+    private final EmailServiceImpl emailServiceImpl;
     private final HttpSession session;
     private final SmsUtil smsUtil;
     private final RedisDAO redisDao;
@@ -80,7 +79,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public TokenDTO signIn(CustomerSignInRequestDTO request) {
-        UserDetails userDetails = userService.loadUserByUsernameAndProvider(request.getEmail(), Provider.EMAIL);
+        UserDetails userDetails = loadUserByUsernameAndProvider(request.getEmail(), Provider.EMAIL);
 
         if(!checkPassword(request.getPassword(), userDetails.getPassword())){ // 비밀번호 비교
             throw new BaseException(ErrorCode.BAD_REQUEST, "비밀번호가 일치하지 않습니다.");
@@ -96,7 +95,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public EmailCheckResponseDTO checkEmail(EmailCheckRequestDTO request) throws MessagingException {
         EmailMessageDTO emailMessage = EmailMessageDTO.from(request);
-        String validationCode = emailService.sendMail(emailMessage);
+        String validationCode = emailServiceImpl.sendMail(emailMessage);
         return EmailCheckResponseDTO.builder()
                 .validationCode(validationCode)
                 .build();
@@ -107,7 +106,7 @@ public class CustomerServiceImpl implements CustomerService {
         return customerRepository
                 .findByEmailAndProvider(googleAccount.getEmail(), Provider.GOOGLE)
                 .map(customer -> { // 고객이 존재하는 경우
-                    UserDetails userDetails = userService.loadUserByUsernameAndProvider(
+                    UserDetails userDetails = loadUserByUsernameAndProvider(
                                 googleAccount.getEmail(), Provider.GOOGLE);
                     return jwtTokenProvider.generateToken(userDetails.getUsername(), userDetails.getAuthorities());
                 })
@@ -142,7 +141,7 @@ public class CustomerServiceImpl implements CustomerService {
         Customer newCustomer = Customer.of(request, googleAccount, isValidPhoneNumber);
         customerRepository.save(newCustomer);
 
-        UserDetails userDetails = userService.loadUserByUsernameAndProvider(
+        UserDetails userDetails = loadUserByUsernameAndProvider(
                     googleAccount.getEmail(), Provider.GOOGLE);
 
         return jwtTokenProvider.generateToken(userDetails.getUsername(),userDetails.getAuthorities());
@@ -153,8 +152,7 @@ public class CustomerServiceImpl implements CustomerService {
         return customerRepository
                 .findByEmailAndProvider(kakaoAccount.getKakaoAccount().getEmail(), Provider.KAKAO)
                 .map(customer -> { // 고객이 존재하는 경우
-                    UserDetails userDetails = userService
-                                .loadUserByUsernameAndProvider(
+                    UserDetails userDetails = loadUserByUsernameAndProvider(
                                             kakaoAccount.getKakaoAccount().getEmail(), Provider.KAKAO);
                     return jwtTokenProvider.generateToken(userDetails.getUsername(), userDetails.getAuthorities());
                 })
@@ -188,7 +186,7 @@ public class CustomerServiceImpl implements CustomerService {
         Customer newCustomer = Customer.of(request, kakaoAccount, isValidPhoneNumber);
         customerRepository.save(newCustomer);
 
-        UserDetails userDetails = userService.loadUserByUsernameAndProvider(
+        UserDetails userDetails = loadUserByUsernameAndProvider(
                     kakaoAccount.getKakaoAccount().getEmail(), Provider.KAKAO);
 
         return jwtTokenProvider.generateToken(userDetails.getUsername(),userDetails.getAuthorities());
@@ -199,8 +197,7 @@ public class CustomerServiceImpl implements CustomerService {
         return customerRepository
                 .findByEmailAndProvider(naverAccount.getResponse().getEmail(), Provider.NAVER)
                 .map(customer -> { // 고객이 존재하는 경우
-                    UserDetails userDetails = userService
-                            .loadUserByUsernameAndProvider(naverAccount.getResponse().getEmail(), Provider.NAVER);
+                    UserDetails userDetails = loadUserByUsernameAndProvider(naverAccount.getResponse().getEmail(), Provider.NAVER);
                     return jwtTokenProvider.generateToken(userDetails.getUsername(), userDetails.getAuthorities());
                 })
                 .orElseGet(() -> { // 고객이 존재하지 않는 경우
@@ -233,7 +230,7 @@ public class CustomerServiceImpl implements CustomerService {
         Customer newCustomer = Customer.of(request, naverAccount, isValidPhoneNumber);
         customerRepository.save(newCustomer);
 
-        UserDetails userDetails = userService.loadUserByUsernameAndProvider(
+        UserDetails userDetails = loadUserByUsernameAndProvider(
                 naverAccount.getResponse().getEmail(), Provider.NAVER);
 
         return jwtTokenProvider.generateToken(userDetails.getUsername(),userDetails.getAuthorities());
@@ -297,5 +294,15 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public void deletePhoneNumber(PostPhoneNumberRequestDTO request) {
         redisDao.deleteValues(request.getPhoneNumber());
+    }
+
+    @Override
+    public UserDetails loadUserByUsernameAndProvider(String username, Provider provider) throws UsernameNotFoundException {
+        Customer customer = customerRepository.findByEmailAndProvider(username, provider)
+                .orElseThrow(() -> new UsernameNotFoundException("해당하는 유저를 찾을 수 없습니다."));
+
+        UserModel userDetails = customer.toUserDetails();
+        log.info("구매자 권한: {}", userDetails.getAuthorities());
+        return userDetails;
     }
 }

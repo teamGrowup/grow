@@ -5,14 +5,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.boot.growup.auth.model.dto.request.PostAuthCodeRequestDTO;
+import org.boot.growup.auth.model.UserModel;
 import org.boot.growup.common.constant.Gender;
 import org.boot.growup.common.constant.Role;
 import org.boot.growup.common.constant.Provider;
 import org.boot.growup.auth.model.dto.response.GoogleAccountResponseDTO;
 import org.boot.growup.auth.model.dto.response.KakaoAccountResponseDTO;
 import org.boot.growup.auth.model.dto.response.NaverAccountResponseDTO;
-import org.boot.growup.auth.model.User;
 import org.boot.growup.auth.model.dto.request.CustomerSignUpRequestDTO;
 import org.boot.growup.auth.model.dto.request.Oauth2AdditionalInfoRequestDTO;
 import org.boot.growup.common.entity.BaseEntity;
@@ -81,8 +80,8 @@ public class Customer extends BaseEntity {
     @Column(nullable = false)
     private boolean isAgreeSendSms;
 
-    public User toUserDetails() {
-        return new User(email, password, role);
+    public UserModel toUserDetails() {
+        return new UserModel(email, password, role);
     }
 
     /* 이메일 유저 회원가입 */

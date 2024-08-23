@@ -2,12 +2,15 @@ package org.boot.growup.auth.service;
 
 import jakarta.mail.MessagingException;
 import org.boot.growup.auth.model.dto.request.*;
+import org.boot.growup.common.constant.Provider;
 import org.boot.growup.common.model.TokenDTO;
 import org.boot.growup.auth.model.dto.response.GoogleAccountResponseDTO;
 import org.boot.growup.auth.model.dto.response.KakaoAccountResponseDTO;
 import org.boot.growup.auth.model.dto.response.NaverAccountResponseDTO;
 import org.boot.growup.auth.model.dto.response.EmailCheckResponseDTO;
 import org.boot.growup.auth.persist.entity.Customer;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 public interface CustomerService {
     /*
@@ -74,4 +77,9 @@ public interface CustomerService {
     전화번호 인증정보 제거
      */
     void deletePhoneNumber(PostPhoneNumberRequestDTO request);
+
+    /*
+    Customer UserDetailsService
+     */
+    UserDetails loadUserByUsernameAndProvider(String username, Provider provider) throws UsernameNotFoundException;
 }

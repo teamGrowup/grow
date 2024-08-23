@@ -3,10 +3,11 @@ package org.boot.growup.auth.service;
 import org.boot.growup.common.model.TokenDTO;
 import org.boot.growup.auth.model.dto.request.AdminSignInRequestDTO;
 import org.boot.growup.auth.persist.entity.Admin;
-import org.springframework.stereotype.Service;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-@Service
-public interface AdminService {
+public interface AdminService extends UserDetailsService {
     /*
     관리자 로그인
      */
@@ -16,4 +17,9 @@ public interface AdminService {
     현재 로그인한 관리자 조회
      */
     Admin getCurrentAdmin();
+
+    /*
+    Admin UserDetailsService
+     */
+    UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
 }
