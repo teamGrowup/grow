@@ -19,6 +19,21 @@ public interface CustomerService {
     void signUp(CustomerSignUpRequestDTO request);
 
     /*
+    전화번호 인증요청
+     */
+    void postPhoneNumber(PostPhoneNumberRequestDTO request);
+
+    /*
+    전화번호 인증 > 인증번호 검증
+     */
+    void postAuthCode(PostAuthCodeRequestDTO request);
+
+    /*
+    전화번호 인증정보 제거
+     */
+    void deletePhoneNumber(PostPhoneNumberRequestDTO request);
+
+    /*
     구매자 이메일 로그인
      */
     TokenDTO signIn(CustomerSignInRequestDTO request);
@@ -59,24 +74,9 @@ public interface CustomerService {
     TokenDTO signInNaverAdditional(Oauth2AdditionalInfoRequestDTO request);
 
     /*
-    전화번호 인증요청
-     */
-    void postPhoneNumber(PostPhoneNumberRequestDTO request);
-
-    /*
-    전화번호 인증 > 인증번호 검증
-     */
-    void postAuthCode(PostAuthCodeRequestDTO request);
-
-    /*
     현재 로그인한 소비자 조회
      */
     Customer getCurrentCustomer();
-
-    /*
-    전화번호 인증정보 제거
-     */
-    void deletePhoneNumber(PostPhoneNumberRequestDTO request);
 
     /*
     Customer UserDetailsService

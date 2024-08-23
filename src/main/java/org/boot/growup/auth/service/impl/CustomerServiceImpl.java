@@ -78,6 +78,36 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    public void postAuthCode(PostAuthCodeRequestDTO request) {
+        String storedAuthCode = redisDao.getValues(request.getPhoneNumber());
+        if(!storedAuthCode.equals(request.getAuthCode())) {
+            throw new BaseException(ErrorCode.PHONE_WRONG_AUTH_CODE);
+        }
+        redisDao.setValues(request.getPhoneNumber(), String.valueOf(true), 1000 * 60 * 30L);
+    }
+
+    @Override
+    public void postPhoneNumber(PostPhoneNumberRequestDTO request) {
+        /* 이미 가입된 유저인지 확인 */
+        customerRepository.findByPhoneNumberAndIsValidPhoneNumberAndProvider(
+                        request.getPhoneNumber(), true, Provider.valueOf(request.getProvider().name()))
+                .ifPresent(customer -> {
+                    /* 이미 가입된 유저라면 가입된 이메일을 반환 */
+                    throw new BaseException(USER_ALREADY_REGISTERED, customer.getEmail());
+                });
+
+        String parsedPhoneNumber = request.getPhoneNumber().replaceAll("-","");
+        String authCode = createAuthCode();
+        smsUtil.sendMessage(parsedPhoneNumber, authCode);
+        redisDao.setValues(request.getPhoneNumber(), authCode, 1000 * 60 * 5L);
+    }
+
+    @Override
+    public void deletePhoneNumber(PostPhoneNumberRequestDTO request) {
+        redisDao.deleteValues(request.getPhoneNumber());
+    }
+
+    @Override
     public TokenDTO signIn(CustomerSignInRequestDTO request) {
         UserDetails userDetails = loadUserByUsernameAndProvider(request.getEmail(), Provider.EMAIL);
 
@@ -236,35 +266,10 @@ public class CustomerServiceImpl implements CustomerService {
         return jwtTokenProvider.generateToken(userDetails.getUsername(),userDetails.getAuthorities());
     }
 
-    @Override
-    public void postPhoneNumber(PostPhoneNumberRequestDTO request) {
-        /* 이미 가입된 유저인지 확인 */
-        customerRepository.findByPhoneNumberAndIsValidPhoneNumberAndProvider(
-                        request.getPhoneNumber(), true, Provider.valueOf(request.getProvider().name()))
-                .ifPresent(customer -> {
-                    /* 이미 가입된 유저라면 가입된 이메일을 반환 */
-                    throw new BaseException(USER_ALREADY_REGISTERED, customer.getEmail());
-                });
-
-        String parsedPhoneNumber = request.getPhoneNumber().replaceAll("-","");
-        String authCode = createAuthCode();
-        smsUtil.sendMessage(parsedPhoneNumber, authCode);
-        redisDao.setValues(request.getPhoneNumber(), authCode, 1000 * 60 * 5L);
-    }
-
     private String createAuthCode() {
         SecureRandom random = new SecureRandom();
         int authCode = random.nextInt(900000) + 100000; // 100000 ~ 999999 범위의 숫자 생성
         return String.valueOf(authCode);
-    }
-
-    @Override
-    public void postAuthCode(PostAuthCodeRequestDTO request) {
-        String storedAuthCode = redisDao.getValues(request.getPhoneNumber());
-        if(!storedAuthCode.equals(request.getAuthCode())) {
-            throw new BaseException(ErrorCode.PHONE_WRONG_AUTH_CODE);
-        }
-        redisDao.setValues(request.getPhoneNumber(), String.valueOf(true), 1000 * 60 * 30L);
     }
 
     public Customer getCurrentCustomer() {
@@ -289,11 +294,6 @@ public class CustomerServiceImpl implements CustomerService {
         }
 
         throw new BaseException(ErrorCode.ACCESS_DENIED);
-    }
-
-    @Override
-    public void deletePhoneNumber(PostPhoneNumberRequestDTO request) {
-        redisDao.deleteValues(request.getPhoneNumber());
     }
 
     @Override

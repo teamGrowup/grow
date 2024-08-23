@@ -41,6 +41,30 @@ public class CustomerController {
 
     /**
      * [POST]
+     * 인증번호 전송 및 검증
+     * @header null
+     * @body PostAuthCodeRequestDTO
+     * @response void
+     */
+    @PostMapping("/phone-numbers/validations/codes")
+    public void postAuthCode(@RequestBody PostAuthCodeRequestDTO request) {
+        customerService.postAuthCode(request);
+    }
+
+    /**
+     * [POST]
+     * 문자 인증완료 후 회원가입 중도포기
+     * @header null
+     * @body PostPhoneNumberRequestDTO
+     * @response void
+     */
+    @PostMapping("/email/register/cancel")
+    public void deletePhoneNumber(@RequestBody PostPhoneNumberRequestDTO request) {
+        customerService.deletePhoneNumber(request);
+    }
+
+    /**
+     * [POST]
      * 구매자 이메일 로그인
      * @header null
      * @body CustomerSignInRequestDTO
@@ -172,29 +196,5 @@ public class CustomerController {
     @PostMapping("/phone-numbers/validations")
     public void postPhoneNumber(@RequestBody PostPhoneNumberRequestDTO request) {
         customerService.postPhoneNumber(request);
-    }
-
-    /**
-     * [POST]
-     * 인증번호 전송 및 검증
-     * @header null
-     * @body PostAuthCodeRequestDTO
-     * @response void
-     */
-    @PostMapping("/phone-numbers/validations/codes")
-    public void postAuthCode(@RequestBody PostAuthCodeRequestDTO request) {
-        customerService.postAuthCode(request);
-    }
-
-    /**
-     * [POST]
-     * 문자 인증완료 후 회원가입 중도포기
-     * @header null
-     * @body PostPhoneNumberRequestDTO
-     * @response void
-     */
-    @PostMapping("/email/register/cancel")
-    public void deletePhoneNumber(@RequestBody PostPhoneNumberRequestDTO request) {
-        customerService.deletePhoneNumber(request);
     }
 }
