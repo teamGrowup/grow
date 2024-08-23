@@ -4,9 +4,6 @@ import jakarta.mail.MessagingException;
 import org.boot.growup.auth.model.dto.request.*;
 import org.boot.growup.common.constant.Provider;
 import org.boot.growup.common.model.TokenDTO;
-import org.boot.growup.auth.model.dto.response.GoogleAccountResponseDTO;
-import org.boot.growup.auth.model.dto.response.KakaoAccountResponseDTO;
-import org.boot.growup.auth.model.dto.response.NaverAccountResponseDTO;
 import org.boot.growup.auth.model.dto.response.EmailCheckResponseDTO;
 import org.boot.growup.auth.persist.entity.Customer;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -46,7 +43,7 @@ public interface CustomerService {
     /*
     구글 Oauth2.0 로그인
      */
-    TokenDTO signInGoogle(GoogleAccountResponseDTO googleAccount);
+    TokenDTO signInGoogle(Oauth2SignInRequestDTO request);
 
     /*
     신규 가입자 구글 Oauth2.0 로그인 > 추가 정보 입력
@@ -56,7 +53,7 @@ public interface CustomerService {
     /*
     카카오 Oauth2.0 로그인
      */
-    TokenDTO signInKakao(KakaoAccountResponseDTO kakaoAccount);
+    TokenDTO signInKakao(Oauth2SignInRequestDTO request);
 
     /*
     신규 가입자 카카오 Oauth2.0 로그인 > 추가 정보 입력
@@ -66,7 +63,7 @@ public interface CustomerService {
     /*
     네이버 Oauth2.0 로그인
      */
-    TokenDTO signInNaver(NaverAccountResponseDTO naverAccount);
+    TokenDTO signInNaver(Oauth2SignInRequestDTO request);
 
     /*
     신규 가입자 네이버 Oauth2.0 로그인 > 추가 정보 입력

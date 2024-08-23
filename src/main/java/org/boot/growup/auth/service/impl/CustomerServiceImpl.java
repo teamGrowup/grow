@@ -50,6 +50,9 @@ public class CustomerServiceImpl implements CustomerService {
     private final HttpSession session;
     private final SmsUtil smsUtil;
     private final RedisDAO redisDao;
+    private final GoogleOauthServiceImpl googleOauthServiceImpl;
+    private final KakaoOauthServiceImpl kakaoOauthServiceImpl;
+    private final NaverOauthServiceImpl naverOauthServiceImpl;
 
     @Override
     public void signUp(CustomerSignUpRequestDTO request) {
@@ -132,7 +135,10 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public TokenDTO signInGoogle(GoogleAccountResponseDTO googleAccount) {
+    public TokenDTO signInGoogle(Oauth2SignInRequestDTO request) {
+        String accessToken = googleOauthServiceImpl.requestGoogleAccessToken(request.getAuthCode());
+        GoogleAccountResponseDTO googleAccount = googleOauthServiceImpl.requestGoogleAccount(accessToken);
+        log.info("Google UserModel : {}", googleAccount);
         return customerRepository
                 .findByEmailAndProvider(googleAccount.getEmail(), Provider.GOOGLE)
                 .map(customer -> { // 고객이 존재하는 경우
@@ -171,14 +177,16 @@ public class CustomerServiceImpl implements CustomerService {
         Customer newCustomer = Customer.of(request, googleAccount, isValidPhoneNumber);
         customerRepository.save(newCustomer);
 
-        UserDetails userDetails = loadUserByUsernameAndProvider(
-                    googleAccount.getEmail(), Provider.GOOGLE);
+        UserDetails userDetails = loadUserByUsernameAndProvider(googleAccount.getEmail(), Provider.GOOGLE);
 
         return jwtTokenProvider.generateToken(userDetails.getUsername(),userDetails.getAuthorities());
     }
 
     @Override
-    public TokenDTO signInKakao(KakaoAccountResponseDTO kakaoAccount) {
+    public TokenDTO signInKakao(Oauth2SignInRequestDTO request) {
+        String accessToken = kakaoOauthServiceImpl.requestKakaoAccessToken(request.getAuthCode());
+        KakaoAccountResponseDTO kakaoAccount = kakaoOauthServiceImpl.requestKakaoAccount(accessToken);
+        log.info("Kakao UserModel : {}", kakaoAccount);
         return customerRepository
                 .findByEmailAndProvider(kakaoAccount.getKakaoAccount().getEmail(), Provider.KAKAO)
                 .map(customer -> { // 고객이 존재하는 경우
@@ -223,11 +231,14 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public TokenDTO signInNaver(NaverAccountResponseDTO naverAccount) {
+    public TokenDTO signInNaver(Oauth2SignInRequestDTO request) {
+        String accessToken = naverOauthServiceImpl.requestNaverAccessToken(request.getAuthCode());
+        NaverAccountResponseDTO naverAccount = naverOauthServiceImpl.requestNaverAccount(accessToken);
         return customerRepository
                 .findByEmailAndProvider(naverAccount.getResponse().getEmail(), Provider.NAVER)
                 .map(customer -> { // 고객이 존재하는 경우
-                    UserDetails userDetails = loadUserByUsernameAndProvider(naverAccount.getResponse().getEmail(), Provider.NAVER);
+                    UserDetails userDetails = loadUserByUsernameAndProvider(
+                                naverAccount.getResponse().getEmail(), Provider.NAVER);
                     return jwtTokenProvider.generateToken(userDetails.getUsername(), userDetails.getAuthorities());
                 })
                 .orElseGet(() -> { // 고객이 존재하지 않는 경우

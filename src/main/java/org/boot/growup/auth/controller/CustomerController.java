@@ -5,16 +5,15 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.boot.growup.auth.model.dto.request.*;
+import org.boot.growup.auth.model.dto.response.*;
 import org.boot.growup.common.model.BaseResponse;
 import org.boot.growup.common.model.TokenDTO;
-import org.boot.growup.auth.model.dto.response.GoogleAccountResponseDTO;
 import org.boot.growup.auth.service.impl.GoogleOauthServiceImpl;
 import org.boot.growup.auth.service.impl.KakaoOauthServiceImpl;
-import org.boot.growup.auth.model.dto.response.KakaoAccountResponseDTO;
 import org.boot.growup.auth.service.impl.NaverOauthServiceImpl;
-import org.boot.growup.auth.model.dto.response.NaverAccountResponseDTO;
-import org.boot.growup.auth.model.dto.response.EmailCheckResponseDTO;
 import org.boot.growup.auth.service.CustomerService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -23,9 +22,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class CustomerController {
     private final CustomerService customerService;
-    private final GoogleOauthServiceImpl googleOauthServiceImpl;
-    private final KakaoOauthServiceImpl kakaoOauthServiceImpl;
-    private final NaverOauthServiceImpl naverOauthServiceImpl;
 
     /**
      * [POST]
@@ -35,8 +31,9 @@ public class CustomerController {
      * @response void
      */
     @PostMapping("/email/register")
-    public void signUp(@Valid @RequestBody CustomerSignUpRequestDTO request) {
+    public ResponseEntity<Void> signUp(@Valid @RequestBody CustomerSignUpRequestDTO request) {
         customerService.signUp(request);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     /**
@@ -99,13 +96,7 @@ public class CustomerController {
      */
     @PostMapping("/oauth/google")
     public BaseResponse<TokenDTO> signInGoogle(@Valid @RequestBody Oauth2SignInRequestDTO request) {
-        /* 인가코드를 받아서 Google에 AccessToken 요청 -> 받은 AccessToken으로 Google 사용자 정보 요청 */
-        String accessToken = googleOauthServiceImpl.requestGoogleAccessToken(request.getAuthCode());
-        GoogleAccountResponseDTO googleAccount = googleOauthServiceImpl.requestGoogleAccount(accessToken);
-        log.info("Google UserModel : {}", googleAccount);
-
-        /* Google 사용자 정보를 userService에서 회원가입 및 로그인 처리 */
-        TokenDTO response = customerService.signInGoogle(googleAccount);
+        TokenDTO response = customerService.signInGoogle(request);
         return new BaseResponse<>(response);
     }
 
@@ -117,8 +108,7 @@ public class CustomerController {
      * @response TokenDTO
      */
     @PostMapping("/oauth/google/additional-infos")
-    public BaseResponse<TokenDTO> signInGoogleAdditional(
-                @Valid @RequestBody Oauth2AdditionalInfoRequestDTO request) {
+    public BaseResponse<TokenDTO> signInGoogleAdditional(@Valid @RequestBody Oauth2AdditionalInfoRequestDTO request) {
         TokenDTO response = customerService.signInGoogleAdditional(request);
         return new BaseResponse<>(response);
     }
@@ -132,12 +122,7 @@ public class CustomerController {
      */
     @PostMapping("/oauth/kakao")
     public BaseResponse<TokenDTO> signInKakao(@Valid @RequestBody Oauth2SignInRequestDTO request) {
-        // TODO: 과정 하나로 합치기
-        String accessToken = kakaoOauthServiceImpl.requestKakaoAccessToken(request.getAuthCode());
-        KakaoAccountResponseDTO kakaoAccount = kakaoOauthServiceImpl.requestKakaoAccount(accessToken);
-        log.info("Kakao UserModel : {}", kakaoAccount);
-
-        TokenDTO response = customerService.signInKakao(kakaoAccount);
+        TokenDTO response = customerService.signInKakao(request);
         return new BaseResponse<>(response);
     }
 
@@ -149,8 +134,7 @@ public class CustomerController {
      * @response TokenDTO
      */
     @PostMapping("/oauth/kakao/additional-infos")
-    public BaseResponse<TokenDTO> signInKakaoAdditional(
-            @Valid @RequestBody Oauth2AdditionalInfoRequestDTO request) {
+    public BaseResponse<TokenDTO> signInKakaoAdditional(@Valid @RequestBody Oauth2AdditionalInfoRequestDTO request) {
         TokenDTO response = customerService.signInKakaoAdditional(request);
         return new BaseResponse<>(response);
     }
@@ -164,11 +148,7 @@ public class CustomerController {
      */
     @PostMapping("/oauth/naver")
     public BaseResponse<TokenDTO> signInNaver(@Valid @RequestBody Oauth2SignInRequestDTO request) {
-        String accessToken = naverOauthServiceImpl.requestNaverAccessToken(request.getAuthCode());
-        NaverAccountResponseDTO naverAccount = naverOauthServiceImpl.requestNaverAccount(accessToken);
-        log.info("Naver UserModel : {}", naverAccount);
-
-        TokenDTO response = customerService.signInNaver(naverAccount);
+        TokenDTO response = customerService.signInNaver(request);
         return new BaseResponse<>(response);
     }
 
@@ -180,8 +160,7 @@ public class CustomerController {
      * @response TokenDTO
      */
     @PostMapping("/oauth/naver/additional-infos")
-    public BaseResponse<TokenDTO> signInNaverAdditional(
-                @Valid @RequestBody Oauth2AdditionalInfoRequestDTO request) {
+    public BaseResponse<TokenDTO> signInNaverAdditional(@Valid @RequestBody Oauth2AdditionalInfoRequestDTO request) {
         TokenDTO response = customerService.signInNaverAdditional(request);
         return new BaseResponse<>(response);
     }
@@ -196,5 +175,16 @@ public class CustomerController {
     @PostMapping("/phone-numbers/validations")
     public void postPhoneNumber(@RequestBody PostPhoneNumberRequestDTO request) {
         customerService.postPhoneNumber(request);
+    }
+
+    /**
+     * [GET]
+     * 마이페이지 구매자 정보 조회
+     * @header Customer's AccessToken
+     * @response GetCustomerInfoResponseDTO
+     */
+    @GetMapping("/mypages")
+    public BaseResponse<GetCustomerInfoResponseDTO> getCustomerInfo() {
+        return null;
     }
 }
