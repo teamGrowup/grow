@@ -160,16 +160,6 @@ public class ProductServiceImpl implements ProductService {
         productLikeRepository.delete(productLike);
     }
 
-    public void postProductImages(List<MultipartFile> productImages, Product product, Section section) {
-        for (MultipartFile multipartFile : productImages) {
-            if (!multipartFile.isEmpty()) {
-                ProductImage uploadImage = storeImage(multipartFile, section); // 이미지 저장 로직
-                uploadImage.designateProduct(product); // 상품 설정
-                productImageRepository.save(uploadImage); // 이미지 저장
-            }
-        }
-    }
-
     @Override
     public List<ProductImage> getProductImages(Long id) {
         return productImageRepository.findProductImageByProduct_Id(id);
@@ -200,6 +190,15 @@ public class ProductServiceImpl implements ProductService {
                 .build();
     }
 
+    public void postProductImages(List<MultipartFile> productImages, Product product, Section section) {
+        for (MultipartFile multipartFile : productImages) {
+                ProductImage uploadImage = storeImage(multipartFile, section);
+                uploadImage.designateProduct(product);
+                product.getProductImages().add(uploadImage);
+                productImageRepository.save(uploadImage);
+        }
+    }
+
     @Transactional
     @Override
     public void patchProductImages(List<MultipartFile> productImages, Product product, Section section) {
@@ -212,9 +211,10 @@ public class ProductServiceImpl implements ProductService {
         // 3. 해당 상품에 이미지를 새로 등록함.
         for (MultipartFile multipartFile : productImages) {
             if (!multipartFile.isEmpty()) {
-                ProductImage uploadImage = storeImage(multipartFile, section); // 이미지 저장 로직
+                ProductImage uploadImage = storeImage(multipartFile, section); // 이미지 저장
                 uploadImage.designateProduct(product); // 상품 설정
-                productImageRepository.save(uploadImage); // 이미지 저장
+                product.getProductImages().add(uploadImage); // Product에 추가
+                productImageRepository.save(uploadImage); // 저장 시도
             }
         }
     }

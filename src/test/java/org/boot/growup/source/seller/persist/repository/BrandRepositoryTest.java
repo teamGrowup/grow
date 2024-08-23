@@ -2,6 +2,7 @@ package org.boot.growup.source.seller.persist.repository;
 
 import org.boot.growup.auth.persist.repository.SellerRepository;
 import org.boot.growup.common.constant.AuthorityStatus;
+import org.boot.growup.common.constant.Role;
 import org.boot.growup.product.persist.entity.Brand;
 import org.boot.growup.auth.persist.entity.Seller;
 import org.boot.growup.product.persist.repository.BrandRepository;
@@ -147,6 +148,7 @@ class BrandRepositoryTest {
                 .cpCode("178-86-01188") // 10자리의 사업자 등록번호
                 .cpAddress("경기도 의정부시 오목로225번길 94, 씨와이파크 (민락동)") // 사업장 소재지(회사주소)
                 .netProceeds(1000)
+                .role(Role.SELLER)
                 .build();
 
         Brand brand = Brand.builder()

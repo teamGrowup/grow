@@ -8,15 +8,13 @@ import org.boot.growup.product.dto.response.GetBrandRequestByStatusResponseDTO;
 import org.boot.growup.product.dto.response.GetSellerBrandResponseDTO;
 import org.boot.growup.product.persist.entity.Brand;
 import org.boot.growup.product.persist.entity.BrandImage;
+import org.boot.growup.product.service.BrandService;
 import org.boot.growup.auth.persist.entity.Seller;
-import org.boot.growup.product.persist.repository.BrandRepository;
-import org.boot.growup.auth.persist.repository.SellerRepository;
-import org.boot.growup.product.service.Impl.BrandServiceImpl;
+import org.boot.growup.auth.service.SellerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
@@ -25,11 +23,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 @SpringBootTest
@@ -37,216 +33,192 @@ import static org.mockito.Mockito.verify;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class BrandApplicationTest {
 
-
     @InjectMocks
     private BrandApplication brandApplication;
 
     @Mock
-    private BrandServiceImpl brandService;
+    private BrandService brandService;
 
     @Mock
-    private SellerRepository sellerRepository;
+    private SellerService sellerService;
 
-    PostBrandRequestDTO postBrandRequestDTO1;
-    PostBrandRequestDTO postBrandRequestDTO2;
-
-    Brand brand1;
-    BrandImage brandImage1;
-    BrandImage brandImage2;
-    Seller seller;
-    @Autowired
-    private BrandRepository brandRepository;
+    private PostBrandRequestDTO postBrandRequestDTO;
+    private Brand brand;
+    private Seller seller;
+    private BrandImage brandImage1;
+    private BrandImage brandImage2;
 
     @BeforeEach
     void setUp() {
-        brandRepository.deleteAll();
-        postBrandRequestDTO1 = PostBrandRequestDTO.builder()
-                .name("라퍼지스토어")
-                .description("라퍼지스토어(LAFUDGESTORE)는 다양한 사람들이 일상에서 편안하게 사용할 수 있는 제품을 전개합니다. 새롭게 변화되는 소재와 실루엣, 일상에 자연스레 스며드는 제품을 제작하여 지속적인 실속형 소비의 가치를 실천합니다.")
-                .build();
-        postBrandRequestDTO2 = PostBrandRequestDTO.builder()
-                .name("드로우핏")
-                .description("드로우핏(DRAW FIT)은 핏과 착용감을 중요하게 여기며 컨템포러리&모던 룩을 지향하는 브랜드입니다. 뛰어난 퀄리티의 좋은 소재를 다양하게 구성해 바느질까지 세심하게 신경 써서 완성하고 고유의 핏과 무드를 머금은 웨어러블한 디자인의 아이템을 합리적인 가격으로 소개합니다.")
+        postBrandRequestDTO = PostBrandRequestDTO.builder()
+                .name("테스트 브랜드")
+                .description("테스트 브랜드 설명")
                 .build();
 
-        brand1 = Brand.builder()
-                .name("라퍼지스토어")
-                .description("라퍼지스토어(LAFUDGESTORE)는 다양한 사람들이 일상에서 편안하게 사용할 수 있는 제품을 전개합니다. 새롭게 변화되는 소재와 실루엣, 일상에 자연스레 스며드는 제품을 제작하여 지속적인 실속형 소비의 가치를 실천합니다.")
+        brand = Brand.builder()
+                .name("테스트 브랜드")
+                .description("테스트 브랜드 설명")
                 .authorityStatus(AuthorityStatus.PENDING)
                 .likeCount(0)
                 .build();
 
         brandImage1 = BrandImage.builder()
-                .path("aws/s3/path/qyrwqirakfasfk1.jpg")
-                .originalImageName("lafudge1.jpg")
+                .path("aws/s3/path/image1.jpg")
+                .originalImageName("image1.jpg")
                 .build();
+
         brandImage2 = BrandImage.builder()
-                .path("aws/s3/path/qyrwqirakfasfk2.jpg")
-                .originalImageName("lafudge2.jpg")
+                .path("aws/s3/path/image2.jpg")
+                .originalImageName("image2.jpg")
                 .build();
+
         seller = Seller.builder()
-                .cpEmail("lafudgestore@naver.com")
-                .cpPassword("password1234")
-                .phoneNumber("010-7797-8841") // 대표 전화번호
-                .epName("손준호") // 대표자명
-                .cpName("(주)슬로우스탠다드") // 상호명
-                .cpCode("178-86-01188") // 10자리의 사업자 등록번호
-                .cpAddress("경기도 의정부시 오목로225번길 94, 씨와이파크 (민락동)") // 사업장 소재지(회사주소)
-                .netProceeds(1000)
+                .cpEmail("test@example.com")
+                .cpPassword("password")
+                .phoneNumber("010-1234-5678")
+                .epName("테스트 판매자")
                 .build();
     }
 
     @Test
     public void postBrandWithBrandImages_Default_Success() {
-        //given
+        // given
         MockMultipartFile file1 = new MockMultipartFile("file", "test1.jpg", "image/jpeg", "test image content 1".getBytes());
         MockMultipartFile file2 = new MockMultipartFile("file", "test2.jpg", "image/jpeg", "test image content 2".getBytes());
-        given(brandService.postBrand(postBrandRequestDTO1, seller)).willReturn(brand1);
-        given(sellerRepository.findById(1L)).willReturn(Optional.of(seller));
+
+        given(sellerService.getCurrentSeller()).willReturn(seller);
+        given(brandService.postBrand(postBrandRequestDTO, seller)).willReturn(brand);
+
         List<MultipartFile> mockFiles = List.of(file1, file2);
 
-        //when
-        brandApplication.postBrandWithBrandImages(postBrandRequestDTO1, mockFiles);
+        // when
+        brandApplication.postBrandWithBrandImages(postBrandRequestDTO, mockFiles);
 
-        //then
-        verify(brandService).postBrand(postBrandRequestDTO1, seller);
-        verify(brandService).postBrandImages(mockFiles, brand1);
+        // then
+        verify(sellerService).getCurrentSeller();
+        verify(brandService).postBrand(postBrandRequestDTO, seller);
+        verify(brandService).postBrandImages(mockFiles, brand);
     }
 
     @Test
     public void getSellerBrand_Default_Success() {
-        //given
-        List<BrandImage> brandImages = List.of(brandImage1, brandImage2);
-        given(brandService.getBrandBySellerId(1L)).willReturn(brand1);
-        given(brandService.getBrandImages(brand1.getId())).willReturn(brandImages);
-        GetSellerBrandResponseDTO dto = GetSellerBrandResponseDTO.builder()
-                .name(brand1.getName())
-                .description(brand1.getDescription())
-                .brandImages(
-                        brandImages.stream().map(GetSellerBrandResponseDTO.BrandImageDTO::from).toList()
-                )
-                .build();
+        // given
+        given(sellerService.getCurrentSeller()).willReturn(seller);
+        given(brandService.getBrandBySellerId(seller.getId())).willReturn(brand);
+        given(brandService.getBrandImages(brand.getId())).willReturn(List.of(brandImage1, brandImage2));
 
+        // when
+        GetSellerBrandResponseDTO response = brandApplication.getSellerBrand();
 
-        //when
-        GetSellerBrandResponseDTO res = brandApplication.getSellerBrand();
-
-        //then
-        assertNotNull(res);
-        assertEquals(dto, res);
+        // then
+        assertNotNull(response);
+        assertEquals(brand.getName(), response.getName());
+        assertEquals(brand.getDescription(), response.getDescription());
+        assertEquals(2, response.getBrandImages().size());
     }
 
     @Test
     public void patchBrand_Default_Success() {
-        //given
+        // given
         MockMultipartFile file1 = new MockMultipartFile("file", "test1.jpg", "image/jpeg", "test image content 1".getBytes());
         MockMultipartFile file2 = new MockMultipartFile("file", "test2.jpg", "image/jpeg", "test image content 2".getBytes());
-        given(brandService.patchBrand(postBrandRequestDTO2, seller)).willReturn(brand1);
-        given(sellerRepository.findById(1L)).willReturn(Optional.of(seller));
+
+        given(sellerService.getCurrentSeller()).willReturn(seller);
+        given(brandService.patchBrand(postBrandRequestDTO, seller)).willReturn(brand);
+
         List<MultipartFile> mockFiles = List.of(file1, file2);
 
-        //when
-        brandApplication.patchBrand(postBrandRequestDTO2, mockFiles);
+        // when
+        brandApplication.patchBrand(postBrandRequestDTO, mockFiles);
 
-        //then
-        verify(brandService).patchBrand(postBrandRequestDTO2, seller);
-        verify(brandService).patchBrandImages(mockFiles, brand1);
+        // then
+        verify(sellerService).getCurrentSeller();
+        verify(brandService).patchBrand(postBrandRequestDTO, seller);
+        verify(brandService).patchBrandImages(mockFiles, brand);
     }
 
     @Test
-    public void denyBrandPost_Default_Success(){
-        //given
-        brandRepository.save(brand1);
+    public void denyBrandPost_Default_Success() {
+        // given
+        Long brandId = 1L;
 
-        //when
-        brandApplication.denyBrandPost(1L);
+        // when
+        brandApplication.denyBrandPost(brandId);
 
-        //then
-        verify(brandService).changeBrandAuthority(1L, AuthorityStatus.DENIED);
+        // then
+        verify(brandService).changeBrandAuthority(brandId, AuthorityStatus.DENIED);
     }
 
     @Test
     public void approveBrandPost_Default_Success() {
-        //given
-        brandRepository.save(brand1);
+        // given
+        Long brandId = 1L;
 
-        //when
-        brandApplication.approveBrandPost(1L);
+        // when
+        brandApplication.approveBrandPost(brandId);
 
-        //then
-        verify(brandService).changeBrandAuthority(1L, AuthorityStatus.APPROVED);
+        // then
+        verify(brandService).changeBrandAuthority(brandId, AuthorityStatus.APPROVED);
     }
 
     @Test
     public void pendingBrandRegister_Default_Success() {
-        //given
-        brandRepository.save(brand1);
+        // given
+        Long brandId = 1L;
 
-        //when
-        brandApplication.pendingBrandRegister(1L);
+        // when
+        brandApplication.pendingBrandRegister(brandId);
 
-        //then
-        verify(brandService).changeBrandAuthority(1L, AuthorityStatus.PENDING);
-
+        // then
+        verify(brandService).changeBrandAuthority(brandId, AuthorityStatus.PENDING);
     }
 
     @Test
     public void getBrandRequestByStatus_Default_Success() {
-        //given
-        Brand mockBrand = mock(Brand.class);
-        given(mockBrand.getId()).willReturn(1L);
-        given(mockBrand.getName()).willReturn("Test Brand");
-        given(mockBrand.getAuthorityStatus()).willReturn(AuthorityStatus.PENDING);  // 올바른 타입 반환
-
+        // given
         given(brandService.getBrandRequestsByStatus(AuthorityStatus.PENDING, 0))
-                .willReturn(Collections.nCopies(10, mockBrand));
+                .willReturn(Collections.nCopies(10, brand));
 
-        //when
-        var res = brandApplication.getBrandRequestByStatus(AuthorityStatus.PENDING, 0);
+        // when
+        var response = brandApplication.getBrandRequestByStatus(AuthorityStatus.PENDING, 0);
 
-        //then
-        assertEquals(10, res.size());
-        assertEquals(res.get(0).getClass(), GetBrandRequestByStatusResponseDTO.class);
+        // then
+        assertEquals(10, response.size());
+        assertEquals(GetBrandRequestByStatusResponseDTO.class, response.get(0).getClass());
     }
 
     @Test
     public void getBrandRequestByStatus_NoStatus_Success() {
-        //given
-        Brand mockBrand = mock(Brand.class);
-        given(mockBrand.getId()).willReturn(1L);
-        given(mockBrand.getName()).willReturn("Test Brand");
-        given(mockBrand.getAuthorityStatus()).willReturn(AuthorityStatus.PENDING);  // 올바른 타입 반환
-
+        // given
         given(brandService.getBrandRequestsByStatus(null, 0))
-                .willReturn(Collections.nCopies(10, mockBrand));
+                .willReturn(Collections.nCopies(10, brand));
 
-        //when
-        var res = brandApplication.getBrandRequestByStatus(null, 0);
+        // when
+        var response = brandApplication.getBrandRequestByStatus(null, 0);
 
-        //then
-        assertEquals(10, res.size());
-        assertEquals(res.get(0).getClass(), GetBrandRequestByStatusResponseDTO.class);
+        // then
+        assertEquals(10, response.size());
+        assertEquals(GetBrandRequestByStatusResponseDTO.class, response.get(0).getClass());
     }
 
     @Test
     public void getBrandDetail_Default_Success() {
-        //given
-        given(brandService.getBrandById(1L)).willReturn(brand1);
-        given(brandService.getBrandImages(brand1.getId())).willReturn(List.of(brandImage1, brandImage2));
+        // given
+        Long brandId = 1L;
+        given(brandService.getBrandById(brandId)).willReturn(brand);
+        given(brandService.getBrandImages(brand.getId())).willReturn(List.of(brandImage1, brandImage2));
 
-        //when
-        GetBrandDetailResponseDTO res = brandApplication.getBrandDetail(1L);
+        // when
+        GetBrandDetailResponseDTO response = brandApplication.getBrandDetail(brandId);
 
-        //then
-        assertNotNull(res);
-        assertEquals(brand1.getName(), res.getName());
-        assertEquals(brand1.getDescription(), res.getDescription());
-        assertEquals(brand1.getLikeCount(), res.getLikeCount());
-        assertEquals(brandImage1.getOriginalImageName(), res.getImages().get(0).getOriginalImageName());
-        assertEquals(brandImage1.getPath(), res.getImages().get(0).getPath());
-        assertEquals(brandImage2.getOriginalImageName(), res.getImages().get(1).getOriginalImageName());
-        assertEquals(brandImage2.getPath(), res.getImages().get(1).getPath());
+        // then
+        assertNotNull(response);
+        assertEquals(brand.getName(), response.getName());
+        assertEquals(brand.getDescription(), response.getDescription());
+        assertEquals(brand.getLikeCount(), response.getLikeCount());
+        assertEquals(brandImage1.getOriginalImageName(), response.getImages().get(0).getOriginalImageName());
+        assertEquals(brandImage1.getPath(), response.getImages().get(0).getPath());
+        assertEquals(brandImage2.getOriginalImageName(), response.getImages().get(1).getOriginalImageName());
+        assertEquals(brandImage2.getPath(), response.getImages().get(1).getPath());
     }
-
-
 }

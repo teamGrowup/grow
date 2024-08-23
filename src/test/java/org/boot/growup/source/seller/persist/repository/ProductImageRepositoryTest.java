@@ -2,15 +2,10 @@ package org.boot.growup.source.seller.persist.repository;
 
 import org.boot.growup.auth.persist.repository.SellerRepository;
 import org.boot.growup.auth.persist.entity.Seller;
+import org.boot.growup.common.constant.Role;
 import org.boot.growup.common.constant.Section;
-import org.boot.growup.product.persist.entity.MainCategory;
-import org.boot.growup.product.persist.entity.Product;
-import org.boot.growup.product.persist.entity.ProductImage;
-import org.boot.growup.product.persist.entity.SubCategory;
-import org.boot.growup.product.persist.repository.MainCategoryRepository;
-import org.boot.growup.product.persist.repository.ProductImageRepository;
-import org.boot.growup.product.persist.repository.ProductRepository;
-import org.boot.growup.product.persist.repository.SubCategoryRepository;
+import org.boot.growup.product.persist.entity.*;
+import org.boot.growup.product.persist.repository.*;
 import org.boot.growup.common.constant.AuthorityStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,6 +36,9 @@ class ProductImageRepositoryTest {
     private MainCategoryRepository mainCategoryRepository;
     @Autowired
     private SubCategoryRepository subCategoryRepository;
+
+    @Autowired
+    private BrandRepository brandRepository;
 
     private Product product;
     private SubCategory subCategory;
@@ -80,8 +78,18 @@ class ProductImageRepositoryTest {
                 .epName("테스트 업체") // ep_name 설정
                 .netProceeds(100000) // net_proceeds 설정
                 .phoneNumber("010-1234-5678") // phone_number 설정
+                .role(Role.SELLER)
                 .build();
         sellerRepository.save(seller); // Seller 저장
+
+        Brand brand = Brand.builder()
+                .name("라퍼지스토어")
+                .description("라퍼지스토어(LAFUDGESTORE)는 다양한 사람들이 일상에서 편안하게 사용할 수 있는 제품을 전개합니다. 새롭게 변화되는 소재와 실루엣, 일상에 자연스레 스며드는 제품을 제작하여 지속적인 실속형 소비의 가치를 실천합니다.")
+                .authorityStatus(AuthorityStatus.PENDING)
+                .likeCount(0)
+                .seller(seller)
+                .build();
+        brandRepository.save(brand);
 
         product = Product.builder()
                 .name("진짜 반팔")
@@ -90,6 +98,7 @@ class ProductImageRepositoryTest {
                 .averageRating(0.0)
                 .likeCount(0)
                 .subCategory(subCategory)
+                .brand(brand)
                 .seller(seller)
                 .build();
 
