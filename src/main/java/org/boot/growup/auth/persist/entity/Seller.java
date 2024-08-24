@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.boot.growup.auth.model.UserModel;
+import org.boot.growup.common.constant.Provider;
 import org.boot.growup.common.constant.Role;
 import org.boot.growup.auth.model.dto.request.SellerSignUpRequestDTO;
 import org.boot.growup.common.entity.BaseEntity;
@@ -53,7 +54,11 @@ public class Seller extends BaseEntity {
     private Brand brand;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "role", nullable = false)
+    @Column(nullable = false)
+    private Provider provider;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Role role;
 
     public UserModel toUserDetails() {
@@ -70,6 +75,7 @@ public class Seller extends BaseEntity {
                 .cpCode(request.getCpCode())
                 .cpName(request.getCpName())
                 .cpAddress(request.getCpAddress())
+                .provider(Provider.EMAIL)
                 .role(Role.SELLER)
                 .build();
     }

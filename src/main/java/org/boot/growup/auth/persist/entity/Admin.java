@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.boot.growup.common.constant.Provider;
 import org.boot.growup.common.constant.Role;
 import org.boot.growup.auth.model.UserModel;
 import org.boot.growup.common.entity.BaseEntity;
@@ -33,7 +34,11 @@ public class Admin extends BaseEntity {
     private int balance;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "role", nullable = false)
+    @Column(nullable = false)
+    private Provider provider;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Role role;
 
     public UserModel toUserDetails() {

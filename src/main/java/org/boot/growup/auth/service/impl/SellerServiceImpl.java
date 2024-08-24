@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.boot.growup.auth.model.UserModel;
 import org.boot.growup.auth.service.SellerService;
+import org.boot.growup.common.constant.Provider;
 import org.boot.growup.common.model.BaseException;
 import org.boot.growup.common.constant.Role;
 import org.boot.growup.common.constant.ErrorCode;
@@ -56,7 +57,7 @@ public class SellerServiceImpl implements SellerService {
             throw new BaseException(ErrorCode.BAD_REQUEST, "비밀번호가 일치하지 않습니다.");
         }
 
-        return jwtTokenProvider.generateToken(userDetails.getUsername(), userDetails.getAuthorities());
+        return jwtTokenProvider.generateToken(userDetails.getUsername(), userDetails.getAuthorities(), Provider.EMAIL);
     }
 
     public boolean checkPassword(String rawPassword, String encodedPassword) {

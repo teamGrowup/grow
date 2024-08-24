@@ -3,6 +3,7 @@ package org.boot.growup.auth.utils;
 import io.jsonwebtoken.*;
 import jakarta.xml.bind.DatatypeConverter;
 import lombok.extern.slf4j.Slf4j;
+import org.boot.growup.common.constant.Provider;
 import org.boot.growup.common.model.TokenDTO;
 import org.boot.growup.common.model.RedisDAO;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 @Component
 public class JwtTokenProvider {
     private static final String AUTHORITIES_KEY = "auth";
+    private static final String PROVIDER_KEY = "provider";
     private final Key key;
     private final RedisDAO redisDao;
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 60L; // 1시간
@@ -35,7 +37,8 @@ public class JwtTokenProvider {
         this.key = Keys.hmacShaKeyFor(secretByteKey);
     }
 
-    public TokenDTO generateToken(String userEmail, Collection<? extends GrantedAuthority> authorities) {
+    public TokenDTO generateToken(
+                String userEmail, Collection<? extends GrantedAuthority> authorities, Provider provider) {
         String authoritiesString = authorities.stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
@@ -44,17 +47,18 @@ public class JwtTokenProvider {
         Date expiryDate = new Date(now.getTime() + REFRESH_TOKEN_EXPIRE_TIME);
 
         String accessToken= Jwts.builder()
-                .setSubject(userEmail) // 사용자
+                .setSubject(userEmail)
                 .claim(AUTHORITIES_KEY,authoritiesString)
-                .setIssuedAt(new Date()) // 현재 시간 기반으로 생성
-                .setExpiration(new Date(now.getTime()+ACCESS_TOKEN_EXPIRE_TIME)) // 만료 시간 세팅 (60분)
+                .claim(PROVIDER_KEY, provider)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(now.getTime()+ACCESS_TOKEN_EXPIRE_TIME)) // 만료 시간 : 60분
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
 
         String refreshToken=Jwts.builder()
-                .setSubject(userEmail) // 사용자
+                .setSubject(userEmail)
                 .setIssuedAt(new Date())
-                .setExpiration(expiryDate) // 만료 시간 세팅 (일주일)
+                .setExpiration(expiryDate) // 만료 시간 세팅 : 일주일
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
         // redis에 저장
