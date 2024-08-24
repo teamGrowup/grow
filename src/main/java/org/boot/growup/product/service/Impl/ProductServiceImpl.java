@@ -16,7 +16,6 @@ import org.boot.growup.product.dto.request.PostProductRequestDTO;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -199,8 +198,6 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    @Transactional
-    @Override
     public void patchProductImages(List<MultipartFile> productImages, Product product, Section section) {
         // 1. 현재 S3에 등록된 상품 이미지를 지움.
         productImageRepository.findProductImageByProduct_Id(product.getId()).forEach(m -> s3Service.deleteFile(m.getPath()));

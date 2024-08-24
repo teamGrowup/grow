@@ -16,7 +16,6 @@ import org.boot.growup.product.service.BrandService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,14 +24,12 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class BrandServiceImpl implements BrandService {
     private final BrandRepository brandRepository;
     private final BrandImageRepository brandImageRepository;
     private final ImageStore imageStore;
     private final S3Service s3Service;
 
-    @Transactional
     @Override
     public Brand postBrand(PostBrandRequestDTO postBrandRequestDTO, Seller seller) {
         if (brandRepository.findByName(postBrandRequestDTO.getName()).isPresent()) {
@@ -55,7 +52,6 @@ public class BrandServiceImpl implements BrandService {
         );
     }
 
-    @Transactional
     @Override
     public Brand patchBrand(PostBrandRequestDTO postBrandRequestDTO, Seller seller) {
         Brand brand = brandRepository.findBySeller_Id(seller.getId()).orElseThrow(
@@ -68,7 +64,6 @@ public class BrandServiceImpl implements BrandService {
         return brand;
     }
 
-    @Transactional
     @Override
     public void changeBrandAuthority(Long brandId, AuthorityStatus status) {
         Brand brand = brandRepository.findById(brandId).orElseThrow(
@@ -100,14 +95,7 @@ public class BrandServiceImpl implements BrandService {
         );
     }
 
-    public void patchBrandImages(List<MultipartFile> brandImageFiles, Brand brand) {
-        // 1. 현재 S3에 등록된 브랜드 이미지를 지움.
-        brandImageRepository.findBrandImageByBrand_Id(brand.getId()).forEach(m -> s3Service.deleteFile(m.getPath()));
-
-        // 2. DB에 있는 브랜드 이미지 삭제.
-        brandImageRepository.deleteBrandImageByBrand_Id(brand.getId());
-
-        // 3. 해당 브랜드에 이미지를 새로 등록함.
+    public void postBrandImages(List<MultipartFile> brandImageFiles, Brand brand) {
         for (MultipartFile multipartFile : brandImageFiles) {
             if (!multipartFile.isEmpty()) {
                 BrandImage uploadImage = storeImage(multipartFile);
@@ -116,7 +104,15 @@ public class BrandServiceImpl implements BrandService {
             }
         }
     }
-    public void postBrandImages(List<MultipartFile> brandImageFiles, Brand brand) {
+
+    public void patchBrandImages(List<MultipartFile> brandImageFiles, Brand brand) {
+        // 1. 현재 S3에 등록된 브랜드 이미지를 지움.
+        brandImageRepository.findBrandImageByBrand_Id(brand.getId()).forEach(m -> s3Service.deleteFile(m.getPath()));
+
+        // 2. DB에 있는 브랜드 이미지 삭제.
+        brandImageRepository.deleteBrandImageByBrand_Id(brand.getId());
+
+        // 3. 해당 브랜드에 이미지를 새로 등록함.
         for (MultipartFile multipartFile : brandImageFiles) {
             if (!multipartFile.isEmpty()) {
                 BrandImage uploadImage = storeImage(multipartFile);
