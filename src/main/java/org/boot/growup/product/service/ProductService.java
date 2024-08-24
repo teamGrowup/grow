@@ -11,6 +11,7 @@ import org.boot.growup.product.persist.entity.ProductOption;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ProductService {
     /*
@@ -19,9 +20,19 @@ public interface ProductService {
     Product postProduct(PostProductRequestDTO postProductRequestDto, Seller seller);
 
     /*
-    SellerId로 Product 가져오기
-    */
+    SellerId로 상품들 조회
+     */
     List<Product> getProductsBySellerId(Long sellerId);
+
+    /*
+    productId로 상품 조회
+     */
+    Optional<Product> getProductById(Long productId);
+
+    /*
+    productId로 상품 삭제
+     */
+    void deleteProductById(Long productId);
 
     /*
     등록된 상품 수정

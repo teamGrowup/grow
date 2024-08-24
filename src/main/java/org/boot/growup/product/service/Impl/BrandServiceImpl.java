@@ -75,6 +75,8 @@ public class BrandServiceImpl implements BrandService {
             case PENDING -> brand.pending();
             case APPROVED -> brand.approve();
         }
+
+        brandRepository.save(brand);
     }
 
     @Override

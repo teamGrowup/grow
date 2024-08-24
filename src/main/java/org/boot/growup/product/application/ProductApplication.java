@@ -13,7 +13,6 @@ import org.boot.growup.product.dto.response.GetSellerProductsResponseDTO;
 import org.boot.growup.product.persist.entity.Product;
 import org.boot.growup.product.persist.entity.ProductImage;
 import org.boot.growup.product.persist.entity.ProductOption;
-import org.boot.growup.product.persist.repository.ProductRepository;
 import org.boot.growup.product.dto.request.PostProductRequestDTO;
 import org.boot.growup.product.dto.response.GetSellerProductResponseDTO;
 import org.boot.growup.product.dto.response.GetProductDetailResponseDTO;
@@ -32,7 +31,6 @@ public class ProductApplication {
     private final ProductService productService;
     private final SellerService sellerService;
     private final CustomerService customerService;
-    private final ProductRepository productRepository;
 
     @Transactional
     public void postProductWithImages(PostProductRequestDTO postProductRequestDto, List<MultipartFile> productImages) {
@@ -79,7 +77,7 @@ public class ProductApplication {
 
 
     public GetProductDetailResponseDTO getProductDetail(Long productId) {
-        Product product = productRepository.findById(productId)
+        Product product = productService.getProductById(productId)
                 .orElseThrow(() -> new BaseException(ErrorCode.PRODUCT_NOT_FOUND));
 
         return GetProductDetailResponseDTO.from(product);
@@ -101,7 +99,7 @@ public class ProductApplication {
     }
 
     public void deleteProduct(Long productId) {
-        productRepository.deleteById(productId);
+        productService.deleteProductById(productId);
     }
 
     public void denyProduct(Long productId) {

@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -57,6 +58,15 @@ public class ProductServiceImpl implements ProductService {
 
         productRepository.save(product);
         return product;
+    }
+    @Override
+    public Optional<Product> getProductById(Long productId) {
+        return productRepository.findById(productId);
+    }
+
+    @Override
+    public void deleteProductById(Long productId) {
+        productRepository.deleteById(productId);
     }
 
     @Override
@@ -117,6 +127,7 @@ public class ProductServiceImpl implements ProductService {
             case PENDING -> product.pending();
             case APPROVED -> product.approve();
         }
+        productRepository.save(product);
     }
 
     @Override
