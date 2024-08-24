@@ -8,9 +8,6 @@ import org.boot.growup.auth.model.dto.request.*;
 import org.boot.growup.auth.model.dto.response.*;
 import org.boot.growup.common.model.BaseResponse;
 import org.boot.growup.common.model.TokenDTO;
-import org.boot.growup.auth.service.impl.GoogleOauthServiceImpl;
-import org.boot.growup.auth.service.impl.KakaoOauthServiceImpl;
-import org.boot.growup.auth.service.impl.NaverOauthServiceImpl;
 import org.boot.growup.auth.service.CustomerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,10 +27,34 @@ public class CustomerController {
      * @body CustomerSignUpRequestDTO
      * @response void
      */
-    @PostMapping("/email/register")
+    @PostMapping("/email/registers")
     public ResponseEntity<Void> signUp(@Valid @RequestBody CustomerSignUpRequestDTO request) {
         customerService.signUp(request);
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    /**
+     * [POST]
+     * (회원가입) 전화번호 인증 요청
+     * @header null
+     * @body PostPhoneNumberForRegisterRequestDTO
+     * @response void
+     */
+    @PostMapping("/phone-numbers/validations/registers")
+    public void postPhoneNumberForRegister(@RequestBody PostPhoneNumberForRegisterRequestDTO request) {
+        customerService.postPhoneNumberForRegister(request);
+    }
+
+    /**
+     * [POST]
+     * (공통) 전화번호 인증 요청
+     * @header null
+     * @body PostPhoneNumberRequestDTO
+     * @response void
+     */
+    @PostMapping("/phone-numbers/validations")
+    public void postPhoneNumber(@RequestBody PostPhoneNumberRequestDTO request) {
+        customerService.postPhoneNumber(request.getPhoneNumber());
     }
 
     /**
@@ -50,13 +71,13 @@ public class CustomerController {
 
     /**
      * [POST]
-     * 문자 인증완료 후 회원가입 중도포기
+     * 문자 인증완료 후 회원가입 중도포기 상황
      * @header null
-     * @body PostPhoneNumberRequestDTO
+     * @body PostPhoneNumberForRegisterRequestDTO
      * @response void
      */
     @PostMapping("/email/register/cancel")
-    public void deletePhoneNumber(@RequestBody PostPhoneNumberRequestDTO request) {
+    public void deletePhoneNumber(@RequestBody PostPhoneNumberForRegisterRequestDTO request) {
         customerService.deletePhoneNumber(request);
     }
 
@@ -163,18 +184,6 @@ public class CustomerController {
     public BaseResponse<TokenDTO> signInNaverAdditional(@Valid @RequestBody Oauth2AdditionalInfoRequestDTO request) {
         TokenDTO response = customerService.signInNaverAdditional(request);
         return new BaseResponse<>(response);
-    }
-
-    /**
-     * [POST]
-     * 전화번호 인증 요청
-     * @header null
-     * @body PostPhoneNumberRequestDTO
-     * @response void
-     */
-    @PostMapping("/phone-numbers/validations")
-    public void postPhoneNumber(@RequestBody PostPhoneNumberRequestDTO request) {
-        customerService.postPhoneNumber(request);
     }
 
     /**

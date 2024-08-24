@@ -55,10 +55,6 @@ public class Seller extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Provider provider;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private Role role;
 
     public UserModel toUserDetails() {
@@ -75,7 +71,6 @@ public class Seller extends BaseEntity {
                 .cpCode(request.getCpCode())
                 .cpName(request.getCpName())
                 .cpAddress(request.getCpAddress())
-                .provider(Provider.EMAIL)
                 .role(Role.SELLER)
                 .build();
     }

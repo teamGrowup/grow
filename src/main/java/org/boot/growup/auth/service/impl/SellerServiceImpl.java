@@ -57,7 +57,7 @@ public class SellerServiceImpl implements SellerService {
             throw new BaseException(ErrorCode.BAD_REQUEST, "비밀번호가 일치하지 않습니다.");
         }
 
-        return jwtTokenProvider.generateToken(userDetails.getUsername(), userDetails.getAuthorities(), Provider.EMAIL);
+        return jwtTokenProvider.generateToken(userDetails.getUsername(), userDetails.getAuthorities());
     }
 
     public boolean checkPassword(String rawPassword, String encodedPassword) {

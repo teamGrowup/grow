@@ -16,9 +16,14 @@ public interface CustomerService {
     void signUp(CustomerSignUpRequestDTO request);
 
     /*
-    전화번호 인증요청
+    (회원가입) 전화번호 인증요청
      */
-    void postPhoneNumber(PostPhoneNumberRequestDTO request);
+    void postPhoneNumberForRegister(PostPhoneNumberForRegisterRequestDTO request);
+
+    /*
+    (공통) 전화번호 인증요청
+     */
+    void postPhoneNumber(String phoneNumber);
 
     /*
     전화번호 인증 > 인증번호 검증
@@ -28,7 +33,7 @@ public interface CustomerService {
     /*
     전화번호 인증정보 제거
      */
-    void deletePhoneNumber(PostPhoneNumberRequestDTO request);
+    void deletePhoneNumber(PostPhoneNumberForRegisterRequestDTO request);
 
     /*
     구매자 이메일 로그인

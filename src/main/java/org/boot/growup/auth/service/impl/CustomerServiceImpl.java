@@ -76,8 +76,32 @@ public class CustomerServiceImpl implements CustomerService {
         redisDao.deleteValues(request.getPhoneNumber());
     }
 
-    public String encodingPassword(CustomerSignUpRequestDTO request){
+    private String encodingPassword(CustomerSignUpRequestDTO request){
         return passwordEncoder.encode(request.getPassword());
+    }
+
+    @Override
+    public void postPhoneNumberForRegister(PostPhoneNumberForRegisterRequestDTO request) {
+        /* 이미 가입된 유저인지 확인 */
+        verifyUserAlreadyRegistered(request.getPhoneNumber(), request.getProvider());
+
+        /* 인증번호 생성 및 전송 */
+        postPhoneNumber(request.getPhoneNumber());
+    }
+
+    private void verifyUserAlreadyRegistered(String phoneNumber, Provider provider) {
+        customerRepository.findByPhoneNumberAndIsValidPhoneNumberAndProvider(phoneNumber, true, provider)
+                .ifPresent(customer -> {
+                    throw new BaseException(USER_ALREADY_REGISTERED, customer.getEmail());
+                });
+    }
+
+    @Override
+    public void postPhoneNumber(String phoneNumber) {
+        String parsedPhoneNumber = phoneNumber.replaceAll("-","");
+        String authCode = createAuthCode();
+        smsUtil.sendMessage(parsedPhoneNumber, authCode);
+        redisDao.setValues(phoneNumber, authCode, 1000 * 60 * 5L);
     }
 
     @Override
@@ -90,23 +114,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public void postPhoneNumber(PostPhoneNumberRequestDTO request) {
-        /* 이미 가입된 유저인지 확인 */
-        customerRepository.findByPhoneNumberAndIsValidPhoneNumberAndProvider(
-                        request.getPhoneNumber(), true, Provider.valueOf(request.getProvider().name()))
-                .ifPresent(customer -> {
-                    /* 이미 가입된 유저라면 가입된 이메일을 반환 */
-                    throw new BaseException(USER_ALREADY_REGISTERED, customer.getEmail());
-                });
-
-        String parsedPhoneNumber = request.getPhoneNumber().replaceAll("-","");
-        String authCode = createAuthCode();
-        smsUtil.sendMessage(parsedPhoneNumber, authCode);
-        redisDao.setValues(request.getPhoneNumber(), authCode, 1000 * 60 * 5L);
-    }
-
-    @Override
-    public void deletePhoneNumber(PostPhoneNumberRequestDTO request) {
+    public void deletePhoneNumber(PostPhoneNumberForRegisterRequestDTO request) {
         redisDao.deleteValues(request.getPhoneNumber());
     }
 
@@ -118,7 +126,7 @@ public class CustomerServiceImpl implements CustomerService {
             throw new BaseException(ErrorCode.BAD_REQUEST, "비밀번호가 일치하지 않습니다.");
         }
 
-        return jwtTokenProvider.generateToken(userDetails.getUsername(),userDetails.getAuthorities(), Provider.EMAIL);
+        return jwtTokenProvider.generateToken(userDetails.getUsername(),userDetails.getAuthorities());
     }
 
     public boolean checkPassword(String rawPassword, String encodedPassword) {
@@ -144,7 +152,7 @@ public class CustomerServiceImpl implements CustomerService {
                 .map(customer -> { // 고객이 존재하는 경우
                     UserDetails userDetails = loadUserByUsernameAndProvider(
                                 googleAccount.getEmail(), Provider.GOOGLE);
-                    return jwtTokenProvider.generateToken(userDetails.getUsername(), userDetails.getAuthorities(), Provider.GOOGLE);
+                    return jwtTokenProvider.generateToken(userDetails.getUsername(), userDetails.getAuthorities());
                 })
                 .orElseGet(() -> { // 고객이 존재하지 않는 경우
                     try{
@@ -179,7 +187,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         UserDetails userDetails = loadUserByUsernameAndProvider(googleAccount.getEmail(), Provider.GOOGLE);
 
-        return jwtTokenProvider.generateToken(userDetails.getUsername(),userDetails.getAuthorities(), Provider.GOOGLE);
+        return jwtTokenProvider.generateToken(userDetails.getUsername(),userDetails.getAuthorities());
     }
 
     @Override
@@ -192,8 +200,7 @@ public class CustomerServiceImpl implements CustomerService {
                 .map(customer -> { // 고객이 존재하는 경우
                     UserDetails userDetails = loadUserByUsernameAndProvider(
                                             kakaoAccount.getKakaoAccount().getEmail(), Provider.KAKAO);
-                    return jwtTokenProvider.generateToken(
-                                userDetails.getUsername(), userDetails.getAuthorities(), Provider.KAKAO);
+                    return jwtTokenProvider.generateToken(userDetails.getUsername(), userDetails.getAuthorities());
                 })
                 .orElseGet(() -> { // 고객이 존재하지 않는 경우
                     try{
@@ -228,7 +235,7 @@ public class CustomerServiceImpl implements CustomerService {
         UserDetails userDetails = loadUserByUsernameAndProvider(
                     kakaoAccount.getKakaoAccount().getEmail(), Provider.KAKAO);
 
-        return jwtTokenProvider.generateToken(userDetails.getUsername(),userDetails.getAuthorities(), Provider.KAKAO);
+        return jwtTokenProvider.generateToken(userDetails.getUsername(),userDetails.getAuthorities());
     }
 
     @Override
@@ -240,8 +247,7 @@ public class CustomerServiceImpl implements CustomerService {
                 .map(customer -> { // 고객이 존재하는 경우
                     UserDetails userDetails = loadUserByUsernameAndProvider(
                                 naverAccount.getResponse().getEmail(), Provider.NAVER);
-                    return jwtTokenProvider.generateToken(
-                                userDetails.getUsername(), userDetails.getAuthorities(), Provider.NAVER);
+                    return jwtTokenProvider.generateToken(userDetails.getUsername(), userDetails.getAuthorities());
                 })
                 .orElseGet(() -> { // 고객이 존재하지 않는 경우
                     try{
@@ -276,7 +282,7 @@ public class CustomerServiceImpl implements CustomerService {
         UserDetails userDetails = loadUserByUsernameAndProvider(
                 naverAccount.getResponse().getEmail(), Provider.NAVER);
 
-        return jwtTokenProvider.generateToken(userDetails.getUsername(),userDetails.getAuthorities(), Provider.NAVER);
+        return jwtTokenProvider.generateToken(userDetails.getUsername(),userDetails.getAuthorities());
     }
 
     private String createAuthCode() {
