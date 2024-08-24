@@ -9,14 +9,14 @@ import org.boot.growup.common.constant.ErrorCode;
 import org.boot.growup.common.constant.Section;
 import org.boot.growup.auth.persist.entity.Customer;
 import org.boot.growup.auth.service.CustomerService;
+import org.boot.growup.product.dto.response.GetSellerProductsResponseDTO;
 import org.boot.growup.product.persist.entity.Product;
 import org.boot.growup.product.persist.entity.ProductImage;
-import org.boot.growup.product.persist.repository.ProductRepository;
+import org.boot.growup.product.persist.entity.ProductOption;
 import org.boot.growup.product.dto.request.PostProductRequestDTO;
 import org.boot.growup.product.dto.response.GetSellerProductResponseDTO;
 import org.boot.growup.product.dto.response.GetProductDetailResponseDTO;
 import org.boot.growup.product.dto.response.GetProductRequestByStatusResponseDTO;
-import org.boot.growup.product.service.ProductImageService;
 import org.boot.growup.product.service.ProductService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,10 +29,8 @@ import java.util.List;
 public class ProductApplication {
 
     private final ProductService productService;
-    private final ProductImageService productImageService;
     private final SellerService sellerService;
     private final CustomerService customerService;
-    private final ProductRepository productRepository;
 
     @Transactional
     public void postProductWithImages(PostProductRequestDTO postProductRequestDto, List<MultipartFile> productImages) {
@@ -41,27 +39,45 @@ public class ProductApplication {
         Section section = Section.PRODUCT_IMAGE; // 적절한 섹션으로 변경
         Product product = productService.postProduct(postProductRequestDto, seller);
 
-        productImageService.postProductImages(productImages, product, section);
+        productService.postProductImages(productImages, product, section);
 
     }
 
-    public GetSellerProductResponseDTO getSellerProduct() { // 추가 예정
+    public GetSellerProductsResponseDTO getSellerProducts() {
         Seller seller = sellerService.getCurrentSeller(); // 현재 판매자 정보 가져오기
 
-        Product product = productService.getProductBySellerId(seller.getId()); // 판매자의 상품 목록 조회
-        List<ProductImage> productImages = productImageService.getProductImages(product.getId());
-        
-        return GetSellerProductResponseDTO.builder()
-                .name(product.getName())
-                .description(product.getDescription())
-                .productImages(
-                        productImages.stream().map(GetSellerProductResponseDTO.ProductImageDTO::from).toList()
-                )
-                .build();
+        List<Product> products = productService.getProductsBySellerId(seller.getId()); // 판매자의 모든 상품 목록 조회
+
+        List<GetSellerProductResponseDTO> productResponses = products.stream()
+                .map(product -> {
+                    List<ProductImage> productImages = productService.getProductImages(product.getId());
+                    List<ProductOption> productOptions = productService.getProductOptions(product.getId()); // 상품 옵션 조회
+
+                    return GetSellerProductResponseDTO.builder()
+                            .name(product.getName())
+                            .description(product.getDescription())
+                            .productImages(
+                                    productImages.stream()
+                                            .map(GetSellerProductResponseDTO.ProductImageDTO::from)
+                                            .toList()
+                            )
+                            .productOption(
+                                    productOptions.stream()
+                                            .map(GetProductDetailResponseDTO.ProductOptionDTO::from)
+                                            .toList()
+                            ) // 상품 옵션 추가
+                            .build();
+                }).toList();
+
+        return GetSellerProductsResponseDTO.builder()
+                .products(productResponses)
+                .build(); // 여러 상품에 대한 응답 DTO
     }
 
+
+
     public GetProductDetailResponseDTO getProductDetail(Long productId) {
-        Product product = productRepository.findById(productId)
+        Product product = productService.getProductById(productId)
                 .orElseThrow(() -> new BaseException(ErrorCode.PRODUCT_NOT_FOUND));
 
         return GetProductDetailResponseDTO.from(product);
@@ -76,14 +92,14 @@ public class ProductApplication {
         Product product = productService.patchProduct(postProductRequestDto, seller, productId);
 
         if (productImages != null && !productImages.isEmpty()) {
-            productImageService.patchProductImages(productImages, product, section);
+            productService.patchProductImages(productImages, product, section);
         } else {
             System.out.println("업데이트할 상품 이미지가 없습니다. 기존 이미지를 유지합니다.");
         }
     }
 
     public void deleteProduct(Long productId) {
-        productRepository.deleteById(productId);
+        productService.deleteProductById(productId);
     }
 
     public void denyProduct(Long productId) {

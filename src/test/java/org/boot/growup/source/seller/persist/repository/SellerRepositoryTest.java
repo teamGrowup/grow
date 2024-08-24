@@ -2,6 +2,7 @@ package org.boot.growup.source.seller.persist.repository;
 
 import org.boot.growup.auth.persist.repository.SellerRepository;
 import org.boot.growup.auth.persist.entity.Seller;
+import org.boot.growup.common.constant.Role;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,7 @@ class SellerRepositoryTest {
                 .cpCode("178-86-01188") // 10자리의 사업자 등록번호
                 .cpAddress("경기도 의정부시 오목로225번길 94, 씨와이파크 (민락동)") // 사업장 소재지(회사주소)
                 .netProceeds(1000)
+                .role(Role.SELLER)
                 .build();
 
         //when

@@ -1,19 +1,20 @@
 package org.boot.growup.source.seller.application;
 
 import org.boot.growup.auth.persist.entity.Seller;
+import org.boot.growup.auth.persist.entity.Customer;
+import org.boot.growup.auth.service.SellerService;
+import org.boot.growup.auth.service.CustomerService;
 import org.boot.growup.common.constant.Section;
+import org.boot.growup.common.model.BaseException;
+import org.boot.growup.common.constant.AuthorityStatus;
 import org.boot.growup.product.application.ProductApplication;
+import org.boot.growup.product.dto.MainCategoryDTO;
+import org.boot.growup.product.dto.SubCategoryDTO;
 import org.boot.growup.product.dto.request.PostProductRequestDTO;
 import org.boot.growup.product.dto.response.GetProductDetailResponseDTO;
+import org.boot.growup.product.dto.response.GetSellerProductsResponseDTO;
 import org.boot.growup.product.persist.entity.*;
-import org.boot.growup.common.constant.AuthorityStatus;
-import org.boot.growup.product.dto.request.PostProductRequestDTO.ProductOptionDTO;
-import org.boot.growup.product.dto.SubCategoryDTO;
-import org.boot.growup.product.dto.MainCategoryDTO;
-import org.boot.growup.product.persist.repository.BrandRepository;
 import org.boot.growup.product.persist.repository.ProductRepository;
-import org.boot.growup.auth.persist.repository.SellerRepository;
-import org.boot.growup.product.service.Impl.ProductImageServiceImpl;
 import org.boot.growup.product.service.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,25 +40,22 @@ class ProductApplicationTest {
     private ProductService productService;
 
     @Mock
-    private ProductImageServiceImpl productImageService;
+    private SellerService sellerService;
+
+    @Mock
+    private CustomerService customerService;
 
     @Mock
     private ProductRepository productRepository;
 
-    @Mock
-    private SellerRepository sellerRepository;
-
-    @Mock
-    private BrandRepository brandRepository; // BrandRepository Mock 추가
-
     private PostProductRequestDTO postProductRequestDTO;
+    private MainCategoryDTO mainCategoryDTO;
+    private SubCategoryDTO subCategoryDTO;
     private Product product;
     private Seller seller;
     private SubCategory subCategory;
     private MainCategory mainCategory;
     private ProductImage productImage;
-    private SubCategoryDTO subCategoryDTO;
-    private MainCategoryDTO mainCategoryDTO;
 
     Brand brand1;
 
@@ -108,12 +106,12 @@ class ProductApplicationTest {
                 .brandId(brand1.getId())
                 .sellerId(seller.getId()) // 판매자 ID 추가
                 .productOptions(Arrays.asList(
-                        ProductOptionDTO.builder()
+                        PostProductRequestDTO.ProductOptionDTO.builder()
                                 .optionName("테스트 옵션")
                                 .optionStock(10)
                                 .optionPrice(10000)
                                 .build(),
-                        ProductOptionDTO.builder()
+                        PostProductRequestDTO.ProductOptionDTO.builder()
                                 .optionName("테스트 옵션2")
                                 .optionStock(5)
                                 .optionPrice(15000)
@@ -141,30 +139,41 @@ class ProductApplicationTest {
     }
 
     @Test
-    public void postProductWithImages_Default_Success() {
+    public void postProductWithImages_Success() {
         // given
         MockMultipartFile file1 = new MockMultipartFile("file", "product_image1.jpg", "image/jpeg", "image content 1".getBytes());
         MockMultipartFile file2 = new MockMultipartFile("file", "product_image2.jpg", "image/jpeg", "image content 2".getBytes());
-        given(productService.postProduct(postProductRequestDTO, seller)).willReturn(product);
-        given(sellerRepository.findById(seller.getId())).willReturn(Optional.of(seller));
-
-        given(brandRepository.findById(brand1.getId())).willReturn(Optional.of(brand1));
         List<MultipartFile> mockFiles = List.of(file1, file2);
+
+        given(sellerService.getCurrentSeller()).willReturn(seller);
+        given(productService.postProduct(postProductRequestDTO, seller)).willReturn(product);
 
         // when
         productApplication.postProductWithImages(postProductRequestDTO, mockFiles);
 
         // then
-        verify(sellerRepository).findById(seller.getId());
-        verify(productService).postProduct(any(), eq(seller));
-        verify(productImageService).postProductImages(mockFiles, product, Section.PRODUCT_IMAGE);
+        verify(productService).postProductImages(mockFiles, product, Section.PRODUCT_IMAGE);
     }
 
+    @Test
+    void getSellerProducts_Success() {
+        // Given
+        given(sellerService.getCurrentSeller()).willReturn(seller);
+        given(productService.getProductsBySellerId(seller.getId())).willReturn(List.of(product));
+
+        // When
+        GetSellerProductsResponseDTO response = productApplication.getSellerProducts();
+
+        // Then
+        assertNotNull(response);
+        assertEquals(1, response.getProducts().size());
+        assertEquals("진짜 반팔", response.getProducts().get(0).getName());
+    }
 
     @Test
-    void getProductDetail_Default_Success() {
+    void getProductDetail_Success() {
         // Given
-        when(productRepository.findById(product.getId())).thenReturn(Optional.of(product));
+        given(productRepository.findById(product.getId())).willReturn(Optional.of(product));
 
         // When
         GetProductDetailResponseDTO response = productApplication.getProductDetail(product.getId());
@@ -175,23 +184,91 @@ class ProductApplicationTest {
     }
 
     @Test
-    void testPatchProduct() {
+    void getProductDetail_ProductNotFound() {
+        // Given
+        given(productRepository.findById(product.getId())).willReturn(Optional.empty());
+
+        // When and Then
+        assertThrows(BaseException.class, () -> {
+            productApplication.getProductDetail(product.getId());
+        });
+    }
+
+    @Test
+    void patchProduct_Success() {
         // given
         MockMultipartFile file1 = new MockMultipartFile("file", "test1.jpg", "image/jpeg", "test image content 1".getBytes());
-        MockMultipartFile file2 = new MockMultipartFile("file", "test2.jpg", "image/jpeg", "test image content 2".getBytes());
-        List<MultipartFile> mockFiles = List.of(file1, file2);
+        List<MultipartFile> mockFiles = List.of(file1);
 
+        given(sellerService.getCurrentSeller()).willReturn(seller);
         given(productService.patchProduct(postProductRequestDTO, seller, product.getId())).willReturn(product);
-        given(sellerRepository.findById(seller.getId())).willReturn(Optional.of(seller));
-        given(brandRepository.findById(brand1.getId())).willReturn(Optional.of(brand1));
 
         // when
         productApplication.patchProduct(postProductRequestDTO, mockFiles, product.getId());
 
         // then
-        verify(sellerRepository).findById(seller.getId());
-        verify(productService).patchProduct(postProductRequestDTO, seller, product.getId());
-        verify(productImageService).patchProductImages(mockFiles, product, Section.PRODUCT_IMAGE);
+        verify(productService).patchProductImages(mockFiles, product, Section.PRODUCT_IMAGE);
     }
 
+    @Test
+    void deleteProduct_Success() {
+        // when
+        productApplication.deleteProduct(product.getId());
+
+        // then
+        verify(productRepository).deleteById(product.getId());
+    }
+
+    @Test
+    void approveProduct_Success() {
+        // when
+        productApplication.approveProduct(product.getId());
+
+        // then
+        verify(productService).changeProductAuthority(product.getId(), AuthorityStatus.APPROVED);
+    }
+
+    @Test
+    void denyProduct_Success() {
+        // when
+        productApplication.denyProduct(product.getId());
+
+        // then
+        verify(productService).changeProductAuthority(product.getId(), AuthorityStatus.DENIED);
+    }
+
+    @Test
+    void pendingProduct_Success() {
+        // when
+        productApplication.pendingProduct(product.getId());
+
+        // then
+        verify(productService).changeProductAuthority(product.getId(), AuthorityStatus.PENDING);
+    }
+
+    @Test
+    void postProductLike_Success() {
+        // given
+        Customer customer = new Customer(); // Mock or initialize Customer as needed
+        given(customerService.getCurrentCustomer()).willReturn(customer);
+
+        // when
+        productApplication.postProductLike(product.getId());
+
+        // then
+        verify(productService).postProductLike(product.getId(), customer);
+    }
+
+    @Test
+    void deleteProductLike_Success() {
+        // given
+        Customer customer = new Customer(); // Mock or initialize Customer as needed
+        given(customerService.getCurrentCustomer()).willReturn(customer);
+
+        // when
+        productApplication.deleteProductLike(product.getId());
+
+        // then
+        verify(productService).deleteProductLike(product.getId(), customer);
+    }
 }
