@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class OauthSignInRequestDTO {
+public class Oauth2SignInRequestDTO {
     @NotBlank(message = "인가코드는 필수 입력 값입니다.")
     private String authCode;
 }

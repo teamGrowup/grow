@@ -1,4 +1,4 @@
-package org.boot.growup.auth.controller;
+package org.boot.growup.auth.client;
 
 import org.boot.growup.auth.model.dto.response.GoogleAccountResponseDTO;
 import org.springframework.cloud.openfeign.FeignClient;

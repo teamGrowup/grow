@@ -2,9 +2,7 @@ package org.boot.growup.auth.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.boot.growup.auth.model.GoogleClient;
-import org.boot.growup.auth.model.KakaoClient;
-import org.boot.growup.auth.model.NaverClient;
+import org.boot.growup.common.config.property.Oauth2Property;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,9 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/login")
 @RequiredArgsConstructor
 public class Oauth2Controller {
-    private final GoogleClient googleClient;
-    private final KakaoClient kakaoClient;
-    private final NaverClient naverClient;
+    private final Oauth2Property oauth2Property;
 
     /**
      * Oauth2.0 로그인 페이지
@@ -28,15 +24,15 @@ public class Oauth2Controller {
      */
     @GetMapping("")
     public String login(Model model) {
-        model.addAttribute("googleClientId", googleClient.getGoogleClientId());
-        model.addAttribute("googleCallbackUri", googleClient.getGoogleCallbackUri());
-        model.addAttribute("googleDataAccessScope", googleClient.getGoogleDataAccessScope());
+        model.addAttribute("googleClientId", oauth2Property.getGoogle().getClient().getId());
+        model.addAttribute("googleCallbackUri", oauth2Property.getGoogle().getCallbackUri());
+        model.addAttribute("googleDataAccessScope", oauth2Property.getGoogle().getAccessScope());
 
-        model.addAttribute("kakaoClientId", kakaoClient.getClientId());
-        model.addAttribute("kakaoRedirectUri", kakaoClient.getRedirectUri());
+        model.addAttribute("kakaoClientId", oauth2Property.getKakao().getClientId());
+        model.addAttribute("kakaoRedirectUri", oauth2Property.getKakao().getRedirectUri());
 
-        model.addAttribute("naverClientId", naverClient.getClientId());
-        model.addAttribute("naverRedirectUri", naverClient.getRedirectUri());
+        model.addAttribute("naverClientId", oauth2Property.getNaver().getClientId());
+        model.addAttribute("naverRedirectUri", oauth2Property.getNaver().getRedirectUri());
         return "login";
     }
 
