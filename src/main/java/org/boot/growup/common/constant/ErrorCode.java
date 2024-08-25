@@ -28,7 +28,6 @@ public enum ErrorCode {
     /* Email Verify */
     USER_EMAIL_SEND_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 500, false, "이메일 전송 중 오류가 발생했습니다."),
     EMAIL_WRONG_AUTH_CODE(HttpStatus.BAD_REQUEST, 400, false, "이메일 인증번호가 틀립니다."),
-    IS_PRESENT_EMAIL(HttpStatus.BAD_REQUEST, 400, false, "이미 사용하고 있는 이메일입니다."),
 
     /* Phone Number Verify */
     PHONE_WRONG_AUTH_CODE(HttpStatus.BAD_REQUEST, 400, false, "문자 인증번호가 틀립니다."),
@@ -54,7 +53,8 @@ public enum ErrorCode {
     USER_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, 500, false, "유저를 찾지 못했습니다."),
 
     /* 마이페이지 */
-    SAME_EMAIL(HttpStatus.BAD_REQUEST, 400, false, "이미 사용하고 계신 이메일 입니다."),
+    IS_PRESENT_EMAIL(HttpStatus.BAD_REQUEST, 400, false, "이미 사용하고 계신 이메일 입니다."),
+    SAME_PASSWORD(HttpStatus.BAD_REQUEST, 400, false, "이미 사용 중인 비밀번호로 변경할 수 없습니다."),
 
     /* Product 관련 */
     PRODUCT_NOT_FOUND(HttpStatus.BAD_REQUEST,404, false, "상품을 찾을 수 없습니다."),

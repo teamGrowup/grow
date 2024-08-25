@@ -161,4 +161,20 @@ public class Customer extends BaseEntity {
         this.email = email;
         this.isValidEmail = true;
     }
+
+    public void updatePassword(String encodedPassword) {
+        this.password = encodedPassword;
+    }
+
+    public void updateProfile(String profileUrl) {
+        this.profileUrl = profileUrl;
+    }
+
+    public void updateIsAgreeSendEmail(boolean isAgreeSendEmail) {
+        this.isAgreeSendEmail = isAgreeSendEmail;
+    }
+
+    public void updateIsAgreeSendSms(boolean isAgreeSendSms) {
+        this.isAgreeSendSms = isAgreeSendSms;
+    }
 }

@@ -176,6 +176,7 @@ public class CustomerController {
      * [GET]
      * 마이페이지 구매자 정보 조회
      * @header Customer's AccessToken
+     * @body null
      * @response GetCustomerInfoResponseDTO
      */
     @GetMapping("/mypages")
@@ -187,7 +188,7 @@ public class CustomerController {
     /**
      * [POST]
      * 이메일 전송
-     * @header null
+     * @header Customer's AccessToken
      * @body PostEmailRequestDTO
      * @response void
      */
@@ -199,7 +200,7 @@ public class CustomerController {
     /**
      * [POST]
      * 이메일 인증코드 검증
-     * @header null
+     * @header Customer's AccessToken
      * @body PostEmailAuthCodeRequestDTO
      * @response void
      */
@@ -211,12 +212,24 @@ public class CustomerController {
     /**
      * [POST]
      * 이메일 존재여부 검증
-     * @header null
+     * @header Customer's AccessToken
      * @body PostEmailRequestDTO
      * @response void
      */
     @PostMapping("/mypages/emails/existences")
     public void postEmailExistence(@Valid @RequestBody PostEmailRequestDTO request) {
         customerService.postEmailExistence(request);
+    }
+
+    /**
+     * [PATCH]
+     * 비밀번호 변경
+     * @header Customer's AccessToken
+     * @body PatchPasswordRequestDTO
+     * @response void
+     */
+    @PatchMapping("/mypages/passwords")
+    public void patchPassword(@Valid @RequestBody PatchPasswordRequestDTO request) {
+        customerService.patchPassword(request);
     }
 }

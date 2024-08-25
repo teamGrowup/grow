@@ -62,7 +62,7 @@ public class CustomerServiceImpl implements CustomerService {
         }
 
         /* 비밀번호 암호화 */
-        String encodedPassword = encodingPassword(request);
+        String encodedPassword = encodingPassword(request.getPassword());
         log.info("SignUp Method => before pw : {} | after store pw : {}"
                 , request.getPassword()
                 , encodedPassword);
@@ -74,8 +74,8 @@ public class CustomerServiceImpl implements CustomerService {
         redisDao.deleteValues(request.getPhoneNumber());
     }
 
-    private String encodingPassword(CustomerSignUpRequestDTO request){
-        return passwordEncoder.encode(request.getPassword());
+    private String encodingPassword(String password){
+        return passwordEncoder.encode(password);
     }
 
     @Override
@@ -347,5 +347,16 @@ public class CustomerServiceImpl implements CustomerService {
         if(customer.getEmail().equals(request.getEmail())) {
             throw new BaseException(IS_PRESENT_EMAIL);
         }
+    }
+
+    @Transactional
+    @Override
+    public void patchPassword(PatchPasswordRequestDTO request) {
+        Customer customer = getCurrentCustomer();
+        if(checkPassword(request.getPassword(), customer.getPassword())) {
+            throw new BaseException(SAME_PASSWORD);
+        }
+
+        customer.updatePassword(encodingPassword(request.getPassword()));
     }
 }

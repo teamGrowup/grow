@@ -100,4 +100,9 @@ public interface CustomerService {
     이메일 존재여부 검증
      */
     void postEmailExistence(PostEmailRequestDTO request);
+
+    /*
+    비밀번호 변경
+     */
+    void patchPassword(PatchPasswordRequestDTO request);
 }
