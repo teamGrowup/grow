@@ -21,6 +21,8 @@ import org.boot.growup.auth.utils.SmsUtil;
 import org.boot.growup.auth.persist.entity.Customer;
 import org.boot.growup.auth.persist.repository.CustomerRepository;
 
+import org.boot.growup.common.utils.ImageStore;
+import org.boot.growup.product.persist.entity.ProductImage;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -34,6 +36,7 @@ import java.security.SecureRandom;
 
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import static org.boot.growup.common.constant.ErrorCode.*;
 
@@ -51,6 +54,7 @@ public class CustomerServiceImpl implements CustomerService {
     private final GoogleOauthServiceImpl googleOauthServiceImpl;
     private final KakaoOauthServiceImpl kakaoOauthServiceImpl;
     private final NaverOauthServiceImpl naverOauthServiceImpl;
+    private final ImageStore imageStore;
 
     @Override
     public void signUp(CustomerSignUpRequestDTO request) {
@@ -359,4 +363,16 @@ public class CustomerServiceImpl implements CustomerService {
 
         customer.updatePassword(encodingPassword(request.getPassword()));
     }
+
+//    @Transactional
+//    @Override
+//    public void patchProfile(MultipartFile multipartFile) {
+//        Customer customer = getCurrentCustomer();
+//        String uploadProfileUrl = storeImage(multipartFile);
+//    }
+//
+//    private String storeImage(MultipartFile multipartFile) {
+//        String originalFilename = multipartFile.getOriginalFilename(); // 원래 이름
+//        String storeFilename = imageStore.createStoreFileName(originalFilename); // 저장된 이름
+//    }
 }

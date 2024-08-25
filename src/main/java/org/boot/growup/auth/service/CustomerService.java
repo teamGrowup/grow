@@ -8,6 +8,7 @@ import org.boot.growup.common.model.TokenDTO;
 import org.boot.growup.auth.persist.entity.Customer;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface CustomerService {
     /*
@@ -105,4 +106,9 @@ public interface CustomerService {
     비밀번호 변경
      */
     void patchPassword(PatchPasswordRequestDTO request);
+
+//    /*
+//    프로필 이미지 변경
+//     */
+//    void patchProfile(MultipartFile multipartFile);
 }

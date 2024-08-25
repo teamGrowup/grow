@@ -12,6 +12,7 @@ import org.boot.growup.auth.service.CustomerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
@@ -232,4 +233,89 @@ public class CustomerController {
     public void patchPassword(@Valid @RequestBody PatchPasswordRequestDTO request) {
         customerService.patchPassword(request);
     }
+
+//    /**
+//     * [PATCH]
+//     * 프로필 사진 변경
+//     * @header Customer's AccessToken
+//     * @body PatchProfileDTO
+//     * @response void
+//     */
+//    @PatchMapping("/mypages/passwords")
+//    public void patchProfile(@RequestParam MultipartFile multipartFile) {
+//        customerService.patchProfile(multipartFile);
+//    }
+
+    /**
+     * [POST]
+     * 이메일 인증여부 검사
+     * @header Customer's AccessToken
+     * @body PostIsValidEmailRequestDTO
+     * @response void
+     */
+
+    /**
+     * [PATCH]
+     * 이메일 알림 허가
+     * @header Customer's AccessToken
+     * @body PatchAgreeSendEmailRequestDTO
+     * @response void
+     */
+
+    /**
+     * [PATCH]
+     * 이메일 알림 거부
+     * @header Customer's AccessToken
+     * @body PatchDisagreeSendEmailRequestDTO
+     * @response void
+     */
+
+    /**
+     * [PATCH]
+     * 문자 알림 허가
+     * @header Customer's AccessToken
+     * @body PatchAgreeSendSmsRequestDTO
+     * @response void
+     */
+
+    /**
+     * [PATCH]
+     * 문자 알림 거부
+     * @header Customer's AccessToken
+     * @body PatchDisagreeSendSmsRequestDTO
+     * @response void
+     */
+
+    /**
+     * [POST]
+     * 배송지 추가
+     * @header Customer's AccessToken
+     * @body PostAddressRequestDTO
+     * @response void
+     */
+
+    /**
+     * [GET]
+     * 배송지 조회 (여러건)
+     * @header Customer's AccessToken
+     * @body null
+     * @response GetAddressResponseDTO
+     */
+
+    /**
+     * [PATCH]
+     * 배송지 수정
+     * @header Customer's AccessToken
+     * @body PatchAddressRequestDTO
+     * @path addressIdx
+     * @response void
+     */
+
+    /**
+     * [DELETE]
+     * 배송지 삭제
+     * @header Customer's AccessToken
+     * @body DeleteAddressRequestDTO
+     * @response void
+     */
 }
