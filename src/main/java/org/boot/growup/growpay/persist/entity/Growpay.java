@@ -17,7 +17,6 @@ import org.boot.growup.common.entity.BaseEntity;
 @AllArgsConstructor
 @AuditOverride(forClass = BaseEntity.class)
 public class Growpay extends BaseEntity{
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "growpay_id")
@@ -31,16 +30,16 @@ public class Growpay extends BaseEntity{
 
     @OneToOne
     @JoinColumn(name = "customer_id", nullable = false)
-    private Customer customer; // Customer 엔티티와의 1:1 관계
+    private Customer customer;
 
     @Column(name = "growpay_balance", nullable = false)
     private int growpayBalance; // 잔액
 
-    public void paymentBalance(int amount) {
-        this.growpayBalance -= amount;
+    public void depositBalance(int amount) { // 입금
+        this.growpayBalance += amount;
     }
 
-    public void refundBalance(int amount) {
-        this.growpayBalance += amount;
+    public void withdrawBalance(int amount) { // 출금
+        this.growpayBalance -= amount;
     }
 }

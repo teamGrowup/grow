@@ -1,4 +1,4 @@
-package org.boot.growup.growpay.dto;
+package org.boot.growup.growpay.dto.response;
 
 import lombok.Data;
 import lombok.Builder;
@@ -7,7 +7,7 @@ import org.boot.growup.common.constant.TransactionStatus;
 
 @Data
 @Builder
-public class GrowpayHistoryDTO {
+public class GrowpayHistoryResponseDTO {
     private Long id;
     private int amount;
     private LocalDateTime createdAt;

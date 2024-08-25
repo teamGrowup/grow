@@ -1,15 +1,17 @@
 package org.boot.growup.growpay.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.boot.growup.common.model.BaseResponse;
 import org.boot.growup.growpay.dto.request.GrowpayRequestDTO;
-import org.boot.growup.growpay.dto.GrowpayHistoryDTO;
+import org.boot.growup.growpay.dto.response.GrowpayHistoryResponseDTO;
 import org.boot.growup.growpay.persist.entity.Growpay;
 import org.boot.growup.growpay.service.GrowpayService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/customers/growpay")
 @RequiredArgsConstructor
@@ -17,34 +19,65 @@ public class GrowpayController {
 
     private final GrowpayService growpayService;
 
+    /**
+     * [POST]
+     * Growpay 계좌 생성
+     * @header null
+     * @body GrowpayRequestDTO
+     * @response Growpay
+     */
     @PostMapping
     public BaseResponse<Growpay> createGrowpay(@RequestBody GrowpayRequestDTO growpayRequestDTO) {
         Growpay newGrowpay = growpayService.createGrowpay(growpayRequestDTO);
         return new BaseResponse<>(newGrowpay);
     }
 
-    // 결제 처리
-    @PostMapping("/payments")
-    public BaseResponse<String> processPayment(@RequestBody GrowpayRequestDTO growpayRequestDTO) {
-        growpayService.processPayment(growpayRequestDTO);
-        return new BaseResponse<>("결제가 완료되었습니다.");
+    /**
+     * [POST]
+     * Growpay 계좌에 입금
+     * @header null
+     * @body GrowpayRequestDTO
+     * @response String
+     */
+    @PostMapping("/deposit")
+    public BaseResponse<String> processDeposit(@RequestBody GrowpayRequestDTO growpayRequestDTO) {
+        growpayService.growpayDeposit(growpayRequestDTO);
+        return new BaseResponse<>("입금이 완료되었습니다.");
     }
 
-    // 환불 처리
-    @PostMapping("/refunds/{historyId}")
-    public BaseResponse<String> processRefund(@PathVariable Long historyId) {
-        growpayService.processRefund(historyId);
-        return new BaseResponse<>("환불이 완료되었습니다.");
+    /**
+     * [POST]
+     * Growpay 계좌에서 출금
+     * @header null
+     * @body GrowpayRequestDTO
+     * @response String
+     */
+    @PostMapping("/withdraw")
+    public BaseResponse<String> processWithdrawal(@RequestBody GrowpayRequestDTO growpayRequestDTO) {
+        growpayService.growpayWithdraw(growpayRequestDTO);
+        return new BaseResponse<>("출금이 완료되었습니다.");
     }
 
-    // 거래 내역 조회
+    /**
+     * [GET]
+     * 특정 Growpay 계좌의 입출금 내역 조회
+     * @header null
+     * @param growpayId 연결된 Growpay ID
+     * @response List<GrowpayHistoryResponseDTO>
+     */
     @GetMapping("/history/{growpayId}")
-    public BaseResponse<List<GrowpayHistoryDTO>> getTransactionHistory(@PathVariable Long growpayId) {
-        List<GrowpayHistoryDTO> history = growpayService.getTransactionHistory(growpayId);
+    public BaseResponse<List<GrowpayHistoryResponseDTO>> getTransactionHistory(@PathVariable Long growpayId) {
+        List<GrowpayHistoryResponseDTO> history = growpayService.getTransactionHistory(growpayId);
         return new BaseResponse<>(history);
     }
 
-    // 잔액 조회
+    /**
+     * [GET]
+     * 특정 Growpay 계좌의 잔액 조회
+     * @header null
+     * @param growpayId 연결된 Growpay ID
+     * @response Integer
+     */
     @GetMapping("/balance/{growpayId}")
     public BaseResponse<Integer> getBalance(@PathVariable Long growpayId) {
         int balance = growpayService.getBalance(growpayId);

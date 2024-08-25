@@ -27,14 +27,9 @@ public class GrowpayHistory extends BaseEntity{
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private TransactionStatus transactionStatus; // 거래 상태 (예: SUCCESS, FAILED)
+    private TransactionStatus transactionStatus; // 입출금 상태 (예: DEPOSIT, WITHDRAW)
 
-    @Column(name = "growpay_id", nullable = false)
-    private Long growpayId; // 연결된 GrowPay ID
-
-    public void payment() { this.transactionStatus = TransactionStatus.PAYMENT; }
-
-    public void refund() {
-        this.transactionStatus = TransactionStatus.REFUND;
-    }
+    @ManyToOne // Many to One 관계 설정
+    @JoinColumn(name = "growpay_id", nullable = false) // 외래 키 설정
+    private Growpay growpay; // 연결된 GrowPay 엔티티
 }

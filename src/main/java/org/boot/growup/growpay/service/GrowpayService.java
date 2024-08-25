@@ -1,32 +1,36 @@
 package org.boot.growup.growpay.service;
 
 import org.boot.growup.growpay.dto.request.GrowpayRequestDTO;
-import org.boot.growup.growpay.dto.GrowpayHistoryDTO;
+import org.boot.growup.growpay.dto.response.GrowpayHistoryResponseDTO;
 import org.boot.growup.growpay.persist.entity.Growpay;
 
 import java.util.List;
 
 public interface GrowpayService {
-
+    /*
+    그로우페이 생성
+     */
     Growpay createGrowpay(GrowpayRequestDTO growpayRequestDTO);
 
     /*
-    결제 처리 메서드
+    그로우페이에 입금
      */
-    void processPayment(GrowpayRequestDTO growpayRequestDTO);
+    void growpayDeposit(GrowpayRequestDTO growpayRequestDTO);
 
     /*
-    환불 처리 메서드
+    그로우페이에서 출금
      */
-    void processRefund(Long historyId);
+    void growpayWithdraw(GrowpayRequestDTO growpayRequestDTO);
+
+
 
     /*
     특정 Growpay ID로 거래 내역 조회
      */
-    List<GrowpayHistoryDTO> getTransactionHistory(Long growpayId);
+    List<GrowpayHistoryResponseDTO> getTransactionHistory(Long growpayId);
 
     /*
-    특정 Growpay ID로 잔액 조회
+    Growpay ID로 잔액 조회
      */
     int getBalance(Long growpayId);
 }
