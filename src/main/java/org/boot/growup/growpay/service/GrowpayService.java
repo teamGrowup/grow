@@ -22,8 +22,6 @@ public interface GrowpayService {
      */
     void growpayWithdraw(GrowpayRequestDTO growpayRequestDTO);
 
-
-
     /*
     특정 Growpay ID로 거래 내역 조회
      */
