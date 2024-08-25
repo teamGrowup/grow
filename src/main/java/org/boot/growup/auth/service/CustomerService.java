@@ -2,9 +2,9 @@ package org.boot.growup.auth.service;
 
 import jakarta.mail.MessagingException;
 import org.boot.growup.auth.model.dto.request.*;
+import org.boot.growup.auth.model.dto.response.GetCustomerInfoResponseDTO;
 import org.boot.growup.common.constant.Provider;
 import org.boot.growup.common.model.TokenDTO;
-import org.boot.growup.auth.model.dto.response.EmailCheckResponseDTO;
 import org.boot.growup.auth.persist.entity.Customer;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -40,10 +40,6 @@ public interface CustomerService {
      */
     TokenDTO signIn(CustomerSignInRequestDTO request);
 
-    /*
-    이메일 인증
-     */
-    EmailCheckResponseDTO checkEmail(EmailCheckRequestDTO request) throws MessagingException;
 
     /*
     구글 Oauth2.0 로그인
@@ -84,4 +80,24 @@ public interface CustomerService {
     Customer UserDetailsService
      */
     UserDetails loadUserByUsernameAndProvider(String username, Provider provider) throws UsernameNotFoundException;
+
+    /*
+    마이페이지 조회
+     */
+    GetCustomerInfoResponseDTO getCustomerInfo();
+
+    /*
+    이메일 전송
+     */
+    void postEmail(String email) throws MessagingException;
+
+    /*
+    이메일 인증코드 검증
+     */
+    void postEmailAuthCode(PostEmailAuthCodeRequestDTO request);
+
+    /*
+    이메일 존재여부 검증
+     */
+    void postEmailExistence(PostEmailRequestDTO request);
 }

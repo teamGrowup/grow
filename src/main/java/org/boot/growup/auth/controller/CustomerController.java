@@ -96,20 +96,6 @@ public class CustomerController {
 
     /**
      * [POST]
-     * 이메일 인증
-     * @header null
-     * @body String
-     * @response String
-     */
-    @PostMapping("/email/validations")
-    public BaseResponse<EmailCheckResponseDTO> checkEmail(
-                @Valid @RequestBody EmailCheckRequestDTO request) throws MessagingException {
-        EmailCheckResponseDTO response = customerService.checkEmail(request);
-        return new BaseResponse<>(response);
-    }
-
-    /**
-     * [POST]
      * 구글 로그인 Oauth2.0
      * @header null
      * @body Oauth2SignInRequestDTO
@@ -194,6 +180,43 @@ public class CustomerController {
      */
     @GetMapping("/mypages")
     public BaseResponse<GetCustomerInfoResponseDTO> getCustomerInfo() {
-        return null;
+        GetCustomerInfoResponseDTO response = customerService.getCustomerInfo();
+        return new BaseResponse<>(response);
+    }
+
+    /**
+     * [POST]
+     * 이메일 전송
+     * @header null
+     * @body PostEmailRequestDTO
+     * @response void
+     */
+    @PostMapping("/mypages/emails")
+    public void postEmail(@Valid @RequestBody PostEmailRequestDTO request) throws MessagingException {
+        customerService.postEmail(request.getEmail());
+    }
+
+    /**
+     * [POST]
+     * 이메일 인증코드 검증
+     * @header null
+     * @body PostEmailAuthCodeRequestDTO
+     * @response void
+     */
+    @PostMapping("/mypages/emails/validations")
+    public void postEmailAuthCode(@Valid @RequestBody PostEmailAuthCodeRequestDTO request) {
+        customerService.postEmailAuthCode(request);
+    }
+
+    /**
+     * [POST]
+     * 이메일 존재여부 검증
+     * @header null
+     * @body PostEmailRequestDTO
+     * @response void
+     */
+    @PostMapping("/mypages/emails/existences")
+    public void postEmailExistence(@Valid @RequestBody PostEmailRequestDTO request) {
+        customerService.postEmailExistence(request);
     }
 }

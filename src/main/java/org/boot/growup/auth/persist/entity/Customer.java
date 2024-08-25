@@ -156,4 +156,9 @@ public class Customer extends BaseEntity {
                 .isAgreeSendSms(request.isAgreeSendSms())
                 .build();
     }
+
+    public void updateIsValidEmail(String email) {
+        this.email = email;
+        this.isValidEmail = true;
+    }
 }

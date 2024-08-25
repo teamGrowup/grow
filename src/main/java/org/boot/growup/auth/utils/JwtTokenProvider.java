@@ -59,7 +59,7 @@ public class JwtTokenProvider {
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
         // redis에 저장
-        redisDao.setValues(userEmail, refreshToken, REFRESH_TOKEN_EXPIRE_TIME + 5000L);
+        redisDao.setValues(userEmail + ":RefreshToken", refreshToken, REFRESH_TOKEN_EXPIRE_TIME + 5000L);
 
         return TokenDTO.of(accessToken, refreshToken);
     }

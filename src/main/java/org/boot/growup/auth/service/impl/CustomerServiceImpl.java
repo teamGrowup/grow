@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.boot.growup.auth.model.UserModel;
 import org.boot.growup.auth.model.dto.request.*;
+import org.boot.growup.auth.model.dto.response.*;
 import org.boot.growup.auth.service.CustomerService;
 import org.boot.growup.common.model.EmailMessageDTO;
 import org.boot.growup.common.constant.Role;
@@ -15,12 +16,8 @@ import org.boot.growup.common.constant.ErrorCode;
 import org.boot.growup.auth.utils.JwtTokenProvider;
 import org.boot.growup.common.model.TokenDTO;
 import org.boot.growup.common.constant.Provider;
-import org.boot.growup.auth.model.dto.response.GoogleAccountResponseDTO;
-import org.boot.growup.auth.model.dto.response.KakaoAccountResponseDTO;
-import org.boot.growup.auth.model.dto.response.NaverAccountResponseDTO;
 import org.boot.growup.common.model.RedisDAO;
 import org.boot.growup.auth.utils.SmsUtil;
-import org.boot.growup.auth.model.dto.response.EmailCheckResponseDTO;
 import org.boot.growup.auth.persist.entity.Customer;
 import org.boot.growup.auth.persist.repository.CustomerRepository;
 
@@ -35,6 +32,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import static org.boot.growup.common.constant.ErrorCode.*;
@@ -131,15 +129,6 @@ public class CustomerServiceImpl implements CustomerService {
 
     public boolean checkPassword(String rawPassword, String encodedPassword) {
         return passwordEncoder.matches(rawPassword, encodedPassword);
-    }
-
-    @Override
-    public EmailCheckResponseDTO checkEmail(EmailCheckRequestDTO request) throws MessagingException {
-        EmailMessageDTO emailMessage = EmailMessageDTO.from(request);
-        String validationCode = emailServiceImpl.sendMail(emailMessage);
-        return EmailCheckResponseDTO.builder()
-                .validationCode(validationCode)
-                .build();
     }
 
     @Override
@@ -316,12 +305,47 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public UserDetails loadUserByUsernameAndProvider(String username, Provider provider) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsernameAndProvider(
+                String username, Provider provider) throws UsernameNotFoundException {
         Customer customer = customerRepository.findByEmailAndProvider(username, provider)
                 .orElseThrow(() -> new UsernameNotFoundException("해당하는 유저를 찾을 수 없습니다."));
 
         UserModel userDetails = customer.toUserDetails();
         log.info("구매자 권한: {}", userDetails.getAuthorities());
         return userDetails;
+    }
+
+    @Override
+    public GetCustomerInfoResponseDTO getCustomerInfo() {
+        Customer customer = getCurrentCustomer();
+        return GetCustomerInfoResponseDTO.from(customer);
+    }
+
+    @Override
+    public void postEmail(String email) throws MessagingException {
+        EmailMessageDTO emailMessage = EmailMessageDTO.from(email);
+        String validationCode = emailServiceImpl.sendMail(emailMessage);
+        redisDao.setValues(email + ":EmailAuth", validationCode, 1000 * 60 * 5L);
+    }
+
+    @Transactional
+    @Override
+    public void postEmailAuthCode(PostEmailAuthCodeRequestDTO request) {
+        String authCode = redisDao.getValues(request.getEmail() + ":EmailAuth");
+        if(!authCode.equals(request.getAuthCode())) {
+            throw new BaseException(EMAIL_WRONG_AUTH_CODE);
+        }
+
+        Customer customer = getCurrentCustomer();
+        customer.updateIsValidEmail(request.getEmail());
+        redisDao.deleteValues(request.getEmail() + ":EmailAuth");
+    }
+
+    @Override
+    public void postEmailExistence(PostEmailRequestDTO request) {
+        Customer customer = getCurrentCustomer();
+        if(customer.getEmail().equals(request.getEmail())) {
+            throw new BaseException(IS_PRESENT_EMAIL);
+        }
     }
 }

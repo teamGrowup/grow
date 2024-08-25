@@ -68,8 +68,28 @@ public class DataLoader {
                 .isAgreeSendSms(false)
                 .build();
 
-        /* 구글 회원 */
+        /* 이메일 회원 2*/
         Customer customer2 = Customer.builder()
+                .email("jskim2x@naver.com")
+                .password(passwordEncoder.encode("!a123456789"))
+                .phoneNumber("010-1234-5678")
+                .birthday("20001212")
+                .gender(Gender.MALE)
+                .address("대구광역시")
+                .postCode("12345")
+                .nickname("오리")
+                .name("홍길동")
+                .provider(Provider.EMAIL)
+                .role(Role.CUSTOMER)
+                .profileUrl("awss3/이미지url")
+                .isValidPhoneNumber(true)
+                .isValidEmail(false)
+                .isAgreeSendEmail(false)
+                .isAgreeSendSms(false)
+                .build();
+
+        /* 구글 회원 */
+        Customer customer3 = Customer.builder()
                 .email("customer456@google.com")
                 .password(passwordEncoder.encode("!a123456789"))
                 .phoneNumber("010-8765-4321")
@@ -90,6 +110,7 @@ public class DataLoader {
 
         customerRepository.save(customer);
         customerRepository.save(customer2);
+        customerRepository.save(customer3);
     }
     public void brandInit(){
         Brand brand1 = Brand.builder()
