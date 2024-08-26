@@ -208,6 +208,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Map<ProductOption, Integer> getProductOptionCountMap(List<OrderItemDTO> orderItemDTOs) {
+        // 중복된 ProductOption 검사 및 해당 ProductOption이 없는지 검사
         return orderItemDTOs.stream()
                 .collect(
                     toUnmodifiableMap(
