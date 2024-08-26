@@ -8,12 +8,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 
-public class User implements UserDetails {
+public class UserModel implements UserDetails {
     private final String username;
     private final String password;
     private final Role role;
 
-    public User(String username, String password, Role role) {
+    public UserModel(String username, String password, Role role) {
         this.username = username;
         this.password = password;
         this.role = role;
