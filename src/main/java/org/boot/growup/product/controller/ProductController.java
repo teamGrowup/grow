@@ -1,5 +1,10 @@
 package org.boot.growup.product.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.boot.growup.common.model.BaseResponse;
@@ -39,6 +44,11 @@ public class ProductController {
      * @param productId 상품 ID
      * @return BaseResponse<ProductDetailResponseDTO>
      */
+    @Operation(summary = "상품 상세 정보 확인", description = "상품ID를 통해 상품의 상세 정보를 확인합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "상품 조회에 성공했을 때"),
+            @ApiResponse(responseCode = "404", description = "해당 cafeteriaId를 가진 식당이 존재하지 않을 때", content = @Content(schema = @Schema(defaultValue = "해당 cafeteriaId를 가진 식당이 존재하지 않습니다.")))
+    })
     @GetMapping("/sellers/products/{productId}")
     public BaseResponse<GetProductDetailResponseDTO> getProductDetail(@PathVariable Long productId) {
         GetProductDetailResponseDTO productDetail = productApplication.getProductDetail(productId);
