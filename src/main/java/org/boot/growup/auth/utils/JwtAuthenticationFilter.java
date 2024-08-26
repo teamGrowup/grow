@@ -7,6 +7,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.boot.growup.common.utils.RequestMatcherHolder;
@@ -27,6 +28,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final String TOKEN_PREFIX = "Bearer ";
     private final JwtTokenProvider jwtTokenProvider;
     private final RequestMatcherHolder requestMatcherHolder;
+    private final HttpSession session;
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) { //이 필터 안걸치는 path
@@ -42,6 +44,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String requestURI = request.getRequestURI();
             if (StringUtils.hasText(jwt) && jwtTokenProvider.validateToken(jwt)) {
                 Authentication authentication = jwtTokenProvider.getAuthentication(jwt);
+                session.setAttribute("provider", jwtTokenProvider.getProvider(jwt));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 log.debug("Security Context에 '{}' 인증 정보를 저장했습니다, uri: {}", authentication.getName(), requestURI);
             }

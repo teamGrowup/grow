@@ -31,6 +31,7 @@ public class S3Service {
         try {
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(contentLength);
+            log.info("fileName : {}", fileName);
             amazonS3Client.putObject(new PutObjectRequest(s3Config.getBucket(), fileName, inputStream, metadata)
                     .withCannedAcl(CannedAccessControlList.PublicRead));
             return amazonS3Client.getUrl(s3Config.getBucket(), fileName).toString();

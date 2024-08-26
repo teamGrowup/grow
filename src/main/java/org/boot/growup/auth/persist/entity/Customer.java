@@ -17,6 +17,9 @@ import org.boot.growup.auth.model.dto.request.Oauth2AdditionalInfoRequestDTO;
 import org.boot.growup.common.entity.BaseEntity;
 import org.hibernate.envers.AuditOverride;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @Builder
@@ -44,12 +47,6 @@ public class Customer extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
-
-    @Column(length = 100)
-    private String address;
-
-    @Column(length = 5)
-    private String postCode;
 
     @Column(nullable = false, length = 20)
     private String nickname;
@@ -79,6 +76,9 @@ public class Customer extends BaseEntity {
 
     @Column(nullable = false)
     private boolean isAgreeSendSms;
+
+    @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Address> addresses = new ArrayList<>();
 
     public UserModel toUserDetails() {
         return new UserModel(email, password, role);
@@ -155,5 +155,26 @@ public class Customer extends BaseEntity {
                 .isAgreeSendEmail(request.isAgreeSendEmail())
                 .isAgreeSendSms(request.isAgreeSendSms())
                 .build();
+    }
+
+    public void updateIsValidEmail(String email) {
+        this.email = email;
+        this.isValidEmail = true;
+    }
+
+    public void updatePassword(String encodedPassword) {
+        this.password = encodedPassword;
+    }
+
+    public void updateProfile(String profileUrl) {
+        this.profileUrl = profileUrl;
+    }
+
+    public void updateIsAgreeSendEmail(boolean isAgreeSendEmail) {
+        this.isAgreeSendEmail = isAgreeSendEmail;
+    }
+
+    public void updateIsAgreeSendSms(boolean isAgreeSendSms) {
+        this.isAgreeSendSms = isAgreeSendSms;
     }
 }
