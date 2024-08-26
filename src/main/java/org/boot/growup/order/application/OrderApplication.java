@@ -4,6 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.boot.growup.auth.persist.entity.Customer;
 import org.boot.growup.auth.service.CustomerService;
+import org.boot.growup.common.constant.ErrorCode;
+import org.boot.growup.common.model.BaseException;
+import org.boot.growup.order.controller.PortOneFeignClient;
 import org.boot.growup.order.dto.OrderDTO;
 import org.boot.growup.order.dto.OrderItemDTO;
 import org.boot.growup.order.dto.request.ProcessNormalOrderRequestDTO;
@@ -11,11 +14,13 @@ import org.boot.growup.order.persist.entity.Order;
 import org.boot.growup.order.service.OrderService;
 import org.boot.growup.product.persist.entity.ProductOption;
 import org.boot.growup.product.service.ProductService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -24,6 +29,13 @@ public class OrderApplication {
     private final CustomerService customerService;
     private final ProductService productService;
     private final OrderService orderService;
+    private final PortOneFeignClient portOneFeignClient;
+
+    @Value("${portone.storeId}")
+    private String storeId;
+
+    @Value("${portone.api.secret}")
+    private String secretkey;
 
     @Transactional
     public String processNormalOrder(ProcessNormalOrderRequestDTO processNormalOrderRequestDTO) {
@@ -45,12 +57,25 @@ public class OrderApplication {
     public void completeNormalOrder(String merchantUid) {
         Customer customer = customerService.getCurrentCustomer();
 
+        if (!Objects.equals(portOneFeignClient.getPaymentByPaymentId(merchantUid, storeId, secretkey).getStatus(), "PAID")){
+            // rejected 상태로 변경
+            orderService.rejectNormalOrder(merchantUid, customer);
+
+            throw new BaseException(ErrorCode.PAY_NOT_SUCCESS);
+        }
+
         // payed 상태로 변경
         orderService.completeOrder(merchantUid, customer);
     }
 
     public void rejectNormalOrder(String merchantUid) {
         Customer customer = customerService.getCurrentCustomer();
+
+        if (Objects.equals(portOneFeignClient.getPaymentByPaymentId(merchantUid, storeId, secretkey).getStatus(), "PAID")){
+            // payed 상태로 변경
+            orderService.completeOrder(merchantUid, customer);
+            throw new BaseException(ErrorCode.PAY_NOT_SUCCESS);
+        }
 
         // rejected 상태로 변경
         orderService.rejectNormalOrder(merchantUid, customer);

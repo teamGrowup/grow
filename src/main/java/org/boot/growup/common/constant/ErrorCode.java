@@ -77,7 +77,9 @@ public enum ErrorCode {
     INQUIRY_NOT_FOUND(HttpStatus.BAD_REQUEST, 404, false, "해당 문의를 찾을 수 없습니다."),
 
     /* Order 관련 */
-    ORDER_NOT_FOUND(HttpStatus.BAD_REQUEST, 404, false, "해당 주문을 찾을 수 없습니다.");
+    ORDER_NOT_FOUND(HttpStatus.BAD_REQUEST, 404, false, "해당 주문을 찾을 수 없습니다."),
+    PAY_NOT_SUCCESS(HttpStatus.BAD_REQUEST, 404, false, "해당 주문의 결제 사실을 확인할 수 없습니다."),
+    PAY_ALREADY_SUCCESS(HttpStatus.BAD_REQUEST, 404, false, "해당 주문의 결제는 성공했습니다.");
 
     private final HttpStatus httpStatus;
     private final int code;

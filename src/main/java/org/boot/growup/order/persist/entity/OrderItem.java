@@ -6,7 +6,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.boot.growup.common.constant.ErrorCode;
 import org.boot.growup.common.constant.OrderStatus;
+import org.boot.growup.common.model.BaseException;
 import org.boot.growup.product.persist.entity.Product;
 import org.boot.growup.product.persist.entity.ProductOption;
 
@@ -85,11 +87,17 @@ public class OrderItem {
     }
 
     public void payed(){
-        this.orderStatus = OrderStatus.PAYED;
+        if(this.orderStatus == OrderStatus.PRE_PAYED){
+            this.orderStatus = OrderStatus.PAYED;
+        }
+        throw new BaseException(ErrorCode.PAY_ALREADY_SUCCESS);
     }
 
     public void rejected(){
-        this.orderStatus = OrderStatus.REJECTED;
+        if(this.orderStatus == OrderStatus.PRE_PAYED){
+            this.orderStatus = OrderStatus.REJECTED;
+        }
+        throw new BaseException(ErrorCode.PAY_ALREADY_SUCCESS);
     }
 
     private int calculateOrderItemPrice(){
