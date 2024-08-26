@@ -6,10 +6,11 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.boot.growup.common.config.property.S3Property;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
+@Slf4j
 @Getter
 @Configuration
 @RequiredArgsConstructor
@@ -21,9 +22,8 @@ public class S3Config {
         BasicAWSCredentials awsCredentials = new BasicAWSCredentials(
                     s3Property.getCredentials().getAccessKey(),
                     s3Property.getCredentials().getSecretKey());
-
         return (AmazonS3Client) AmazonS3ClientBuilder.standard()
-                .withRegion(String.valueOf(s3Property.getRegion()))
+                .withRegion(String.valueOf(s3Property.getRegion().getStaticRegion()))
                 .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
                 .build();
     }

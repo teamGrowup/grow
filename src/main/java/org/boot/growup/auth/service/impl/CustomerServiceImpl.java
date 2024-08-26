@@ -7,6 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.boot.growup.auth.model.UserModel;
 import org.boot.growup.auth.model.dto.request.*;
+import org.boot.growup.auth.model.dto.response.*;
+import org.boot.growup.auth.persist.entity.Address;
+import org.boot.growup.auth.persist.repository.AddressRepository;
 import org.boot.growup.auth.service.CustomerService;
 import org.boot.growup.common.model.EmailMessageDTO;
 import org.boot.growup.common.constant.Role;
@@ -15,15 +18,13 @@ import org.boot.growup.common.constant.ErrorCode;
 import org.boot.growup.auth.utils.JwtTokenProvider;
 import org.boot.growup.common.model.TokenDTO;
 import org.boot.growup.common.constant.Provider;
-import org.boot.growup.auth.model.dto.response.GoogleAccountResponseDTO;
-import org.boot.growup.auth.model.dto.response.KakaoAccountResponseDTO;
-import org.boot.growup.auth.model.dto.response.NaverAccountResponseDTO;
 import org.boot.growup.common.model.RedisDAO;
 import org.boot.growup.auth.utils.SmsUtil;
-import org.boot.growup.auth.model.dto.response.EmailCheckResponseDTO;
 import org.boot.growup.auth.persist.entity.Customer;
 import org.boot.growup.auth.persist.repository.CustomerRepository;
 
+import org.boot.growup.common.utils.ImageStore;
+import org.boot.growup.common.utils.S3Service;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -33,9 +34,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.security.SecureRandom;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import static org.boot.growup.common.constant.ErrorCode.*;
 
@@ -44,6 +50,7 @@ import static org.boot.growup.common.constant.ErrorCode.*;
 @RequiredArgsConstructor
 public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository customerRepository;
+    private final AddressRepository addressRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final EmailServiceImpl emailServiceImpl;
@@ -53,6 +60,8 @@ public class CustomerServiceImpl implements CustomerService {
     private final GoogleOauthServiceImpl googleOauthServiceImpl;
     private final KakaoOauthServiceImpl kakaoOauthServiceImpl;
     private final NaverOauthServiceImpl naverOauthServiceImpl;
+    private final ImageStore imageStore;
+    private final S3Service s3Service;
 
     @Override
     public void signUp(CustomerSignUpRequestDTO request) {
@@ -64,7 +73,7 @@ public class CustomerServiceImpl implements CustomerService {
         }
 
         /* 비밀번호 암호화 */
-        String encodedPassword = encodingPassword(request);
+        String encodedPassword = encodingPassword(request.getPassword());
         log.info("SignUp Method => before pw : {} | after store pw : {}"
                 , request.getPassword()
                 , encodedPassword);
@@ -76,8 +85,32 @@ public class CustomerServiceImpl implements CustomerService {
         redisDao.deleteValues(request.getPhoneNumber());
     }
 
-    public String encodingPassword(CustomerSignUpRequestDTO request){
-        return passwordEncoder.encode(request.getPassword());
+    private String encodingPassword(String password){
+        return passwordEncoder.encode(password);
+    }
+
+    @Override
+    public void postPhoneNumberForRegister(PostPhoneNumberForRegisterRequestDTO request) {
+        /* 이미 가입된 유저인지 확인 */
+        verifyUserAlreadyRegistered(request.getPhoneNumber(), request.getProvider());
+
+        /* 인증번호 생성 및 전송 */
+        postPhoneNumber(request.getPhoneNumber());
+    }
+
+    private void verifyUserAlreadyRegistered(String phoneNumber, Provider provider) {
+        customerRepository.findByPhoneNumberAndIsValidPhoneNumberAndProvider(phoneNumber, true, provider)
+                .ifPresent(customer -> {
+                    throw new BaseException(USER_ALREADY_REGISTERED, customer.getEmail());
+                });
+    }
+
+    @Override
+    public void postPhoneNumber(String phoneNumber) {
+        String parsedPhoneNumber = phoneNumber.replaceAll("-","");
+        String authCode = createAuthCode();
+        smsUtil.sendMessage(parsedPhoneNumber, authCode);
+        redisDao.setValues(phoneNumber, authCode, 1000 * 60 * 5L);
     }
 
     @Override
@@ -90,23 +123,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public void postPhoneNumber(PostPhoneNumberRequestDTO request) {
-        /* 이미 가입된 유저인지 확인 */
-        customerRepository.findByPhoneNumberAndIsValidPhoneNumberAndProvider(
-                        request.getPhoneNumber(), true, Provider.valueOf(request.getProvider().name()))
-                .ifPresent(customer -> {
-                    /* 이미 가입된 유저라면 가입된 이메일을 반환 */
-                    throw new BaseException(USER_ALREADY_REGISTERED, customer.getEmail());
-                });
-
-        String parsedPhoneNumber = request.getPhoneNumber().replaceAll("-","");
-        String authCode = createAuthCode();
-        smsUtil.sendMessage(parsedPhoneNumber, authCode);
-        redisDao.setValues(request.getPhoneNumber(), authCode, 1000 * 60 * 5L);
-    }
-
-    @Override
-    public void deletePhoneNumber(PostPhoneNumberRequestDTO request) {
+    public void deletePhoneNumber(PostPhoneNumberForRegisterRequestDTO request) {
         redisDao.deleteValues(request.getPhoneNumber());
     }
 
@@ -126,15 +143,6 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public EmailCheckResponseDTO checkEmail(EmailCheckRequestDTO request) throws MessagingException {
-        EmailMessageDTO emailMessage = EmailMessageDTO.from(request);
-        String validationCode = emailServiceImpl.sendMail(emailMessage);
-        return EmailCheckResponseDTO.builder()
-                .validationCode(validationCode)
-                .build();
-    }
-
-    @Override
     public TokenDTO signInGoogle(Oauth2SignInRequestDTO request) {
         String accessToken = googleOauthServiceImpl.requestGoogleAccessToken(request.getAuthCode());
         GoogleAccountResponseDTO googleAccount = googleOauthServiceImpl.requestGoogleAccount(accessToken);
@@ -144,7 +152,8 @@ public class CustomerServiceImpl implements CustomerService {
                 .map(customer -> { // 고객이 존재하는 경우
                     UserDetails userDetails = loadUserByUsernameAndProvider(
                                 googleAccount.getEmail(), Provider.GOOGLE);
-                    return jwtTokenProvider.generateToken(userDetails.getUsername(), userDetails.getAuthorities(), Provider.GOOGLE);
+                    return jwtTokenProvider.generateToken(
+                                userDetails.getUsername(), userDetails.getAuthorities(), Provider.GOOGLE);
                 })
                 .orElseGet(() -> { // 고객이 존재하지 않는 경우
                     try{
@@ -297,8 +306,9 @@ public class CustomerServiceImpl implements CustomerService {
 
             log.info("useremail : {} | authority : {}", useremail, authority);
 
+            Provider provider = Provider.valueOf(session.getAttribute("provider").toString());
             if (authority.equals(Role.CUSTOMER.getKey())) {
-                return customerRepository.findByEmail(useremail).orElseThrow(
+                return customerRepository.findByEmailAndProvider(useremail, provider).orElseThrow(
                         () -> new BaseException(CUSTOMER_NOT_FOUND)
                 );
             }
@@ -310,12 +320,116 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public UserDetails loadUserByUsernameAndProvider(String username, Provider provider) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsernameAndProvider(
+                String username, Provider provider) throws UsernameNotFoundException {
         Customer customer = customerRepository.findByEmailAndProvider(username, provider)
                 .orElseThrow(() -> new UsernameNotFoundException("해당하는 유저를 찾을 수 없습니다."));
 
         UserModel userDetails = customer.toUserDetails();
         log.info("구매자 권한: {}", userDetails.getAuthorities());
         return userDetails;
+    }
+
+    @Override
+    public GetCustomerInfoResponseDTO getCustomerInfo() {
+        Customer customer = getCurrentCustomer();
+        return GetCustomerInfoResponseDTO.from(customer);
+    }
+
+    @Override
+    public void postEmail(String email) throws MessagingException {
+        EmailMessageDTO emailMessage = EmailMessageDTO.from(email);
+        String validationCode = emailServiceImpl.sendMail(emailMessage);
+        redisDao.setValues(email + ":EmailAuth", validationCode, 1000 * 60 * 5L);
+    }
+
+    @Transactional
+    @Override
+    public void postEmailAuthCode(PostEmailAuthCodeRequestDTO request) {
+        String authCode = redisDao.getValues(request.getEmail() + ":EmailAuth");
+        if(!authCode.equals(request.getAuthCode())) {
+            throw new BaseException(EMAIL_WRONG_AUTH_CODE);
+        }
+
+        Customer customer = getCurrentCustomer();
+        customer.updateIsValidEmail(request.getEmail());
+        redisDao.deleteValues(request.getEmail() + ":EmailAuth");
+    }
+
+    @Override
+    public void postEmailExistence(PostEmailRequestDTO request) {
+        Customer customer = getCurrentCustomer();
+        if(customer.getEmail().equals(request.getEmail())) {
+            throw new BaseException(IS_PRESENT_EMAIL);
+        }
+    }
+
+    @Transactional
+    @Override
+    public void patchPassword(PatchPasswordRequestDTO request) {
+        Customer customer = getCurrentCustomer();
+        if(checkPassword(request.getPassword(), customer.getPassword())) {
+            throw new BaseException(SAME_PASSWORD);
+        }
+
+        customer.updatePassword(encodingPassword(request.getPassword()));
+    }
+
+    @Transactional
+    @Override
+    public void patchProfile(MultipartFile multipartFile) throws IOException {
+        Customer customer = getCurrentCustomer();
+        String uploadProfileUrl = storeImage(multipartFile);
+        customer.updateProfile(uploadProfileUrl);
+    }
+
+    private String storeImage(MultipartFile multipartFile) throws IOException {
+        String originalFilename = multipartFile.getOriginalFilename();
+        String storeFilename = imageStore.createStoreFileName(originalFilename);
+        return s3Service.uploadFileAndGetUrl(multipartFile, storeFilename);
+    }
+
+    @Override
+    public GetIsValidEmailResponseDTO getIsValidEmail() {
+        Customer customer = getCurrentCustomer();
+        return GetIsValidEmailResponseDTO.builder()
+                .isValidEmail(customer.isValidEmail())
+                .build();
+    }
+    @Transactional
+    @Override
+    public void patchAgreementSendEmail(PatchAgreementSendEmailRequestDTO request) {
+        Customer customer = getCurrentCustomer();
+        customer.updateIsAgreeSendEmail(request.isAgreementSendEmail());
+    }
+
+    @Transactional
+    @Override
+    public void patchAgreementSendSms(PatchAgreementSendSmsRequestDTO request) {
+        Customer customer = getCurrentCustomer();
+        customer.updateIsAgreeSendSms(request.isAgreementSendSms());
+    }
+
+    @Override
+    public void postAddress(PostAddressRequestDTO request) {
+        Customer customer = getCurrentCustomer();
+        Address address = Address.of(request, customer);
+        addressRepository.save(address);
+    }
+
+    @Override
+    public List<GetAddressResponseDTO> getAddress() {
+        Customer customer = getCurrentCustomer();
+        List<Address> addresses = addressRepository.findAllByCustomer(customer);
+
+        return addresses.stream()
+                .map(address -> GetAddressResponseDTO.builder()
+                        .id(address.getId())
+                        .name(address.getName())
+                        .phoneNumber(address.getPhoneNumber())
+                        .address(address.getAddress())
+                        .postcode(address.getPostcode())
+                        .build())
+                .collect(Collectors.toList());
     }
 }

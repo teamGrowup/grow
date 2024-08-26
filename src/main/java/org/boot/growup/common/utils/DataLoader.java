@@ -55,8 +55,24 @@ public class DataLoader {
                 .phoneNumber("010-1234-5678")
                 .birthday("20001212")
                 .gender(Gender.MALE)
-                .address("용인시 기흥구 신정로 19")
-                .postCode("12345")
+                .nickname("오리")
+                .name("홍길동")
+                .provider(Provider.EMAIL)
+                .role(Role.CUSTOMER)
+                .profileUrl("awss3/이미지url")
+                .isValidPhoneNumber(true)
+                .isValidEmail(false)
+                .isAgreeSendEmail(false)
+                .isAgreeSendSms(false)
+                .build();
+
+        /* 이메일 회원 2*/
+        Customer customer2 = Customer.builder()
+                .email("jskim2x@naver.com")
+                .password(passwordEncoder.encode("!a123456789"))
+                .phoneNumber("010-1234-5678")
+                .birthday("20001212")
+                .gender(Gender.MALE)
                 .nickname("오리")
                 .name("홍길동")
                 .provider(Provider.EMAIL)
@@ -69,14 +85,12 @@ public class DataLoader {
                 .build();
 
         /* 구글 회원 */
-        Customer customer2 = Customer.builder()
+        Customer customer3 = Customer.builder()
                 .email("customer456@google.com")
                 .password(passwordEncoder.encode("!a123456789"))
                 .phoneNumber("010-8765-4321")
                 .birthday("19991212")
                 .gender(Gender.FEMALE)
-                .address("서울특별시 용산")
-                .postCode("12345")
                 .nickname("까마귀")
                 .name("홍장미")
                 .provider(Provider.GOOGLE)
@@ -88,8 +102,28 @@ public class DataLoader {
                 .isAgreeSendSms(false)
                 .build();
 
+        /* 네이버 회원 */
+        Customer customer4 = Customer.builder()
+                .email("jskim2x@naver.com")
+                .password(passwordEncoder.encode("!a123456789"))
+                .phoneNumber("010-8765-4321")
+                .birthday("19991212")
+                .gender(Gender.FEMALE)
+                .nickname("까마귀")
+                .name("홍장미")
+                .provider(Provider.NAVER)
+                .role(Role.CUSTOMER)
+                .profileUrl("awss3/이미지url2")
+                .isValidPhoneNumber(true)
+                .isValidEmail(false)
+                .isAgreeSendEmail(false)
+                .isAgreeSendSms(false)
+                .build();
+
         customerRepository.save(customer);
         customerRepository.save(customer2);
+        customerRepository.save(customer3);
+        customerRepository.save(customer4);
     }
     public void brandInit(){
         Brand brand1 = Brand.builder()
@@ -177,7 +211,6 @@ public class DataLoader {
                 .cpName("(주)슬로우스탠다드") // 상호명
                 .cpCode("178-86-01188") // 10자리의 사업자 등록번호
                 .cpAddress("경기도 의정부시 오목로225번길 94, 씨와이파크 (민락동)") // 사업장 소재지(회사주소)
-                .provider(Provider.EMAIL)
                 .role(Role.SELLER)
                 .netProceeds(1000)
                 .build();
@@ -191,7 +224,6 @@ public class DataLoader {
                 .cpName("디알에프티 주식회사") // 상호명
                 .cpCode("722-87-00697") // 10자리의 사업자 등록번호
                 .cpAddress("서울특별시 성동구 자동차시장1길 81, FCN빌딩 5층 (용답동)") // 사업장 소재지(회사주소)
-                .provider(Provider.EMAIL)
                 .role(Role.SELLER)
                 .netProceeds(1000)
                 .build();
@@ -508,7 +540,6 @@ public class DataLoader {
                 .email("root@growteam.com")
                 .password(passwordEncoder.encode("12345678!!"))
                 .balance(0)
-                .provider(Provider.EMAIL)
                 .role(Role.ADMIN)
                 .build();
         adminRepository.save(admin);
