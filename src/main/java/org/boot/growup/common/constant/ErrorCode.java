@@ -75,7 +75,13 @@ public enum ErrorCode {
 
     /* Board 관련 */
     NOTICE_NOT_FOUND(HttpStatus.BAD_REQUEST, 404,false, "해당 공지사항을 찾을 수 없습니다."),
-    INQUIRY_NOT_FOUND(HttpStatus.BAD_REQUEST, 404, false, "해당 문의를 찾을 수 없습니다.");
+    INQUIRY_NOT_FOUND(HttpStatus.BAD_REQUEST, 404, false, "해당 문의를 찾을 수 없습니다."),
+
+    /* Growpay 관련 */
+    GROWPAY_NOT_FOUND(HttpStatus.BAD_REQUEST, 404, false, "해당 Growpay 계좌를 찾을 수 없습니다."),
+    INSUFFICIENT_GROWPAY_BALANCE(HttpStatus.BAD_REQUEST, 400, false, "Growpay 잔액이 부족합니다."),
+    GROWPAY_HISTORY_NOT_FOUND(HttpStatus.BAD_REQUEST, 404, false, "해당 Growpay 거래 기록을 찾을 수 없습니다."),
+    GROWPAY_ACCOUNT_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, 400, false, "해당 계좌는 이미 존재합니다.");
 
     private final HttpStatus httpStatus;
     private final int code;
