@@ -57,11 +57,14 @@ public enum ErrorCode {
     SAME_PASSWORD(HttpStatus.BAD_REQUEST, 400, false, "이미 사용 중인 비밀번호로 변경할 수 없습니다."),
 
     /* Product 관련 */
+    PRDOUCT_NOT_APPROVED(HttpStatus.BAD_REQUEST, 404, false, "해당 상품은 승인되지 않았습니다."),
     PRODUCT_NOT_FOUND(HttpStatus.BAD_REQUEST,404, false, "상품을 찾을 수 없습니다."),
     PRODUCT_NAME_ALREADY_EXISTS(HttpStatus.BAD_REQUEST,404, false, "해당 상품명은 이미 존재합니다."),
     PRODUCT_BY_SELLER_NOT_FOUND(HttpStatus.BAD_REQUEST, 404, false, "해당 셀러ID의 상품은 존재하지 않습니다."),
     SUBCATEGORY_NOT_FOUND(HttpStatus.BAD_REQUEST, 404, false, "유효하지 않은 서브 카테고리 ID입니다."),
     PRODUCT_LIKE_NOT_FOUND(HttpStatus.BAD_REQUEST, 404, false, "좋아요 정보를 찾을 수 없습니다."),
+    PRODUCT_OPTION_NOT_ENOUGH_STOCK(HttpStatus.CONFLICT, 409, false, "해당 상품 옵션의 재고가 부족합니다."),
+    PRODUCT_OPTIONS_SOME_NOT_FOUND(HttpStatus.BAD_REQUEST,404, false, "일부 상품 옵션을 찾을 수 없습니다."),
 
     /* Brand 관련 */
     BRAND_NAME_ALREADY_EXISTS(HttpStatus.BAD_REQUEST,404, false, "해당 브랜드명은 이미 존재합니다."),
@@ -80,6 +83,11 @@ public enum ErrorCode {
     /* Board 관련 */
     NOTICE_NOT_FOUND(HttpStatus.BAD_REQUEST, 404,false, "해당 공지사항을 찾을 수 없습니다."),
     INQUIRY_NOT_FOUND(HttpStatus.BAD_REQUEST, 404, false, "해당 문의를 찾을 수 없습니다."),
+
+    /* Order 관련 */
+    ORDER_NOT_FOUND(HttpStatus.BAD_REQUEST, 404, false, "해당 주문을 찾을 수 없습니다."),
+    PAY_NOT_SUCCESS(HttpStatus.BAD_REQUEST, 404, false, "해당 주문의 결제 사실을 확인할 수 없습니다."),
+    PAY_ALREADY_SUCCESS(HttpStatus.BAD_REQUEST, 404, false, "해당 주문의 결제는 성공했습니다."),
 
     /* Growpay 관련 */
     GROWPAY_NOT_FOUND(HttpStatus.BAD_REQUEST, 404, false, "해당 Growpay 계좌를 찾을 수 없습니다."),

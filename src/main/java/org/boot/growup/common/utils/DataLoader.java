@@ -321,9 +321,10 @@ public class DataLoader {
         Product product1 = Product.builder()
                 .name("맨투맨 A")
                 .description("편안한 맨투맨입니다.")
-                .authorityStatus(AuthorityStatus.PENDING)
+                .authorityStatus(AuthorityStatus.APPROVED)
                 .averageRating(0.0)
                 .likeCount(0)
+                .deliveryFee(1000)
                 .seller(seller1)
                 .brand(brand1)
                 .subCategory(subCategory1) // 맨투맨
@@ -332,9 +333,10 @@ public class DataLoader {
         Product product2 = Product.builder()
                 .name("반팔 티셔츠 B")
                 .description("시원한 반팔 티셔츠입니다.")
-                .authorityStatus(AuthorityStatus.PENDING)
+                .authorityStatus(AuthorityStatus.APPROVED)
                 .averageRating(0.0)
                 .likeCount(0)
+                .deliveryFee(1000)
                 .seller(seller2)
                 .brand(brand2)
                 .subCategory(subCategory2) // 반팔
@@ -346,6 +348,7 @@ public class DataLoader {
                 .authorityStatus(AuthorityStatus.PENDING)
                 .averageRating(0.0)
                 .likeCount(0)
+                .deliveryFee(1000)
                 .seller(seller1)
                 .brand(brand1)
                 .subCategory(subCategory3) // 숏 팬츠
