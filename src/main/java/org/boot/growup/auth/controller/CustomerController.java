@@ -262,7 +262,6 @@ public class CustomerController {
         return new BaseResponse<>(response);
     }
 
-
     /**
      * [PATCH]
      * 이메일 알림 허가/거부
@@ -277,7 +276,6 @@ public class CustomerController {
         customerService.patchAgreementSendEmail(request);
     }
 
-
     /**
      * [PATCH]
      * 문자 알림 허가/거부
@@ -289,7 +287,6 @@ public class CustomerController {
     public void patchAgreementSendSms(@RequestBody PatchAgreementSendSmsRequestDTO request) {
         customerService.patchAgreementSendSms(request);
     }
-
 
     /**
      * [POST]

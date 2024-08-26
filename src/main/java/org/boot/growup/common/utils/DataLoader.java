@@ -107,6 +107,7 @@ public class DataLoader {
                 .isAgreeSendEmail(false)
                 .isAgreeSendSms(false)
                 .build();
+
         /* 네이버 회원 */
         Customer customer4 = Customer.builder()
                 .email("jskim2x@naver.com")

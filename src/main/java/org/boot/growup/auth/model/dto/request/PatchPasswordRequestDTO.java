@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.boot.growup.common.utils.Regex;
+
 @Data
 @Builder
 @AllArgsConstructor
