@@ -208,7 +208,7 @@ public class CustomerController {
      * @body PostEmailAuthCodeRequestDTO
      * @response void
      */
-    @PostMapping("/mypages/emails/validations")
+    @PostMapping("/mypages/emails/authcodes")
     public void postEmailAuthCode(@Valid @RequestBody PostEmailAuthCodeRequestDTO request) {
         customerService.postEmailAuthCode(request);
     }
@@ -256,6 +256,11 @@ public class CustomerController {
      * @body PostIsValidEmailRequestDTO
      * @response void
      */
+    @PostMapping("/mypages/emails/is-valid")
+    public void postIsValidEmail() {
+
+    }
+
 
     /**
      * [PATCH]

@@ -130,7 +130,7 @@ public class CustomerServiceImpl implements CustomerService {
             throw new BaseException(ErrorCode.BAD_REQUEST, "비밀번호가 일치하지 않습니다.");
         }
 
-        return jwtTokenProvider.generateToken(userDetails.getUsername(),userDetails.getAuthorities());
+        return jwtTokenProvider.generateToken(userDetails.getUsername(),userDetails.getAuthorities(), Provider.EMAIL);
     }
 
     public boolean checkPassword(String rawPassword, String encodedPassword) {
@@ -147,7 +147,8 @@ public class CustomerServiceImpl implements CustomerService {
                 .map(customer -> { // 고객이 존재하는 경우
                     UserDetails userDetails = loadUserByUsernameAndProvider(
                                 googleAccount.getEmail(), Provider.GOOGLE);
-                    return jwtTokenProvider.generateToken(userDetails.getUsername(), userDetails.getAuthorities());
+                    return jwtTokenProvider.generateToken(
+                                userDetails.getUsername(), userDetails.getAuthorities(), Provider.GOOGLE);
                 })
                 .orElseGet(() -> { // 고객이 존재하지 않는 경우
                     try{
@@ -182,7 +183,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         UserDetails userDetails = loadUserByUsernameAndProvider(googleAccount.getEmail(), Provider.GOOGLE);
 
-        return jwtTokenProvider.generateToken(userDetails.getUsername(),userDetails.getAuthorities());
+        return jwtTokenProvider.generateToken(userDetails.getUsername(),userDetails.getAuthorities(), Provider.GOOGLE);
     }
 
     @Override
@@ -195,7 +196,8 @@ public class CustomerServiceImpl implements CustomerService {
                 .map(customer -> { // 고객이 존재하는 경우
                     UserDetails userDetails = loadUserByUsernameAndProvider(
                                             kakaoAccount.getKakaoAccount().getEmail(), Provider.KAKAO);
-                    return jwtTokenProvider.generateToken(userDetails.getUsername(), userDetails.getAuthorities());
+                    return jwtTokenProvider.generateToken(
+                                userDetails.getUsername(), userDetails.getAuthorities(), Provider.KAKAO);
                 })
                 .orElseGet(() -> { // 고객이 존재하지 않는 경우
                     try{
@@ -230,7 +232,7 @@ public class CustomerServiceImpl implements CustomerService {
         UserDetails userDetails = loadUserByUsernameAndProvider(
                     kakaoAccount.getKakaoAccount().getEmail(), Provider.KAKAO);
 
-        return jwtTokenProvider.generateToken(userDetails.getUsername(),userDetails.getAuthorities());
+        return jwtTokenProvider.generateToken(userDetails.getUsername(),userDetails.getAuthorities(), Provider.KAKAO);
     }
 
     @Override
@@ -242,7 +244,8 @@ public class CustomerServiceImpl implements CustomerService {
                 .map(customer -> { // 고객이 존재하는 경우
                     UserDetails userDetails = loadUserByUsernameAndProvider(
                                 naverAccount.getResponse().getEmail(), Provider.NAVER);
-                    return jwtTokenProvider.generateToken(userDetails.getUsername(), userDetails.getAuthorities());
+                    return jwtTokenProvider.generateToken(
+                                userDetails.getUsername(), userDetails.getAuthorities(), Provider.NAVER);
                 })
                 .orElseGet(() -> { // 고객이 존재하지 않는 경우
                     try{
@@ -277,7 +280,7 @@ public class CustomerServiceImpl implements CustomerService {
         UserDetails userDetails = loadUserByUsernameAndProvider(
                 naverAccount.getResponse().getEmail(), Provider.NAVER);
 
-        return jwtTokenProvider.generateToken(userDetails.getUsername(),userDetails.getAuthorities());
+        return jwtTokenProvider.generateToken(userDetails.getUsername(),userDetails.getAuthorities(), Provider.NAVER);
     }
 
     private String createAuthCode() {
@@ -298,8 +301,9 @@ public class CustomerServiceImpl implements CustomerService {
 
             log.info("useremail : {} | authority : {}", useremail, authority);
 
+            Provider provider = Provider.valueOf(session.getAttribute("provider").toString());
             if (authority.equals(Role.CUSTOMER.getKey())) {
-                return customerRepository.findByEmail(useremail).orElseThrow(
+                return customerRepository.findByEmailAndProvider(useremail, provider).orElseThrow(
                         () -> new BaseException(CUSTOMER_NOT_FOUND)
                 );
             }

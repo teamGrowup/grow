@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 @Component
 public class JwtTokenProvider {
     private static final String AUTHORITIES_KEY = "auth";
+    private static final String PROVIDERS_KEY = "provider";
     private final Key key;
     private final RedisDAO redisDao;
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 60L; // 1시간
@@ -36,7 +37,8 @@ public class JwtTokenProvider {
         this.key = Keys.hmacShaKeyFor(secretByteKey);
     }
 
-    public TokenDTO generateToken(String userEmail, Collection<? extends GrantedAuthority> authorities) {
+    public TokenDTO generateToken(
+                String userEmail, Collection<? extends GrantedAuthority> authorities, Provider provider) {
         String authoritiesString = authorities.stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
@@ -46,7 +48,8 @@ public class JwtTokenProvider {
 
         String accessToken= Jwts.builder()
                 .setSubject(userEmail)
-                .claim(AUTHORITIES_KEY,authoritiesString)
+                .claim(AUTHORITIES_KEY, authoritiesString)
+                .claim(PROVIDERS_KEY, provider.name())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(now.getTime()+ACCESS_TOKEN_EXPIRE_TIME)) // 만료 시간 : 60분
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -73,6 +76,11 @@ public class JwtTokenProvider {
         User principal = new User(claims.getSubject(), "", authorities);
 
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
+    }
+
+    public String getProvider(String token) {
+        Claims claims = parseClaims(token);
+        return claims.get(PROVIDERS_KEY).toString();
     }
 
     public boolean validateToken(String token){
