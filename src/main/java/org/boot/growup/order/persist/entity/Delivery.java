@@ -1,10 +1,12 @@
-package org.boot.growup.source.order.persist.entity;
+package org.boot.growup.order.persist.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.boot.growup.common.entity.BaseEntity;
+import org.hibernate.envers.AuditOverride;
 
 @Entity
 @Getter
@@ -12,7 +14,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "delivery")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Delivery {
+@AuditOverride(forClass = BaseEntity.class)
+public class Delivery extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "delivery_id", nullable = false)

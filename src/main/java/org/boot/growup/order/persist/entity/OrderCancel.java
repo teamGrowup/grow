@@ -1,4 +1,4 @@
-package org.boot.growup.source.order.persist.entity;
+package org.boot.growup.order.persist.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
