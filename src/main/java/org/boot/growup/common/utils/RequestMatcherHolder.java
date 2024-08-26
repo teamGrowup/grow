@@ -45,7 +45,11 @@ public class RequestMatcherHolder {
             // static resources
             RequestInfo.of(GET, "/error", null),
             RequestInfo.of(POST, "/v3/**", null),
+
+            RequestInfo.of(GET, "/swagger-ui/**", null),
             RequestInfo.of(POST, "/swagger-ui/**", null),
+            RequestInfo.of(GET, "/v3/**", null),
+
             RequestInfo.of(GET, "/*.ico", null),
             RequestInfo.of(GET, "/images/**", null)
     );
