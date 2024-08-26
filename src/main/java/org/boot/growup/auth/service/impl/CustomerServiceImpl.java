@@ -383,4 +383,12 @@ public class CustomerServiceImpl implements CustomerService {
         String storeFilename = imageStore.createStoreFileName(originalFilename);
         return s3Service.uploadFileAndGetUrl(multipartFile, storeFilename);
     }
+
+    @Override
+    public GetIsValidEmailResponseDTO getIsValidEmail() {
+        Customer customer = getCurrentCustomer();
+        return GetIsValidEmailResponseDTO.builder()
+                .isValidEmail(customer.isValidEmail())
+                .build();
+    }
 }

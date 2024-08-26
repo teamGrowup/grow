@@ -250,15 +250,16 @@ public class CustomerController {
     }
 
     /**
-     * [POST]
-     * 이메일 인증여부 검사
+     * [GET]
+     * 이메일 인증여부 조회
      * @header Customer's AccessToken
-     * @body PostIsValidEmailRequestDTO
-     * @response void
+     * @body null
+     * @response GetIsValidEmailResponseDTO
      */
-    @PostMapping("/mypages/emails/is-valid")
-    public void postIsValidEmail() {
-
+    @GetMapping("/mypages/emails/is-valid")
+    public BaseResponse<GetIsValidEmailResponseDTO> getIsValidEmail() {
+        GetIsValidEmailResponseDTO response = customerService.getIsValidEmail();
+        return new BaseResponse<>(response);
     }
 
 

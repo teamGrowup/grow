@@ -3,6 +3,7 @@ package org.boot.growup.auth.service;
 import jakarta.mail.MessagingException;
 import org.boot.growup.auth.model.dto.request.*;
 import org.boot.growup.auth.model.dto.response.GetCustomerInfoResponseDTO;
+import org.boot.growup.auth.model.dto.response.GetIsValidEmailResponseDTO;
 import org.boot.growup.common.constant.Provider;
 import org.boot.growup.common.model.TokenDTO;
 import org.boot.growup.auth.persist.entity.Customer;
@@ -114,4 +115,9 @@ public interface CustomerService {
     프로필 이미지 변경
      */
     void patchProfile(MultipartFile multipartFile) throws IOException;
+
+    /*
+    이메일 인증여부 조회
+     */
+    GetIsValidEmailResponseDTO getIsValidEmail();
 }
