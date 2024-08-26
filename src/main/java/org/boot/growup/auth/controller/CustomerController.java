@@ -295,6 +295,10 @@ public class CustomerController {
      * @body PostAddressRequestDTO
      * @response void
      */
+    @PostMapping("/mypages/address")
+    public void postAddress(@RequestBody PostAddressRequestDTO request) {
+        customerService.postAddress(request);
+    }
 
     /**
      * [GET]

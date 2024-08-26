@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.boot.growup.auth.model.UserModel;
 import org.boot.growup.auth.model.dto.request.*;
 import org.boot.growup.auth.model.dto.response.*;
+import org.boot.growup.auth.persist.entity.Address;
+import org.boot.growup.auth.persist.repository.AddressRepository;
 import org.boot.growup.auth.service.CustomerService;
 import org.boot.growup.common.model.EmailMessageDTO;
 import org.boot.growup.common.constant.Role;
@@ -46,6 +48,7 @@ import static org.boot.growup.common.constant.ErrorCode.*;
 @RequiredArgsConstructor
 public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository customerRepository;
+    private final AddressRepository addressRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final EmailServiceImpl emailServiceImpl;
@@ -403,5 +406,12 @@ public class CustomerServiceImpl implements CustomerService {
     public void patchAgreementSendSms(PatchAgreementSendSmsRequestDTO request) {
         Customer customer = getCurrentCustomer();
         customer.updateIsAgreeSendSms(request.isAgreementSendSms());
+    }
+
+    @Override
+    public void postAddress(PostAddressRequestDTO request) {
+        Customer customer = getCurrentCustomer();
+        Address address = Address.of(request, customer);
+        addressRepository.save(address);
     }
 }

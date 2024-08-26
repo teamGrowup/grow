@@ -130,4 +130,9 @@ public interface CustomerService {
     문자 알림 허가/거부
      */
     void patchAgreementSendSms(PatchAgreementSendSmsRequestDTO request);
+
+    /*
+    배송지 추가
+     */
+    void postAddress(PostAddressRequestDTO request);
 }

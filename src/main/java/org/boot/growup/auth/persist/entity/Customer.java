@@ -45,12 +45,6 @@ public class Customer extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @Column(length = 100)
-    private String address;
-
-    @Column(length = 5)
-    private String postCode;
-
     @Column(nullable = false, length = 20)
     private String nickname;
 
