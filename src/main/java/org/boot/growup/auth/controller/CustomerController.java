@@ -10,9 +10,12 @@ import org.boot.growup.common.model.BaseResponse;
 import org.boot.growup.common.model.TokenDTO;
 import org.boot.growup.auth.service.CustomerService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Slf4j
 @RestController
@@ -234,17 +237,17 @@ public class CustomerController {
         customerService.patchPassword(request);
     }
 
-//    /**
-//     * [PATCH]
-//     * 프로필 사진 변경
-//     * @header Customer's AccessToken
-//     * @body PatchProfileDTO
-//     * @response void
-//     */
-//    @PatchMapping("/mypages/passwords")
-//    public void patchProfile(@RequestParam MultipartFile multipartFile) {
-//        customerService.patchProfile(multipartFile);
-//    }
+    /**
+     * [PATCH]
+     * 프로필 사진 변경
+     * @header Customer's AccessToken
+     * @body PatchProfileDTO
+     * @response void
+     */
+    @PatchMapping(value = "/mypages/profiles", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void patchProfile(@RequestPart(value = "profile") MultipartFile multipartFile) throws IOException {
+        customerService.patchProfile(multipartFile);
+    }
 
     /**
      * [POST]

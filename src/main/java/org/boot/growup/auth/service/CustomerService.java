@@ -10,6 +10,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 public interface CustomerService {
     /*
     구매자 이메일 회원가입
@@ -107,8 +109,9 @@ public interface CustomerService {
      */
     void patchPassword(PatchPasswordRequestDTO request);
 
-//    /*
-//    프로필 이미지 변경
-//     */
-//    void patchProfile(MultipartFile multipartFile);
+
+    /*
+    프로필 이미지 변경
+     */
+    void patchProfile(MultipartFile multipartFile) throws IOException;
 }

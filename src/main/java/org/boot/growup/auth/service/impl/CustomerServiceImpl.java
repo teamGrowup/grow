@@ -22,7 +22,7 @@ import org.boot.growup.auth.persist.entity.Customer;
 import org.boot.growup.auth.persist.repository.CustomerRepository;
 
 import org.boot.growup.common.utils.ImageStore;
-import org.boot.growup.product.persist.entity.ProductImage;
+import org.boot.growup.common.utils.S3Service;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -32,6 +32,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.security.SecureRandom;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -55,6 +56,7 @@ public class CustomerServiceImpl implements CustomerService {
     private final KakaoOauthServiceImpl kakaoOauthServiceImpl;
     private final NaverOauthServiceImpl naverOauthServiceImpl;
     private final ImageStore imageStore;
+    private final S3Service s3Service;
 
     @Override
     public void signUp(CustomerSignUpRequestDTO request) {
@@ -364,15 +366,17 @@ public class CustomerServiceImpl implements CustomerService {
         customer.updatePassword(encodingPassword(request.getPassword()));
     }
 
-//    @Transactional
-//    @Override
-//    public void patchProfile(MultipartFile multipartFile) {
-//        Customer customer = getCurrentCustomer();
-//        String uploadProfileUrl = storeImage(multipartFile);
-//    }
-//
-//    private String storeImage(MultipartFile multipartFile) {
-//        String originalFilename = multipartFile.getOriginalFilename(); // 원래 이름
-//        String storeFilename = imageStore.createStoreFileName(originalFilename); // 저장된 이름
-//    }
+    @Transactional
+    @Override
+    public void patchProfile(MultipartFile multipartFile) throws IOException {
+        Customer customer = getCurrentCustomer();
+        String uploadProfileUrl = storeImage(multipartFile);
+        customer.updateProfile(uploadProfileUrl);
+    }
+
+    private String storeImage(MultipartFile multipartFile) throws IOException {
+        String originalFilename = multipartFile.getOriginalFilename();
+        String storeFilename = imageStore.createStoreFileName(originalFilename);
+        return s3Service.uploadFileAndGetUrl(multipartFile, storeFilename);
+    }
 }
