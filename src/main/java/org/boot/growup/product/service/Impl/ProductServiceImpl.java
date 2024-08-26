@@ -1,12 +1,14 @@
 package org.boot.growup.product.service.Impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.boot.growup.auth.persist.entity.Seller;
 import org.boot.growup.common.constant.Section;
 import org.boot.growup.common.model.BaseException;
 import org.boot.growup.common.constant.AuthorityStatus;
 import org.boot.growup.common.constant.ErrorCode;
 import org.boot.growup.auth.persist.entity.Customer;
+import org.boot.growup.order.dto.OrderItemDTO;
 import org.boot.growup.common.utils.ImageStore;
 import org.boot.growup.common.utils.S3Service;
 import org.boot.growup.product.persist.entity.*;
@@ -20,8 +22,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
+import static java.util.stream.Collectors.toUnmodifiableMap;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
@@ -29,8 +35,8 @@ public class ProductServiceImpl implements ProductService {
     private final SubCategoryRepository subCategoryRepository;
     private final BrandRepository brandRepository;
     private final ProductLikeRepository productLikeRepository;
-    private final ProductImageRepository productImageRepository;
     private final ProductOptionRepository productOptionRepository;
+    private final ProductImageRepository productImageRepository;
     private final ImageStore imageStore;
     private final S3Service s3Service;
 
@@ -198,6 +204,18 @@ public class ProductServiceImpl implements ProductService {
                 .path(path) // S3 경로 저장
                 .section(section) // 섹션 설정
                 .build();
+    }
+
+    @Override
+    public Map<ProductOption, Integer> getProductOptionCountMap(List<OrderItemDTO> orderItemDTOs) {
+        // 중복된 ProductOption 검사 및 해당 ProductOption이 없는지 검사
+        return orderItemDTOs.stream()
+                .collect(
+                    toUnmodifiableMap(
+                            m -> productOptionRepository.findById(m.getProductOptionId()).orElseThrow(() -> new BaseException(ErrorCode.PRODUCT_NOT_FOUND)),
+                            OrderItemDTO::getCount
+                )
+        );
     }
 
     public void postProductImages(List<MultipartFile> productImages, Product product, Section section) {

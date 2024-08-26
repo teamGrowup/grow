@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- jQuery -->
+    <script
+            type="text/javascript"
+            src="https://code.jquery.com/jquery-1.12.4.min.js"
+    ></script>
+    <!-- iamport.payment.js -->
+    <script src="https://cdn.portone.io/v2/browser-sdk.js"></script>
+
+    <script>
+        // https://developers.portone.io/docs/ko/authpay/guide?v=v2
+        // 장바구니 상품 정보 보내기 및 주문번호 요청
+
+        var customerToken = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjdXN0b21lcjEyM0BuYXZlci5jb20iLCJhdXRoIjoiUk9MRV9DVVNUT01FUiIsImlhdCI6MTcyNDY2NTYwNCwiZXhwIjoxNzI0NjY5MjA0fQ.WKELJczp67a63Xxn8VIrao3nOVjPhPcye9rcA6tqjZw";
+        var merchantUid = ""; // 주문번호 입력
+
+        function requestOrderNumber(){
+            var settings = {
+                "url": "http://localhost:8081/customers/orders/payments/process",
+                "method": "POST",
+                "timeout": 0,
+                "headers": {
+                    "Authorization": customerToken,
+                    "Content-Type": "application/json"
+                },
+                "data": JSON.stringify({
+                    "orderDTO": {
+                        "message": "문 앞에 둬주세요",
+                        "receiverName": "정태승",
+                        "receiverAddress": "주소1234",
+                        "receiverPhone": "010-8420-4241",
+                        "receiverPostCode": "12345"
+                    },
+                    "orderItemDTOs": [
+                        {
+                            "count": 1,
+                            "productOptionId": 1
+                        },
+                        {
+                            "count": 1,
+                            "productOptionId": 2
+                        },
+                        {
+                            "count": 1,
+                            "productOptionId": 3
+                        },
+                        {
+                            "count": 1,
+                            "productOptionId": 4
+                        }
+                    ]
+                }),
+            };
+
+            $.ajax(settings).done(function (response) {
+                console.log(response);
+                merchantUid = response.data;
+            });
+        }
+
+        // 주문번호와 결제금액을 통해 KG이니시스(PG사)를 통한 카드결제 요청
+        async function requestPay() {
+            const response = await PortOne.requestPayment({
+                // Store ID 설정
+                storeId: "store-8c062e98-d009-4b6d-9344-8cd2349938a2",
+                // 채널 키 설정
+                channelKey: "channel-key-86882cda-8e2c-4ef8-895d-a6fa29a8876e",
+                paymentId: merchantUid,
+                orderName: "주문01",
+                totalAmount: 1000,
+                currency: "CURRENCY_KRW",
+                payMethod: "CARD",
+                customer: {
+                    customerId: "1",
+                    fullName: "정태승",
+                    phoneNumber: "01084204241",
+                    email: "hi563@naver.com",
+
+                },
+                redirectUrl: "http://localhost:8081/login/testorder"
+            });
+
+            if(response.code != null){
+                const rejectedNotify = await fetch("http://localhost:8081/customers/orders/payments/rejected/"+merchantUid, {
+                    method: "PATCH",
+                    headers: {
+                        Authorization: customerToken
+                    }
+                }).then(response => {
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok");
+                    }
+                    return response.json(); // JSON 응답을 파싱
+                })
+                    .then(data => {
+                        $("#success").text("결제상태변경성공! 위 정보가 REJECTED 상태입니다.");
+                        alert("결제 상태 변경 성공(REJECTED)했습니다!");
+                    })
+                    .catch(error => {
+                        console.error("There was a problem with the fetch operation:", error);
+                        alert("결제 상태 변경 실패했습니다. 다시 시도해주세요.");
+                    });
+
+
+                return alert(response.message);
+            }
+
+            // 고객사 서버, /payment/complete
+            const notified = await fetch("http://localhost:8081/customers/orders/payments/complete/"+merchantUid, {
+                method: "PATCH",
+                headers: { "Authorization": customerToken }
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return response.json(); // JSON 응답을 파싱
+            })
+                .then(data => {
+                    $("#success").text("결제성공! 위 정보가 WAITING 상태입니다.");
+                    alert("결제 성공했습니다!");
+                })
+                .catch(error => {
+                    console.error("There was a problem with the fetch operation:", error);
+                    alert("결제 실패했습니다. 다시 시도해주세요.");
+                });
+        }
+    </script>
+    <meta charset="UTF-8"/>
+    <title>Sample Payment</title>
+</head>
+<body>
+<button onclick="requestOrderNumber()">테스트버튼</button>
+<div id="pre"></div>
+<div id="orderId"></div>
+<div id="orderNumber"></div>
+<div id="totalPrice"></div>
+<button onclick="requestPay()">결제하기</button>
+<div id="success"></div>
+<div id="orderId2"></div>
+<div id="orderNumber2"></div>
+<div id="totalPrice2"></div>
+</body>
+</html>
