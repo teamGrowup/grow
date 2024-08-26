@@ -1,4 +1,4 @@
-package org.boot.growup.common.enumerate;
+package org.boot.growup.common.constant;
 
 public enum OrderStatus {
     /* 결제 관련 */

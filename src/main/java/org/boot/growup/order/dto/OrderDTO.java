@@ -1,15 +1,14 @@
-package org.boot.growup.source.order.dto.request;
+package org.boot.growup.order.dto;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 import lombok.Data;
-import org.boot.growup.common.Regex;
-
-import java.util.List;
+import org.boot.growup.common.utils.Regex;
 
 @Data
 @Builder
-public class ProcessOrderRequestDTO {
+public class OrderDTO {
     private String message;
 
     @NotBlank(message = "상품 수령자 이름을 명시해야합니다.")
@@ -26,21 +25,4 @@ public class ProcessOrderRequestDTO {
     @NotBlank(message = "우편 번호를 명시해야합니다.")
     @Pattern(regexp = Regex.POST_CODE, message = "우편번호는 5자리 숫자여야 합니다")
     private String receiverPostCode;
-
-    @NotEmpty(message = "적어도 1개 이상의 상품을 골라야합니다.")
-    private List<OrderItemDTO> orderItemDTOs;
-
-    @Data
-    @Builder
-    public static class OrderItemDTO {
-        @NotNull(message = "구매할 상품의 수량을 입력해야합니다.")
-        @Min(value = 1, message = "최소 1개 이상의 상품을 선택해야합니다.")
-        private int count;
-
-        @NotNull(message = "구매할 상품ID을 입력해야합니다.")
-        private Long productId;
-
-        @NotNull(message = "구매할 상품옵션ID를 입력해야합니다.")
-        private Long productOptionId;
-    }
 }

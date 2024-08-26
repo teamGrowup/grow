@@ -1,24 +1,27 @@
 package org.boot.growup.product.service.Impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.boot.growup.auth.persist.entity.Seller;
 import org.boot.growup.common.model.BaseException;
 import org.boot.growup.common.constant.AuthorityStatus;
 import org.boot.growup.common.constant.ErrorCode;
 import org.boot.growup.auth.persist.entity.Customer;
+import org.boot.growup.order.dto.OrderItemDTO;
 import org.boot.growup.product.persist.entity.*;
-import org.boot.growup.product.persist.repository.BrandRepository;
-import org.boot.growup.product.persist.repository.ProductRepository;
-import org.boot.growup.product.persist.repository.SubCategoryRepository;
+import org.boot.growup.product.persist.repository.*;
 import org.boot.growup.product.service.ProductService;
 import org.boot.growup.product.dto.request.PostProductRequestDTO;
-import org.boot.growup.product.persist.repository.ProductLikeRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
+import static java.util.stream.Collectors.toUnmodifiableMap;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
@@ -26,6 +29,7 @@ public class ProductServiceImpl implements ProductService {
     private final SubCategoryRepository subCategoryRepository;
     private final BrandRepository brandRepository;
     private final ProductLikeRepository productLikeRepository;
+    private final ProductOptionRepository productOptionRepository;
 
     @Override
     public Product postProduct(PostProductRequestDTO postProductRequestDto, Seller seller) {
@@ -141,5 +145,16 @@ public class ProductServiceImpl implements ProductService {
 
         // 좋아요 정보 삭제
         productLikeRepository.delete(productLike);
+    }
+
+    @Override
+    public Map<ProductOption, Integer> getProductOptionCountMap(List<OrderItemDTO> orderItemDTOs) {
+        return orderItemDTOs.stream()
+                .collect(
+                    toUnmodifiableMap(
+                            m -> productOptionRepository.findById(m.getProductOptionId()).orElseThrow(() -> new BaseException(ErrorCode.PRODUCT_NOT_FOUND)),
+                            OrderItemDTO::getCount
+                )
+        );
     }
 }
