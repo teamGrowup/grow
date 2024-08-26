@@ -120,4 +120,14 @@ public interface CustomerService {
     이메일 인증여부 조회
      */
     GetIsValidEmailResponseDTO getIsValidEmail();
+
+    /*
+    이메일 알림 허가/거부
+     */
+    void patchAgreementSendEmail(PatchAgreementSendEmailRequestDTO request);
+
+    /*
+    문자 알림 허가/거부
+     */
+    void patchAgreementSendSms(PatchAgreementSendSmsRequestDTO request);
 }

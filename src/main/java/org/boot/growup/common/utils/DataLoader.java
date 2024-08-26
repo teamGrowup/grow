@@ -107,10 +107,30 @@ public class DataLoader {
                 .isAgreeSendEmail(false)
                 .isAgreeSendSms(false)
                 .build();
+        /* 네이버 회원 */
+        Customer customer4 = Customer.builder()
+                .email("jskim2x@naver.com")
+                .password(passwordEncoder.encode("!a123456789"))
+                .phoneNumber("010-8765-4321")
+                .birthday("19991212")
+                .gender(Gender.FEMALE)
+                .address("서울특별시 용산")
+                .postCode("12345")
+                .nickname("까마귀")
+                .name("홍장미")
+                .provider(Provider.NAVER)
+                .role(Role.CUSTOMER)
+                .profileUrl("awss3/이미지url2")
+                .isValidPhoneNumber(true)
+                .isValidEmail(false)
+                .isAgreeSendEmail(false)
+                .isAgreeSendSms(false)
+                .build();
 
         customerRepository.save(customer);
         customerRepository.save(customer2);
         customerRepository.save(customer3);
+        customerRepository.save(customer4);
     }
     public void brandInit(){
         Brand brand1 = Brand.builder()

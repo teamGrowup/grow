@@ -391,4 +391,17 @@ public class CustomerServiceImpl implements CustomerService {
                 .isValidEmail(customer.isValidEmail())
                 .build();
     }
+    @Transactional
+    @Override
+    public void patchAgreementSendEmail(PatchAgreementSendEmailRequestDTO request) {
+        Customer customer = getCurrentCustomer();
+        customer.updateIsAgreeSendEmail(request.isAgreementSendEmail());
+    }
+
+    @Transactional
+    @Override
+    public void patchAgreementSendSms(PatchAgreementSendSmsRequestDTO request) {
+        Customer customer = getCurrentCustomer();
+        customer.updateIsAgreeSendSms(request.isAgreementSendSms());
+    }
 }

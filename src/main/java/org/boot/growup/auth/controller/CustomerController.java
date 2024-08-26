@@ -265,35 +265,31 @@ public class CustomerController {
 
     /**
      * [PATCH]
-     * 이메일 알림 허가
+     * 이메일 알림 허가/거부
      * @header Customer's AccessToken
-     * @body PatchAgreeSendEmailRequestDTO
+     * @body PatchAgreementSendEmailRequestDTO
      * @response void
      */
+    @PatchMapping("/mypages/emails/agreements")
+    public void patchAgreementSendEmail(@RequestBody PatchAgreementSendEmailRequestDTO request) {
+        log.info("Request Body: {}", request); // 전체 요청 바디 확인
+        log.info("isAgreeSendEmail : {}", request.isAgreementSendEmail());
+        customerService.patchAgreementSendEmail(request);
+    }
+
 
     /**
      * [PATCH]
-     * 이메일 알림 거부
+     * 문자 알림 허가/거부
      * @header Customer's AccessToken
-     * @body PatchDisagreeSendEmailRequestDTO
+     * @body PatchAgreementSendSmsRequestDTO
      * @response void
      */
+    @PatchMapping("/mypages/sms/agreements")
+    public void patchAgreementSendSms(@RequestBody PatchAgreementSendSmsRequestDTO request) {
+        customerService.patchAgreementSendSms(request);
+    }
 
-    /**
-     * [PATCH]
-     * 문자 알림 허가
-     * @header Customer's AccessToken
-     * @body PatchAgreeSendSmsRequestDTO
-     * @response void
-     */
-
-    /**
-     * [PATCH]
-     * 문자 알림 거부
-     * @header Customer's AccessToken
-     * @body PatchDisagreeSendSmsRequestDTO
-     * @response void
-     */
 
     /**
      * [POST]
