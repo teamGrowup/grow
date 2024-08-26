@@ -17,6 +17,9 @@ import org.boot.growup.auth.model.dto.request.Oauth2AdditionalInfoRequestDTO;
 import org.boot.growup.common.entity.BaseEntity;
 import org.hibernate.envers.AuditOverride;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @Builder
@@ -73,6 +76,9 @@ public class Customer extends BaseEntity {
 
     @Column(nullable = false)
     private boolean isAgreeSendSms;
+
+    @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Address> addresses = new ArrayList<>();
 
     public UserModel toUserDetails() {
         return new UserModel(email, password, role);

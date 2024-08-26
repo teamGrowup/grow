@@ -36,6 +36,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.security.SecureRandom;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
@@ -413,5 +415,21 @@ public class CustomerServiceImpl implements CustomerService {
         Customer customer = getCurrentCustomer();
         Address address = Address.of(request, customer);
         addressRepository.save(address);
+    }
+
+    @Override
+    public List<GetAddressResponseDTO> getAddress() {
+        Customer customer = getCurrentCustomer();
+        List<Address> addresses = addressRepository.findAllByCustomer(customer);
+
+        return addresses.stream()
+                .map(address -> GetAddressResponseDTO.builder()
+                        .id(address.getId())
+                        .name(address.getName())
+                        .phoneNumber(address.getPhoneNumber())
+                        .address(address.getAddress())
+                        .postcode(address.getPostcode())
+                        .build())
+                .collect(Collectors.toList());
     }
 }

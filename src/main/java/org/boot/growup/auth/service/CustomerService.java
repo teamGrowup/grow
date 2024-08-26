@@ -2,6 +2,7 @@ package org.boot.growup.auth.service;
 
 import jakarta.mail.MessagingException;
 import org.boot.growup.auth.model.dto.request.*;
+import org.boot.growup.auth.model.dto.response.GetAddressResponseDTO;
 import org.boot.growup.auth.model.dto.response.GetCustomerInfoResponseDTO;
 import org.boot.growup.auth.model.dto.response.GetIsValidEmailResponseDTO;
 import org.boot.growup.common.constant.Provider;
@@ -12,6 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 public interface CustomerService {
     /*
@@ -135,4 +137,9 @@ public interface CustomerService {
     배송지 추가
      */
     void postAddress(PostAddressRequestDTO request);
+
+    /*
+    배송지 조회
+     */
+    List<GetAddressResponseDTO> getAddress();
 }

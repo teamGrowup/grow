@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -307,6 +308,11 @@ public class CustomerController {
      * @body null
      * @response GetAddressResponseDTO
      */
+    @GetMapping("/mypages/address")
+    public BaseResponse<List<GetAddressResponseDTO>> getAddress() {
+        List<GetAddressResponseDTO> response = customerService.getAddress();
+        return new BaseResponse<>(response);
+    }
 
     /**
      * [PATCH]
