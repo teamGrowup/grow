@@ -4,7 +4,9 @@ import org.boot.growup.common.constant.AuthorityStatus;
 import org.boot.growup.product.dto.request.PostBrandRequestDTO;
 import org.boot.growup.product.persist.entity.Brand;
 import org.boot.growup.auth.persist.entity.Seller;
+import org.boot.growup.product.persist.entity.BrandImage;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -39,4 +41,19 @@ public interface BrandService {
     BrnadId로 Brand 가져오기
      */
     Brand getBrandById(Long brandId);
+
+    /*
+    브랜드 이미지 저장
+     */
+    void postBrandImages(List<MultipartFile> brandImageFiles, Brand brand);
+
+    /*
+    브랜드 이미지 읽어오기
+     */
+    List<BrandImage> getBrandImages(Long id);
+
+    /*
+    브랜드 이미지 수정하기
+     */
+    void patchBrandImages(List<MultipartFile> brandImageFiles, Brand brand);
 }

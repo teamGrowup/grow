@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 import org.boot.growup.common.constant.Section;
 import org.boot.growup.product.persist.entity.ProductImage;
+import org.boot.growup.product.persist.entity.ProductOption;
 
 import java.util.List;
 
@@ -12,8 +13,8 @@ import java.util.List;
 public class GetSellerProductResponseDTO {
     private String name;
     private String description;
-    private double price;
     private List<ProductImageDTO> productImages;
+    private List<GetProductDetailResponseDTO.ProductOptionDTO> productOption;
 
     @Data
     @Builder
@@ -27,6 +28,22 @@ public class GetSellerProductResponseDTO {
                     .path(productImage.getPath())
                     .originalImageName(productImage.getOriginalImageName())
                     .section(productImage.getSection())
+                    .build();
+        }
+    }
+
+    @Data
+    @Builder
+    public static class ProductOptionDTO {
+        private String optionName;
+        private int optionStock;
+        private int optionPrice;
+
+        public static ProductOptionDTO from(ProductOption productOption) {
+            return ProductOptionDTO.builder()
+                    .optionName(productOption.getOptionName())
+                    .optionStock(productOption.getOptionStock())
+                    .optionPrice(productOption.getOptionPrice())
                     .build();
         }
     }

@@ -177,6 +177,7 @@ public class DataLoader {
                 .cpName("(주)슬로우스탠다드") // 상호명
                 .cpCode("178-86-01188") // 10자리의 사업자 등록번호
                 .cpAddress("경기도 의정부시 오목로225번길 94, 씨와이파크 (민락동)") // 사업장 소재지(회사주소)
+                .provider(Provider.EMAIL)
                 .role(Role.SELLER)
                 .netProceeds(1000)
                 .build();
@@ -190,6 +191,7 @@ public class DataLoader {
                 .cpName("디알에프티 주식회사") // 상호명
                 .cpCode("722-87-00697") // 10자리의 사업자 등록번호
                 .cpAddress("서울특별시 성동구 자동차시장1길 81, FCN빌딩 5층 (용답동)") // 사업장 소재지(회사주소)
+                .provider(Provider.EMAIL)
                 .role(Role.SELLER)
                 .netProceeds(1000)
                 .build();
@@ -509,6 +511,7 @@ public class DataLoader {
                 .email("root@growteam.com")
                 .password(passwordEncoder.encode("12345678!!"))
                 .balance(0)
+                .provider(Provider.EMAIL)
                 .role(Role.ADMIN)
                 .build();
         adminRepository.save(admin);

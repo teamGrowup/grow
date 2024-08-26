@@ -3,11 +3,14 @@ package org.boot.growup.product.service.Impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.boot.growup.auth.persist.entity.Seller;
+import org.boot.growup.common.constant.Section;
 import org.boot.growup.common.model.BaseException;
 import org.boot.growup.common.constant.AuthorityStatus;
 import org.boot.growup.common.constant.ErrorCode;
 import org.boot.growup.auth.persist.entity.Customer;
 import org.boot.growup.order.dto.OrderItemDTO;
+import org.boot.growup.common.utils.ImageStore;
+import org.boot.growup.common.utils.S3Service;
 import org.boot.growup.product.persist.entity.*;
 import org.boot.growup.product.persist.repository.*;
 import org.boot.growup.product.service.ProductService;
@@ -15,9 +18,12 @@ import org.boot.growup.product.dto.request.PostProductRequestDTO;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static java.util.stream.Collectors.toUnmodifiableMap;
 
@@ -30,6 +36,9 @@ public class ProductServiceImpl implements ProductService {
     private final BrandRepository brandRepository;
     private final ProductLikeRepository productLikeRepository;
     private final ProductOptionRepository productOptionRepository;
+    private final ProductImageRepository productImageRepository;
+    private final ImageStore imageStore;
+    private final S3Service s3Service;
 
     @Override
     public Product postProduct(PostProductRequestDTO postProductRequestDto, Seller seller) {
@@ -50,17 +59,31 @@ public class ProductServiceImpl implements ProductService {
         product.pending();
         product.initAverageRating();
         product.initLikeCount();
+        product.initDeliveryFee();
         product.designateSeller(seller); // 판매자 설정.
 
         productRepository.save(product);
         return product;
     }
+    @Override
+    public Optional<Product> getProductById(Long productId) {
+        return productRepository.findById(productId);
+    }
 
     @Override
-    public Product getProductBySellerId(Long sellerId) {
-        return productRepository.findBySeller_Id(sellerId).orElseThrow(
-                () -> new BaseException(ErrorCode.PRODUCT_BY_SELLER_NOT_FOUND)
-        );
+    public void deleteProductById(Long productId) {
+        productRepository.deleteById(productId);
+    }
+
+    @Override
+    public List<Product> getProductsBySellerId(Long sellerId) {
+        List<Product> products = productRepository.findBySeller_Id(sellerId);
+
+        // 리스트가 비어 있는 경우 예외 발생
+        if (products.isEmpty()) {
+            throw new BaseException(ErrorCode.PRODUCT_BY_SELLER_NOT_FOUND);
+        }
+        return products;
     }
 
     // ProductRequestDTO의 ProductOptionDTO를 ProductOption으로 변환하는 메서드
@@ -96,6 +119,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<ProductOption> getProductOptions(Long productId) {
+        return productOptionRepository.findByProductId(productId);
+    }
+
+    @Override
     public void changeProductAuthority(Long productId, AuthorityStatus status) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new BaseException(ErrorCode.PRODUCT_NOT_FOUND));
@@ -105,6 +133,7 @@ public class ProductServiceImpl implements ProductService {
             case PENDING -> product.pending();
             case APPROVED -> product.approve();
         }
+        productRepository.save(product);
     }
 
     @Override
@@ -148,6 +177,36 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<ProductImage> getProductImages(Long id) {
+        return productImageRepository.findProductImageByProduct_Id(id);
+    }
+
+    public ProductImage storeImage(MultipartFile multipartFile, Section section) {
+        if (multipartFile.isEmpty()) {
+            throw new IllegalStateException("이미지가 없습니다.");
+        }
+
+        String originalFilename = multipartFile.getOriginalFilename(); // 원래 이름
+        String storeFilename = imageStore.createStoreFileName(originalFilename); // 저장된 이름
+        String path;
+
+        try {
+            path = s3Service.uploadFileAndGetUrl(multipartFile, storeFilename); // S3에 업로드
+        } catch (IOException e) {
+            throw new RuntimeException("S3 업로드 중 오류 발생", e);
+        }
+
+        // 로그 출력
+        System.out.println("Section value: " + section);
+
+        return ProductImage.builder()
+                .originalImageName(originalFilename)
+                .path(path) // S3 경로 저장
+                .section(section) // 섹션 설정
+                .build();
+    }
+
+    @Override
     public Map<ProductOption, Integer> getProductOptionCountMap(List<OrderItemDTO> orderItemDTOs) {
         return orderItemDTOs.stream()
                 .collect(
@@ -156,5 +215,32 @@ public class ProductServiceImpl implements ProductService {
                             OrderItemDTO::getCount
                 )
         );
+    }
+
+    public void postProductImages(List<MultipartFile> productImages, Product product, Section section) {
+        for (MultipartFile multipartFile : productImages) {
+                ProductImage uploadImage = storeImage(multipartFile, section);
+                uploadImage.designateProduct(product);
+                product.getProductImages().add(uploadImage);
+                productImageRepository.save(uploadImage);
+        }
+    }
+
+    public void patchProductImages(List<MultipartFile> productImages, Product product, Section section) {
+        // 1. 현재 S3에 등록된 상품 이미지를 지움.
+        productImageRepository.findProductImageByProduct_Id(product.getId()).forEach(m -> s3Service.deleteFile(m.getPath()));
+
+        // 2. DB에 있는 상품 이미지 삭제.
+        productImageRepository.deleteProductImageByProduct_Id(product.getId());
+
+        // 3. 해당 상품에 이미지를 새로 등록함.
+        for (MultipartFile multipartFile : productImages) {
+            if (!multipartFile.isEmpty()) {
+                ProductImage uploadImage = storeImage(multipartFile, section); // 이미지 저장
+                uploadImage.designateProduct(product); // 상품 설정
+                product.getProductImages().add(uploadImage); // Product에 추가
+                productImageRepository.save(uploadImage); // 저장 시도
+            }
+        }
     }
 }

@@ -1,26 +1,36 @@
 package org.boot.growup.source.seller.service;
 
+import org.boot.growup.common.constant.Role;
 import org.boot.growup.common.model.BaseException;
 import org.boot.growup.common.constant.ErrorCode;
 import org.boot.growup.common.constant.AuthorityStatus;
+import org.boot.growup.common.utils.ImageStore;
 import org.boot.growup.product.dto.request.PostBrandRequestDTO;
 import org.boot.growup.product.persist.entity.Brand;
 import org.boot.growup.auth.persist.entity.Seller;
+import org.boot.growup.product.persist.entity.BrandImage;
+import org.boot.growup.product.persist.repository.BrandImageRepository;
 import org.boot.growup.product.persist.repository.BrandRepository;
 import org.boot.growup.auth.persist.repository.SellerRepository;
 import org.boot.growup.product.service.Impl.BrandServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
 
 @SpringBootTest
 @Transactional
@@ -37,6 +47,12 @@ class BrandServiceImplTest {
     @Autowired
     private SellerRepository sellerRepository;
 
+    @Mock
+    private BrandImageRepository brandImageRepository;
+
+    @Mock
+    private ImageStore imageStore;
+
     PostBrandRequestDTO postBrandRequestDTO1;
     PostBrandRequestDTO postBrandRequestDTO2;
     PostBrandRequestDTO postBrandRequestDTO3;
@@ -45,8 +61,14 @@ class BrandServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        sellerRepository.deleteAll();  // 기존 데이터 삭제
-        brandRepository.deleteAll();
+        File dir = new File("/Users/gnues/Documents/grow/Images/brandImages/");
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+
+        brandImageRepository.deleteAll(); // 자식 엔티티 먼저 삭제
+        brandRepository.deleteAll(); // 브랜드 삭제
+        sellerRepository.deleteAll(); // 판매자 삭제
 
         postBrandRequestDTO1 = PostBrandRequestDTO.builder()
                 .name("라퍼지스토어")
@@ -69,6 +91,7 @@ class BrandServiceImplTest {
                 .cpCode("178-86-01188") // 10자리의 사업자 등록번호
                 .cpAddress("경기도 의정부시 오목로225번길 94, 씨와이파크 (민락동)") // 사업장 소재지(회사주소)
                 .netProceeds(1000)
+                .role(Role.SELLER)
                 .build();
         seller2 = Seller.builder()
                 .cpEmail("drawfit@naver.com")
@@ -79,6 +102,7 @@ class BrandServiceImplTest {
                 .cpCode("722-87-00697") // 10자리의 사업자 등록번호
                 .cpAddress("서울특별시 성동구 자동차시장1길 81, FCN빌딩 5층 (용답동)") // 사업장 소재지(회사주소)
                 .netProceeds(1000)
+                .role(Role.SELLER)
                 .build();
     }
 
@@ -346,7 +370,7 @@ class BrandServiceImplTest {
         brandRepository.saveAll(brandList);
 
         //when
-        List<Brand> brandFoundList = brandServiceImpl.getBrandRequestsByStatus(null, 0);
+        List<Brand> brandFoundList = brandServiceImpl.getBrandRequestsByStatus(AuthorityStatus.PENDING, 0);
 
         //then
         assertEquals(10, brandFoundList.size());
@@ -370,5 +394,56 @@ class BrandServiceImplTest {
         //then
         assertNotNull(brandFound);
         assertEquals(brand1, brandFound);
+    }
+
+    @Test
+    public void postBrandImages_Default_Success() {
+        // given
+        Brand brand = new Brand();
+
+        // 두 개의 MockMultipartFile 객체 생성
+        MockMultipartFile file1 = new MockMultipartFile("file", "test1.jpg", "image/jpeg", "test image content 1".getBytes());
+        MockMultipartFile file2 = new MockMultipartFile("file", "test2.jpg", "image/jpeg", "test image content 2".getBytes());
+
+        // Mock된 메소드 동작 설정
+        when(imageStore.createStoreFileName("test1.jpg")).thenReturn("uud-test1.jpg");
+        when(imageStore.createStoreFileName("test2.jpg")).thenReturn("uud-test2.jpg");
+
+        // when
+        brandServiceImpl.postBrandImages(List.of(file1, file2), brand);
+
+        // then
+        verify(imageStore, times(1)).createStoreFileName("test1.jpg");
+        verify(imageStore, times(1)).createStoreFileName("test2.jpg");
+
+        verify(brandImageRepository, times(2)).save(any(BrandImage.class));
+    }
+
+    @Test
+    public void getBrandImages_Default_Success() {
+
+    }
+
+    @Test
+    public void patchBrandImages_Default_Success() {
+        // given
+        Brand brand = Brand.builder().id(1L).build();
+
+        // 두 개의 MockMultipartFile 객체 생성
+        MockMultipartFile file1 = new MockMultipartFile("file", "test1.jpg", "image/jpeg", "test image content 1".getBytes());
+        MockMultipartFile file2 = new MockMultipartFile("file", "test2.jpg", "image/jpeg", "test image content 2".getBytes());
+
+        // Mock된 메소드 동작 설정
+        when(imageStore.createStoreFileName("test1.jpg")).thenReturn("uud-test1.jpg");
+        when(imageStore.createStoreFileName("test2.jpg")).thenReturn("uud-test2.jpg");
+
+        // when
+        brandServiceImpl.patchBrandImages(List.of(file1, file2), brand);
+
+        // then
+        verify(imageStore, times(1)).createStoreFileName("test1.jpg");
+        verify(imageStore, times(1)).createStoreFileName("test2.jpg");
+
+        verify(brandImageRepository, times(2)).save(any(BrandImage.class));
     }
 }

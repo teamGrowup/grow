@@ -33,6 +33,10 @@ public enum ErrorCode {
     PHONE_WRONG_AUTH_CODE(HttpStatus.BAD_REQUEST, 400, false, "문자 인증번호가 틀립니다."),
     INVALID_PHONE_NUMBER(HttpStatus.FORBIDDEN, 403, false, "인증되지 않은 전화번호 입니다."),
 
+    /* Auth */
+    SUCCESS_REGISTER_USER(HttpStatus.CREATED, 201, true, "회원가입이 완료되었습니다."),
+    USER_ALREADY_REGISTERED(HttpStatus.CONFLICT, 409, false, "이미 가입된 이메일 계정이 있습니다."),
+
     /* Oauth2.0 */
     NOT_FOUND_GOOGLE_ACCESS_TOKEN_RESPONSE(HttpStatus.INTERNAL_SERVER_ERROR, 500, false, "구글 액세스 토큰 요청에 실패했습니다."),
     NOT_FOUND_KAKAO_ACCESS_TOKEN_RESPONSE(HttpStatus.INTERNAL_SERVER_ERROR,500,false,"카카오 액세스 토큰 요청에 실패했습니다."),
