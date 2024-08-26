@@ -52,6 +52,10 @@ public enum ErrorCode {
     INVALID_VALUE(HttpStatus.BAD_REQUEST, 400, false, "잘못된 입력값입니다."),
     USER_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, 500, false, "유저를 찾지 못했습니다."),
 
+    /* 마이페이지 */
+    IS_PRESENT_EMAIL(HttpStatus.BAD_REQUEST, 400, false, "이미 사용하고 계신 이메일 입니다."),
+    SAME_PASSWORD(HttpStatus.BAD_REQUEST, 400, false, "이미 사용 중인 비밀번호로 변경할 수 없습니다."),
+
     /* Product 관련 */
     PRDOUCT_NOT_APPROVED(HttpStatus.BAD_REQUEST, 404, false, "해당 상품은 승인되지 않았습니다."),
     PRODUCT_NOT_FOUND(HttpStatus.BAD_REQUEST,404, false, "상품을 찾을 수 없습니다."),
@@ -83,7 +87,13 @@ public enum ErrorCode {
     /* Order 관련 */
     ORDER_NOT_FOUND(HttpStatus.BAD_REQUEST, 404, false, "해당 주문을 찾을 수 없습니다."),
     PAY_NOT_SUCCESS(HttpStatus.BAD_REQUEST, 404, false, "해당 주문의 결제 사실을 확인할 수 없습니다."),
-    PAY_ALREADY_SUCCESS(HttpStatus.BAD_REQUEST, 404, false, "해당 주문의 결제는 성공했습니다.");
+    PAY_ALREADY_SUCCESS(HttpStatus.BAD_REQUEST, 404, false, "해당 주문의 결제는 성공했습니다."),
+
+    /* Growpay 관련 */
+    GROWPAY_NOT_FOUND(HttpStatus.BAD_REQUEST, 404, false, "해당 Growpay 계좌를 찾을 수 없습니다."),
+    INSUFFICIENT_GROWPAY_BALANCE(HttpStatus.BAD_REQUEST, 400, false, "Growpay 잔액이 부족합니다."),
+    GROWPAY_HISTORY_NOT_FOUND(HttpStatus.BAD_REQUEST, 404, false, "해당 Growpay 거래 기록을 찾을 수 없습니다."),
+    GROWPAY_ACCOUNT_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, 400, false, "해당 계좌는 이미 존재합니다.");
 
     private final HttpStatus httpStatus;
     private final int code;
