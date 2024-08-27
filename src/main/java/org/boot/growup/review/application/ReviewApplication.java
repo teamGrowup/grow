@@ -37,6 +37,7 @@ public class ReviewApplication {
     public Optional<GetReviewResponseDTO> getReviewById(Long reviewId) {
         return reviewService.getReviewById(reviewId); // 리뷰 조회
     }
+
     public List<GetReviewResponseDTO> getAllReviews(){
         return reviewService.getAllReviews();
     }
@@ -45,7 +46,7 @@ public class ReviewApplication {
         return reviewService.getReviewsByBrandId(brandId);
     }
 
-    public void patchReview(PostReviewRequestDTO requestDTO,List<MultipartFile> reviewImages, Long reviewId) {
+    public void patchReview(PostReviewRequestDTO requestDTO, List<MultipartFile> reviewImages, Long reviewId) {
         Customer customer = customerService.getCurrentCustomer(); // 현재 고객 정보 가져오기
         Review review = reviewService.patchReview(requestDTO, customer, reviewId); // 리뷰 수정
 
