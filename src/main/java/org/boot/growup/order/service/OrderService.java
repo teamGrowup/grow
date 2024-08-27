@@ -16,9 +16,9 @@ public interface OrderService {
     Order processNormalOrder(OrderDTO orderDTO, Map<ProductOption, Integer> productOptionCountMap, Customer customer);
 
     /*
-    주문번호 + 구매자 정보를 통해 Order를 찾고, OrderItem들을 PAYED 상태로 변경 및 수수료, 정산금을 계산함.
+    주문번호 + 구매자 정보를 통해 Order를 찾고, 실제 결제 금액과 일치하는지 확인 후, OrderItem들을 PAYED 상태로 변경 및 수수료, 정산금을 계산함.
      */
-    void completeOrder(String merchantUid, Customer customer);
+    void completeOrder(String merchantUid, Customer customer, int totalPrice);
 
     /*
     주문번호 + 구매자 정보를 통해 Order를 찾고, OrderItem들을 REJECTED 상태로 변경함.

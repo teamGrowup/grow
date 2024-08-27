@@ -7,6 +7,7 @@ import org.boot.growup.common.model.BaseResponse;
 import org.boot.growup.order.application.OrderApplication;
 import org.boot.growup.order.dto.request.ProcessNormalOrderRequestDTO;
 import org.boot.growup.order.dto.response.GetOrderResponseDTO;
+import org.boot.growup.order.dto.response.ProcessNormalOrderResponseDTO;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -24,7 +25,7 @@ public class CustomerOrderController {
      * @response merchantUid
      */
     @PostMapping("/payments/process")
-    public BaseResponse<String> processNormalOrder(@Valid @RequestBody ProcessNormalOrderRequestDTO form) {
+    public BaseResponse<ProcessNormalOrderResponseDTO> processNormalOrder(@Valid @RequestBody ProcessNormalOrderRequestDTO form) {
         form.getOrderItemDTOs().forEach(m -> log.info(String.valueOf(m.getProductOptionId())));
         return new BaseResponse<>(orderApplication.processNormalOrder(form));
     }
