@@ -14,4 +14,5 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Optional<Product> findByIdAndSeller_Id(Long productId, Long sellerId);
     List<Product> findBySeller_Id(Long sellerId); // 판매자 ID로 상품 목록 조회
     List<Product> findByAuthorityStatus(AuthorityStatus authorityStatus, Pageable pageable);
+    List<Product> findByBrandId(Long brandId); // 브랜드 ID로 상품 조회
 }
