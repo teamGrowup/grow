@@ -3,13 +3,17 @@ package org.boot.growup.order.application;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.boot.growup.auth.persist.entity.Customer;
+import org.boot.growup.auth.persist.entity.Seller;
 import org.boot.growup.auth.service.CustomerService;
+import org.boot.growup.auth.service.SellerService;
 import org.boot.growup.common.constant.ErrorCode;
 import org.boot.growup.common.model.BaseException;
-import org.boot.growup.order.controller.PortOneFeignClient;
+import org.boot.growup.order.client.PortOneFeignClient;
 import org.boot.growup.order.dto.OrderDTO;
 import org.boot.growup.order.dto.OrderItemDTO;
+import org.boot.growup.order.dto.request.PatchShipmentRequestDTO;
 import org.boot.growup.order.dto.request.ProcessNormalOrderRequestDTO;
+import org.boot.growup.order.dto.response.GetOrderResponseDTO;
 import org.boot.growup.order.persist.entity.Order;
 import org.boot.growup.order.service.OrderService;
 import org.boot.growup.product.persist.entity.ProductOption;
@@ -27,6 +31,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class OrderApplication {
     private final CustomerService customerService;
+    private final SellerService sellerService;
     private final ProductService productService;
     private final OrderService orderService;
     private final PortOneFeignClient portOneFeignClient;
@@ -79,5 +84,50 @@ public class OrderApplication {
 
         // rejected 상태로 변경
         orderService.rejectNormalOrder(merchantUid, customer);
+    }
+
+    public void patchPreShipped(Long orderItemId) {
+        Seller seller = sellerService.getCurrentSeller();
+
+        orderService.preshippedOrder(orderItemId, seller);
+    }
+
+
+    public void patchShipped(Long orderItemId) {
+        Seller seller = sellerService.getCurrentSeller();
+
+        orderService.shippedOrder(orderItemId, seller);
+    }
+
+    public void patchShipment(Long orderItemId, PatchShipmentRequestDTO patchShipmentRequestDTO) {
+        Seller seller = sellerService.getCurrentSeller();
+
+        orderService.shipmentOrder(orderItemId, seller, patchShipmentRequestDTO);
+    }
+
+    public void patchTransit(Long orderItemId) {
+        Seller seller = sellerService.getCurrentSeller();
+
+        orderService.transitOrder(orderItemId, seller);
+    }
+
+    public void patchArrived(Long orderItemId) {
+        Seller seller = sellerService.getCurrentSeller();
+
+        orderService.arrivedOrder(orderItemId, seller);
+    }
+
+    public void patchPurchaseConfirmed(String merchantUid, Long orderItemId) {
+        Customer customer = customerService.getCurrentCustomer();
+
+        orderService.confirmedPurchaseOrder(merchantUid, orderItemId, customer);
+    }
+
+    public GetOrderResponseDTO getOrder(String merchantUid) {
+        Customer customer = customerService.getCurrentCustomer();
+
+        Order order = orderService.getOrder(merchantUid, customer);
+
+        return GetOrderResponseDTO.from(order);
     }
 }
