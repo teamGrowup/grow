@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.boot.growup.common.model.BaseResponse;
 import org.boot.growup.order.application.OrderApplication;
 import org.boot.growup.order.dto.request.ProcessNormalOrderRequestDTO;
+import org.boot.growup.order.dto.response.GetOrderResponseDTO;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -50,4 +51,35 @@ public class CustomerOrderController {
         orderApplication.rejectNormalOrder(merchantUid);
     }
 
+    /**
+     * [PATCH]
+     * 구매자가 해당 orderItem을 구매 확정 상태로 변경함.
+     * @header CustomerAccesstoken
+     * @param merchantUid 주문 번호
+     * @param orderItemId 주문 항목ID
+     */
+    @PatchMapping("/purchase-confirmed/{merchantUid}/{orderItemId}")
+    public void patchPurchaseConfirmed(
+            @PathVariable String merchantUid,
+            @PathVariable Long orderItemId
+    ){
+        orderApplication.patchPurchaseConfirmed(merchantUid, orderItemId);
+    }
+
+    /**
+     * [GET]
+     * 구매자의 주문 내역 단일 조회
+     * @header CustomerAccesstoken
+     * @param merchantUid 주문 번호
+     */
+    @GetMapping("/{merchantUid}")
+    public BaseResponse<GetOrderResponseDTO> getOrder(@PathVariable String merchantUid){
+        return new BaseResponse<>(orderApplication.getOrder(merchantUid));
+    }
+
+    // 환불 요청
+
+    // 배송 조회
+
+    // 그로우페이 결제
 }
