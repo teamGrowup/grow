@@ -6,9 +6,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.boot.growup.auth.model.dto.request.PostAddressRequestDTO;
-import org.boot.growup.common.constant.Gender;
 import org.boot.growup.common.entity.BaseEntity;
 import org.hibernate.envers.AuditOverride;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -47,5 +48,16 @@ public class Address extends BaseEntity {
                 .postcode(request.getPostcode())
                 .customer(customer)
                 .build();
+    }
+
+    public void updateAddress(PostAddressRequestDTO request) {
+        this.address = request.getAddress();
+        this.postcode = request.getPostcode();
+        this.phoneNumber = request.getPhoneNumber();
+        this.name = request.getName();
+    }
+
+    public void deleteAddress() {
+        super.delete();
     }
 }

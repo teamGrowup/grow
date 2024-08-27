@@ -55,6 +55,7 @@ public enum ErrorCode {
     /* 마이페이지 */
     IS_PRESENT_EMAIL(HttpStatus.BAD_REQUEST, 400, false, "이미 사용하고 계신 이메일 입니다."),
     SAME_PASSWORD(HttpStatus.BAD_REQUEST, 400, false, "이미 사용 중인 비밀번호로 변경할 수 없습니다."),
+    ADDRESS_NOT_FOUND(HttpStatus.BAD_REQUEST, 400, false, "배송지를 찾을 수 없습니다."),
 
     /* Product 관련 */
     PRDOUCT_NOT_APPROVED(HttpStatus.BAD_REQUEST, 404, false, "해당 상품은 승인되지 않았습니다."),
