@@ -6,8 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.boot.growup.common.model.BaseResponse;
 import org.boot.growup.order.application.OrderApplication;
 import org.boot.growup.order.dto.request.ProcessNormalOrderRequestDTO;
+import org.boot.growup.order.dto.response.GetOrderHistoryResponseDTO;
 import org.boot.growup.order.dto.response.GetOrderResponseDTO;
 import org.boot.growup.order.dto.response.ProcessNormalOrderResponseDTO;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -78,9 +80,19 @@ public class CustomerOrderController {
         return new BaseResponse<>(orderApplication.getOrder(merchantUid));
     }
 
+    /**
+     * [GET]
+     * 구매자의 주문 내역 목록 조회
+     * @header CustomerAccesstoken
+     * @param pageNo 페이지번호
+     * @return Page<GetOrderHistoryResponseDTO>
+     */
+    @GetMapping("/history")
+    public BaseResponse<Page<GetOrderHistoryResponseDTO>> getOrderHistory(
+            @RequestParam(value = "pageNo", defaultValue = "0") int pageNo
+    ){
+        return new BaseResponse<>(orderApplication.getOrderHistory(pageNo));
+    }
     // 환불 요청
-
-    // 배송 조회
-
     // 그로우페이 결제
 }

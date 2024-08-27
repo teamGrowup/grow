@@ -3,7 +3,9 @@ package org.boot.growup.order.dto.response;
 import lombok.Builder;
 import lombok.Data;
 import org.boot.growup.common.constant.OrderStatus;
+import org.boot.growup.order.persist.entity.Delivery;
 import org.boot.growup.order.persist.entity.OrderItem;
+import org.springframework.util.ObjectUtils;
 
 @Data
 @Builder
@@ -15,16 +17,25 @@ public class GetOrderItemResponseDTO {
     private String productName;
     private String productOptionName;
     private int productOptionPrice;
+    private int carrierCode;
+    private String trackNumber;
 
-    public static GetOrderItemResponseDTO from(OrderItem orderItem) {
-        return GetOrderItemResponseDTO.builder()
-                .id(orderItem.getId())
-                .count(orderItem.getCount())
-                .orderStatus(orderItem.getOrderStatus())
-                .deliveryFee(orderItem.getDeliveryFee())
-                .productName(orderItem.getProductName())
-                .productOptionName(orderItem.getProductOptionName())
-                .productOptionPrice(orderItem.getProductOptionPrice())
-                .build();
+    public static GetOrderItemResponseDTO of(OrderItem orderItem, Delivery delivery) {
+        GetOrderItemResponseDTOBuilder builder = GetOrderItemResponseDTO.builder()
+                                                .id(orderItem.getId())
+                                                .count(orderItem.getCount())
+                                                .orderStatus(orderItem.getOrderStatus())
+                                                .deliveryFee(orderItem.getDeliveryFee())
+                                                .productName(orderItem.getProductName())
+                                                .productOptionName(orderItem.getProductOptionName())
+                                                .productOptionPrice(orderItem.getProductOptionPrice());
+
+        if (ObjectUtils.isEmpty(delivery)) {
+            return builder.build();
+        }
+
+        return builder.carrierCode(delivery.getCarrierCode())
+                        .trackNumber(delivery.getTrackingNumber())
+                        .build();
     }
 }

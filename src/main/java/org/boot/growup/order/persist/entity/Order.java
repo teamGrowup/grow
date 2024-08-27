@@ -8,8 +8,10 @@ import lombok.NoArgsConstructor;
 import org.boot.growup.auth.persist.entity.Customer;
 import org.boot.growup.common.constant.ErrorCode;
 import org.boot.growup.common.constant.PayMethod;
+import org.boot.growup.common.entity.BaseEntity;
 import org.boot.growup.common.model.BaseException;
 import org.boot.growup.order.dto.OrderDTO;
+import org.hibernate.envers.AuditOverride;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -20,7 +22,8 @@ import java.util.*;
 @Table(name = "orders")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Order {
+@AuditOverride(forClass = BaseEntity.class)
+public class Order extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_id", nullable = false)

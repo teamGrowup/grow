@@ -6,6 +6,7 @@ import org.boot.growup.order.dto.OrderDTO;
 import org.boot.growup.order.dto.request.PatchShipmentRequestDTO;
 import org.boot.growup.order.persist.entity.Order;
 import org.boot.growup.product.persist.entity.ProductOption;
+import org.springframework.data.domain.Page;
 
 import java.util.Map;
 
@@ -59,4 +60,9 @@ public interface OrderService {
     merchantUid와 customer 정보로 Order를 가져옴.
      */
     Order getOrder(String merchantUid, Customer customer);
+
+    /*
+    현재 customer의 order들을 페이징처리하여 가져옴.
+     */
+    Page<Order> getOrders(Customer customer, int pageNo);
 }
