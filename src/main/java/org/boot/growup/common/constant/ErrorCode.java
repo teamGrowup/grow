@@ -88,6 +88,7 @@ public enum ErrorCode {
     /* Order 관련 */
     ORDER_NOT_FOUND(HttpStatus.BAD_REQUEST, 404, false, "해당 주문을 찾을 수 없습니다."),
     ORDER_ITEM_NOT_FOUND(HttpStatus.BAD_REQUEST, 404, false, "해당 주문항목을 찾을 수 없습니다."),
+    PAY_PRICE_DIFFER_ORDER_PRICE(HttpStatus.CONFLICT, 409, false, "결제금액과 주문금액이 서로 다릅니다."),
     PAY_NOT_SUCCESS(HttpStatus.BAD_REQUEST, 404, false, "해당 주문의 결제 사실을 확인할 수 없습니다."),
     PAY_ALREADY_SUCCESS(HttpStatus.BAD_REQUEST, 404, false, "해당 주문의 결제는 성공했습니다."),
     ORDER_ITEM_NOT_PAID_STATUS(HttpStatus.BAD_REQUEST, 404, false, "해당 주문 항목은 PAID 상태가 아닙니다."),

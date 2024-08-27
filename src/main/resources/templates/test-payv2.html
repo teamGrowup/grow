@@ -13,8 +13,34 @@
         // https://developers.portone.io/docs/ko/authpay/guide?v=v2
         // 장바구니 상품 정보 보내기 및 주문번호 요청
 
-        var customerToken = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjdXN0b21lcjEyM0BuYXZlci5jb20iLCJhdXRoIjoiUk9MRV9DVVNUT01FUiIsImlhdCI6MTcyNDY2NTYwNCwiZXhwIjoxNzI0NjY5MjA0fQ.WKELJczp67a63Xxn8VIrao3nOVjPhPcye9rcA6tqjZw";
+        var customerToken = "";
         var merchantUid = ""; // 주문번호 입력
+        var resOrderName = "";
+        var resTotalAmount = 0;
+        var resCurrency = "";
+        var resPayMethod = "";
+        var resFullName = "";
+        var resPhoneNumber = "";
+        var resEmail = "";
+
+        function login(){
+            var settings = {
+                "url": "http://localhost:8081/customers/email/login",
+                "method": "POST",
+                "timeout": 0,
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                "data": JSON.stringify({
+                    "email": "customer123@naver.com",
+                    "password": "!a123456789"
+                }),
+            };
+            $.ajax(settings).done(function (response){
+                customerToken = response.data.grantType + " " + response.data.accessToken;
+                console.log(customerToken);
+            });
+        }
 
         function requestOrderNumber(){
             var settings = {
@@ -56,7 +82,20 @@
 
             $.ajax(settings).done(function (response) {
                 console.log(response);
-                merchantUid = response.data;
+                merchantUid = response.data.merchantUid;
+                resOrderName = response.data.orderName;
+                resTotalAmount = response.data.totalPrice;
+                resCurrency = response.data.currency;
+                resPayMethod = response.data.payMethod;
+                resFullName = response.data.fullName;
+                resPhoneNumber = response.data.phoneNumber;
+                resEmail = response.data.email;
+
+                $("#merchantUid").text(merchantUid);
+                $("#resOrderName").text(resOrderName);
+                $("#resTotalAmount").text(resTotalAmount + "원");
+
+                console.log(merchantUid);
             });
         }
 
@@ -67,19 +106,18 @@
                 storeId: "store-8c062e98-d009-4b6d-9344-8cd2349938a2",
                 // 채널 키 설정
                 channelKey: "channel-key-86882cda-8e2c-4ef8-895d-a6fa29a8876e",
-                paymentId: merchantUid,
-                orderName: "주문01",
-                totalAmount: 1000,
-                currency: "CURRENCY_KRW",
-                payMethod: "CARD",
+                paymentId: `${merchantUid}`,
+                orderName: `${resOrderName}`,
+                totalAmount: `${resTotalAmount}`,
+                currency: `${resCurrency}`,
+                payMethod: `${resPayMethod}`,
                 customer: {
-                    customerId: "1",
-                    fullName: "정태승",
-                    phoneNumber: "01084204241",
-                    email: "hi563@naver.com",
+                    fullName: `${resFullName}`,
+                    phoneNumber: `${resPhoneNumber}`,
+                    email: `${resEmail}`,
 
                 },
-                redirectUrl: "http://localhost:8081/login/testorder"
+                // redirectUrl: "http://localhost:8081/login/testorder"
             });
 
             if(response.code != null){
@@ -115,31 +153,24 @@
                 if (!response.ok) {
                     throw new Error("Network response was not ok");
                 }
-                return response.json(); // JSON 응답을 파싱
-            })
-                .then(data => {
-                    $("#success").text("결제성공! 위 정보가 WAITING 상태입니다.");
-                    alert("결제 성공했습니다!");
-                })
-                .catch(error => {
-                    console.error("There was a problem with the fetch operation:", error);
-                    alert("결제 실패했습니다. 다시 시도해주세요.");
-                });
+                $("#success").text("결제성공! 위 정보가 PAID 상태입니다.");
+                alert("결제 성공했습니다!");
+            }).catch(error => {
+                console.error("There was a problem with the fetch operation:", error);
+                alert("결제 실패했습니다. 다시 시도해주세요.");
+            });
         }
     </script>
     <meta charset="UTF-8"/>
     <title>Sample Payment</title>
 </head>
 <body>
-<button onclick="requestOrderNumber()">테스트버튼</button>
-<div id="pre"></div>
-<div id="orderId"></div>
-<div id="orderNumber"></div>
-<div id="totalPrice"></div>
+<button onclick="login()">구매자이메일로그인</button>
+<button onclick="requestOrderNumber()">주문번호생성</button>
+<div id="merchantUid"></div>
+<div id="resOrderName"></div>
+<div id="resTotalAmount"></div>
 <button onclick="requestPay()">결제하기</button>
 <div id="success"></div>
-<div id="orderId2"></div>
-<div id="orderNumber2"></div>
-<div id="totalPrice2"></div>
 </body>
 </html>

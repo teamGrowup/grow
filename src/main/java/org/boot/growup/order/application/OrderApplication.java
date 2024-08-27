@@ -11,9 +11,13 @@ import org.boot.growup.common.model.BaseException;
 import org.boot.growup.order.client.PortOneFeignClient;
 import org.boot.growup.order.dto.OrderDTO;
 import org.boot.growup.order.dto.OrderItemDTO;
+import org.boot.growup.order.dto.PortOnePaymentCancellationDTO;
+import org.boot.growup.order.dto.PortOnePaymentDTO;
 import org.boot.growup.order.dto.request.PatchShipmentRequestDTO;
+import org.boot.growup.order.dto.request.PortOnePaymentCancellationRequestDTO;
 import org.boot.growup.order.dto.request.ProcessNormalOrderRequestDTO;
 import org.boot.growup.order.dto.response.GetOrderResponseDTO;
+import org.boot.growup.order.dto.response.ProcessNormalOrderResponseDTO;
 import org.boot.growup.order.persist.entity.Order;
 import org.boot.growup.order.service.OrderService;
 import org.boot.growup.product.persist.entity.ProductOption;
@@ -43,7 +47,7 @@ public class OrderApplication {
     private String secretkey;
 
     @Transactional
-    public String processNormalOrder(ProcessNormalOrderRequestDTO processNormalOrderRequestDTO) {
+    public ProcessNormalOrderResponseDTO processNormalOrder(ProcessNormalOrderRequestDTO processNormalOrderRequestDTO) {
         // TODO : 0. 현재 요청자 계정 조회. & customer가 구매할 권리가 있는지 확인해야함.
         Customer customer = customerService.getCurrentCustomer();
 
@@ -56,30 +60,51 @@ public class OrderApplication {
         // 2. Order 객체 생성
         Order order = orderService.processNormalOrder(orderDTO, productOptionCountMap, customer);
 
-        return order.getMerchantUid();
+        return ProcessNormalOrderResponseDTO.of(order, customer);
     }
 
     public void completeNormalOrder(String merchantUid) {
         Customer customer = customerService.getCurrentCustomer();
 
-        if (!Objects.equals(portOneFeignClient.getPaymentByPaymentId(merchantUid, storeId, secretkey).getStatus(), "PAID")){
-            // rejected 상태로 변경
-            orderService.rejectNormalOrder(merchantUid, customer);
+        // 포트원에 해당 주문번호가 결제 성공했는지 및 실제 결제 금액과 일치하는지 확인해야함.
+        PortOnePaymentDTO paymentResult = portOneFeignClient.getPaymentByPaymentId(merchantUid, storeId, secretkey);
 
+        // 결제 성공 여부 확인
+        if (!Objects.equals(paymentResult.getStatus(), "PAID")){
             throw new BaseException(ErrorCode.PAY_NOT_SUCCESS);
         }
 
-        // payed 상태로 변경
-        orderService.completeOrder(merchantUid, customer);
+        // 실제 결제 금액 일치하는지 확인
+        try {
+            // payed 상태로 변경
+            orderService.completeOrder(merchantUid, customer, paymentResult.getAmount().getTotal());
+        }catch (BaseException e) {
+            if(e.getErrorCode().equals(ErrorCode.PAY_PRICE_DIFFER_ORDER_PRICE)){
+                // 결제 취소 API 호출
+                PortOnePaymentCancellationDTO res =
+                        portOneFeignClient.cancelPaymentByPaymentId(
+                                merchantUid,
+                                secretkey,
+                                PortOnePaymentCancellationRequestDTO.builder()
+                                        .storeId(storeId)
+                                        .reason("주문금액과 결제금액이 다름.")
+                                        .build()
+                        );
+
+                log.info("결제 취소 res -> {}", res.toString());
+            }
+            throw e;
+        }
     }
 
     public void rejectNormalOrder(String merchantUid) {
         Customer customer = customerService.getCurrentCustomer();
 
-        if (Objects.equals(portOneFeignClient.getPaymentByPaymentId(merchantUid, storeId, secretkey).getStatus(), "PAID")){
-            // payed 상태로 변경
-            orderService.completeOrder(merchantUid, customer);
-            throw new BaseException(ErrorCode.PAY_NOT_SUCCESS);
+        // 포트원에 해당 주문번호가 결제 성공했는지 및 실제 결제 금액과 일치하는지 확인해야함.
+        PortOnePaymentDTO paymentResult = portOneFeignClient.getPaymentByPaymentId(merchantUid, storeId, secretkey);
+
+        if (Objects.equals(paymentResult.getStatus(), "PAID")){
+            throw new BaseException(ErrorCode.PAY_ALREADY_SUCCESS);
         }
 
         // rejected 상태로 변경
