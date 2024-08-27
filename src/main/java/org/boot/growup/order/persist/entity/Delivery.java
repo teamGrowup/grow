@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.boot.growup.common.entity.BaseEntity;
+import org.boot.growup.order.dto.request.PatchShipmentRequestDTO;
 import org.hibernate.envers.AuditOverride;
 
 @Entity
@@ -27,7 +28,14 @@ public class Delivery extends BaseEntity{
     @Column(nullable = false)
     private int carrierCode;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_item_id")
+    @OneToOne(mappedBy = "delivery", fetch = FetchType.LAZY)
     private OrderItem orderItem;
+
+    public static Delivery of(PatchShipmentRequestDTO patchShipmentRequestDTO, OrderItem orderItem) {
+        return Delivery.builder()
+                .trackingNumber(patchShipmentRequestDTO.getTrackingNumber())
+                .carrierCode(patchShipmentRequestDTO.getCarrierCode())
+                .orderItem(orderItem)
+                .build();
+    }
 }
