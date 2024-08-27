@@ -594,7 +594,6 @@ public class DataLoader {
                 product5, product6, product7, product8
         ));
     }
-
     public void adminInit(){
         Admin admin = Admin.builder()
                 .email("root@growteam.com")

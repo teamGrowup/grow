@@ -104,7 +104,7 @@ public class OrderItem {
         this.orderStatus = OrderStatus.PRE_PAID;
     }
 
-    public void payed(){
+    public void payed() {
         if(this.orderStatus != OrderStatus.PRE_PAID){
             throw new BaseException(ErrorCode.PAY_ALREADY_SUCCESS);
         }
@@ -113,14 +113,14 @@ public class OrderItem {
         this.orderStatus = OrderStatus.PAID;
     }
 
-    public void rejected(){
+    public void rejected() {
         if(this.orderStatus != OrderStatus.PRE_PAID){
             throw new BaseException(ErrorCode.PAY_ALREADY_SUCCESS);
         }
         this.orderStatus = OrderStatus.REJECTED;
     }
 
-    public void preShipped(){
+    public void preShipped() {
         // PAID -> PRE-SHIPPED
         if(this.orderStatus == OrderStatus.PAID){
             this.orderStatus = OrderStatus.PRE_SHIPPED;
@@ -131,7 +131,7 @@ public class OrderItem {
 
     public void shipped() {
         // PRE_SHIPPED, PAID -> SHIPPED
-        if(this.orderStatus == OrderStatus.PAID || this.orderStatus == OrderStatus.PRE_SHIPPED){
+        if(this.orderStatus == OrderStatus.PAID || this.orderStatus == OrderStatus.PRE_SHIPPED) {
             this.orderStatus = OrderStatus.SHIPPED;
             this.shipped_at = LocalDateTime.now();
             return;
@@ -141,7 +141,7 @@ public class OrderItem {
 
     public void shipment(Delivery delivery) {
         // SHIPPED -> PENDING_SHIPMENT
-        if(this.orderStatus == OrderStatus.SHIPPED){
+        if(this.orderStatus == OrderStatus.SHIPPED) {
             this.orderStatus = OrderStatus.PENDING_SHIPMENT;
             this.delivery = delivery;
             return;
@@ -151,7 +151,7 @@ public class OrderItem {
 
     public void transit() {
         // PENDING_SHIPMENT -> IN_TRANSIT
-        if(this.orderStatus == OrderStatus.PENDING_SHIPMENT){
+        if(this.orderStatus == OrderStatus.PENDING_SHIPMENT) {
             this.orderStatus = OrderStatus.IN_TRANSIT;
             return;
         }
@@ -160,20 +160,20 @@ public class OrderItem {
 
     public void arrived() {
         // IN_TRANSIT -> ARRIVED
-        if(this.orderStatus == OrderStatus.IN_TRANSIT){
+        if(this.orderStatus == OrderStatus.IN_TRANSIT) {
             this.orderStatus = OrderStatus.ARRIVED;
             return;
         }
         throw new BaseException(ErrorCode.ORDER_ITEM_NOT_IN_TRANSIT_STATUS);
     }
 
-    private int calculateOrderItemPrice(){
+    private int calculateOrderItemPrice() {
         return (this.deliveryFee + (this.productOptionPrice * this.count));
     }
 
     public void confirmedPurchase() {
         // ARRIVED -> PURCHASE_CONFIRM
-        if(this.orderStatus == OrderStatus.ARRIVED){
+        if(this.orderStatus == OrderStatus.ARRIVED) {
             this.orderStatus = OrderStatus.PURCHASE_CONFIRM;
             this.purchase_confirmed_at = LocalDateTime.now();
             this.seller.increaseNetProceeds(this.netProceed);
