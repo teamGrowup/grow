@@ -77,7 +77,7 @@ public class Seller extends BaseEntity {
 
     /* 총 누적 정산금 증액 */
     public void increaseNetProceeds(int netProceed) {
-        this.netProceeds+=netProceed;
+        this.netProceeds += netProceed;
     }
 
 }

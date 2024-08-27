@@ -84,7 +84,6 @@ public class DataLoader {
         paidOrderItem1.ordered(order1);
         paidOrderItem1.payed();
 
-
         OrderItem preshippedOrderItem1 = OrderItem.builder()
                 .deliveryFee(p2.getDeliveryFee()) // 1000원
                 .productOptionPrice(p2_po1.getOptionPrice()) // 50원

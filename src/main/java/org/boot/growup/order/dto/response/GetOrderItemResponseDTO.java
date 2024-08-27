@@ -16,7 +16,6 @@ public class GetOrderItemResponseDTO {
     private String productOptionName;
     private int productOptionPrice;
 
-
     public static GetOrderItemResponseDTO from(OrderItem orderItem) {
         return GetOrderItemResponseDTO.builder()
                 .id(orderItem.getId())

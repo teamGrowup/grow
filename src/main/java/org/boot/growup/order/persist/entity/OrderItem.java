@@ -171,7 +171,6 @@ public class OrderItem {
         return (this.deliveryFee + (this.productOptionPrice * this.count));
     }
 
-
     public void confirmedPurchase() {
         // ARRIVED -> PURCHASE_CONFIRM
         if(this.orderStatus == OrderStatus.ARRIVED){
