@@ -4,19 +4,16 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.boot.growup.auth.persist.repository.SellerRepository;
 import org.boot.growup.auth.persist.entity.Seller;
-import org.boot.growup.common.constant.AuthorityStatus;
-import org.boot.growup.common.constant.Gender;
-import org.boot.growup.common.constant.Provider;
-import org.boot.growup.common.constant.Role;
+import org.boot.growup.common.constant.*;
 import org.boot.growup.auth.persist.entity.Admin;
 import org.boot.growup.auth.persist.repository.AdminRepository;
 import org.boot.growup.auth.persist.entity.Customer;
 import org.boot.growup.auth.persist.repository.CustomerRepository;
+import org.boot.growup.order.persist.entity.Order;
+import org.boot.growup.order.persist.entity.OrderItem;
+import org.boot.growup.order.persist.repository.OrderRepository;
 import org.boot.growup.product.persist.entity.*;
-import org.boot.growup.product.persist.repository.BrandRepository;
-import org.boot.growup.product.persist.repository.MainCategoryRepository;
-import org.boot.growup.product.persist.repository.ProductRepository;
-import org.boot.growup.product.persist.repository.SubCategoryRepository;
+import org.boot.growup.product.persist.repository.*;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,6 +32,8 @@ public class DataLoader {
     private final PasswordEncoder passwordEncoder;
     private final CustomerRepository customerRepository;
     private final AdminRepository adminRepository;
+    private final ProductOptionRepository productOptionRepository;
+    private final OrderRepository orderRepository;
 
     @EventListener(ApplicationReadyEvent.class)
     @Transactional
@@ -44,7 +43,65 @@ public class DataLoader {
         brandInit();
         categoryInit();
         productInit();
+        orderInit();
         adminInit();
+    }
+
+    private void orderInit() {
+        Customer customer1 = customerRepository.findById(1L).get();
+        Seller seller1 = sellerRepository.findById(1L).get();
+        Seller seller2 = sellerRepository.findById(2L).get();
+
+        Product p1 = productRepository.findById(1L).get();
+        ProductOption p1_po1 = productOptionRepository.findById(1L).get();
+
+        Product p2 = productRepository.findById(2L).get();
+        ProductOption p2_po1 = productOptionRepository.findById(3L).get();
+
+        Order order1 = Order.builder()
+                .customer(customer1)
+                .payMethod(PayMethod.CARD)
+                .receiverPostCode("12345")
+                .receiverAddress("서울시 용산")
+                .receiverName("정태승")
+                .receiverPhone("010-1234-5678")
+                .merchantUid("20240909123456")
+                .message("문앞에둬주세요.")
+                .build();
+
+        OrderItem paidOrderItem1 = OrderItem.builder()
+                .deliveryFee(p1.getDeliveryFee()) // 1000원
+                .productOptionPrice(p1_po1.getOptionPrice()) // 100원
+                .orderStatus(OrderStatus.PRE_PAID)
+                .productOption(p1_po1)
+                .productName(p1.getName()) // 맨투맨 A
+                .product(p1)
+                .count(1)
+                .productOptionName(p1_po1.getOptionName()) // 블랙 / XL
+                .seller(seller1)
+                .build();
+
+        paidOrderItem1.ordered(order1);
+        paidOrderItem1.payed();
+
+        OrderItem preshippedOrderItem1 = OrderItem.builder()
+                .deliveryFee(p2.getDeliveryFee()) // 1000원
+                .productOptionPrice(p2_po1.getOptionPrice()) // 50원
+                .productOption(p2_po1)
+                .orderStatus(OrderStatus.PRE_PAID)
+                .product(p2)
+                .count(1)
+                .productName(p2.getName()) // 반팔 티셔츠 B
+                .productOptionName(p2_po1.getOptionName()) // 화이트 / M
+                .order(order1)
+                .seller(seller2)
+                .build();
+
+        preshippedOrderItem1.ordered(order1);
+        preshippedOrderItem1.payed();
+        preshippedOrderItem1.preShipped();
+
+        orderRepository.save(order1);
     }
 
     public void customerInit(){
@@ -212,7 +269,7 @@ public class DataLoader {
                 .cpCode("178-86-01188") // 10자리의 사업자 등록번호
                 .cpAddress("경기도 의정부시 오목로225번길 94, 씨와이파크 (민락동)") // 사업장 소재지(회사주소)
                 .role(Role.SELLER)
-                .netProceeds(1000)
+                .netProceeds(0)
                 .build();
         sellerRepository.save(seller);
 
@@ -225,7 +282,7 @@ public class DataLoader {
                 .cpCode("722-87-00697") // 10자리의 사업자 등록번호
                 .cpAddress("서울특별시 성동구 자동차시장1길 81, FCN빌딩 5층 (용답동)") // 사업장 소재지(회사주소)
                 .role(Role.SELLER)
-                .netProceeds(1000)
+                .netProceeds(0)
                 .build();
 
         sellerRepository.save(seller2);
@@ -537,7 +594,6 @@ public class DataLoader {
                 product5, product6, product7, product8
         ));
     }
-
     public void adminInit(){
         Admin admin = Admin.builder()
                 .email("root@growteam.com")

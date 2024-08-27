@@ -2,8 +2,8 @@ package org.boot.growup.common.constant;
 
 public enum OrderStatus {
     /* 결제 관련 */
-    PRE_PAYED, // 주문 번호 생성된 상태
-    PAYED, // Order 객체 생성 및 결제 완료된 상태
+    PRE_PAID, // 주문 번호 생성된 상태
+    PAID, // Order 객체 생성 및 결제 완료된 상태
     REJECTED, // PG사 결제 거부 상태 (결제 실패)
     CANCELED, // 결제 도중 구매자가 결제 중단 혹은 해당 주문을 취소한 상태
 

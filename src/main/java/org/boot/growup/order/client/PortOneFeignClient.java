@@ -1,4 +1,4 @@
-package org.boot.growup.order.controller;
+package org.boot.growup.order.client;
 
 import org.boot.growup.order.dto.PortOnePaymentDTO;
 import org.springframework.cloud.openfeign.FeignClient;

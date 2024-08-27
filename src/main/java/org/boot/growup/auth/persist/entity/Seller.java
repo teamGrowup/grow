@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.boot.growup.auth.model.UserModel;
-import org.boot.growup.common.constant.Provider;
 import org.boot.growup.common.constant.Role;
 import org.boot.growup.auth.model.dto.request.SellerSignUpRequestDTO;
 import org.boot.growup.common.entity.BaseEntity;
@@ -71,8 +70,14 @@ public class Seller extends BaseEntity {
                 .cpCode(request.getCpCode())
                 .cpName(request.getCpName())
                 .cpAddress(request.getCpAddress())
+                .netProceeds(0)
                 .role(Role.SELLER)
                 .build();
+    }
+
+    /* 총 누적 정산금 증액 */
+    public void increaseNetProceeds(int netProceed) {
+        this.netProceeds += netProceed;
     }
 
 }
