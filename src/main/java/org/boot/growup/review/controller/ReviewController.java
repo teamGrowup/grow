@@ -19,7 +19,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @RequestMapping("/customers/reviews")
 public class ReviewController {
-
     private final ReviewApplication reviewApplication;
 
     /**
@@ -50,6 +49,7 @@ public class ReviewController {
         Optional<GetReviewResponseDTO> review = reviewApplication.getReviewById(reviewId);
         return new BaseResponse<>(review);
     }
+
     /**
      * [GET]
      * 모든 리뷰 조회

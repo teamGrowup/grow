@@ -3,6 +3,8 @@ package org.boot.growup.review.application;
 import lombok.RequiredArgsConstructor;
 import org.boot.growup.auth.persist.entity.Customer;
 import org.boot.growup.auth.service.CustomerService;
+import org.boot.growup.common.constant.ErrorCode;
+import org.boot.growup.common.model.BaseException;
 import org.boot.growup.review.dto.request.PostReviewRequestDTO;
 import org.boot.growup.review.dto.response.GetBrandReviewResponseDTO;
 import org.boot.growup.review.dto.response.GetReviewResponseDTO;
@@ -17,7 +19,6 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class ReviewApplication {
-
     private final ReviewService reviewService;
     private final CustomerService customerService; // 고객 서비스
 
@@ -51,7 +52,8 @@ public class ReviewApplication {
         if (reviewImages != null && !reviewImages.isEmpty()) {
             reviewService.patchReviewImages(reviewImages, review);
         } else {
-            System.out.println("업데이트할 리뷰 이미지가 없습니다. 기존 이미지를 유지합니다.");
+            // 이미지가 없는 경우
+            throw new BaseException(ErrorCode.NO_IMAGES_TO_UPDATE);
         }
     }
 
