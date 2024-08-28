@@ -318,16 +318,25 @@ public class CustomerController {
      * [PATCH]
      * 배송지 수정
      * @header Customer's AccessToken
-     * @body PatchAddressRequestDTO
-     * @path addressIdx
+     * @body PostAddressRequestDTO
+     * @path addressId
      * @response void
      */
+    @PatchMapping("/mypages/address/{addressId}")
+    public void patchAddress(@PathVariable Long addressId, @RequestBody PostAddressRequestDTO request) {
+        customerService.patchAddress(addressId, request);
+    }
 
     /**
-     * [DELETE]
-     * 배송지 삭제
+     * [Patch]
+     * 배송지 삭제 - Soft Delete
      * @header Customer's AccessToken
-     * @body DeleteAddressRequestDTO
+     * @body null
+     * @path addressId
      * @response void
      */
+    @PatchMapping("/mypages/address/{addressId}/delete")
+    public void deleteAddress(@PathVariable Long addressId) {
+        customerService.deleteAddress(addressId);
+    }
 }

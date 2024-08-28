@@ -11,6 +11,7 @@ import org.boot.growup.auth.model.dto.response.*;
 import org.boot.growup.auth.persist.entity.Address;
 import org.boot.growup.auth.persist.repository.AddressRepository;
 import org.boot.growup.auth.service.CustomerService;
+import org.boot.growup.common.constant.Status;
 import org.boot.growup.common.model.EmailMessageDTO;
 import org.boot.growup.common.constant.Role;
 import org.boot.growup.common.model.BaseException;
@@ -420,7 +421,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public List<GetAddressResponseDTO> getAddress() {
         Customer customer = getCurrentCustomer();
-        List<Address> addresses = addressRepository.findAllByCustomer(customer);
+        List<Address> addresses = addressRepository.findAllByCustomer(customer, Status.ACTIVE);
 
         return addresses.stream()
                 .map(address -> GetAddressResponseDTO.builder()
@@ -431,5 +432,23 @@ public class CustomerServiceImpl implements CustomerService {
                         .postcode(address.getPostcode())
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    @Override
+    public void patchAddress(Long addressId, PostAddressRequestDTO request) {
+        Customer customer = getCurrentCustomer();
+        Address address = addressRepository.findByCustomerAndId(customer, addressId).orElseThrow(
+                    () -> new BaseException(ErrorCode.ADDRESS_NOT_FOUND));
+        address.updateAddress(request);
+    }
+
+    @Transactional
+    @Override
+    public void deleteAddress(Long addressId) {
+        Customer customer = getCurrentCustomer();
+        Address address = addressRepository.findByCustomerAndId(customer, addressId).orElseThrow(
+                    () -> new BaseException(ErrorCode.ADDRESS_NOT_FOUND));
+        address.deleteAddress();
     }
 }

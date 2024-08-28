@@ -142,4 +142,14 @@ public interface CustomerService {
     배송지 조회
      */
     List<GetAddressResponseDTO> getAddress();
+
+    /*
+    배송지 수정
+     */
+    void patchAddress(Long addressId, PostAddressRequestDTO request);
+
+    /*
+    배송지 삭제 - Soft Delete
+     */
+    void deleteAddress(Long addressId);
 }
