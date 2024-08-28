@@ -103,7 +103,6 @@ public enum ErrorCode {
 
     /* Review 관련 */
     REVIEW_NOT_FOUND(HttpStatus.BAD_REQUEST, 404, false, "리뷰를 찾을 수 없습니다."),
-    ORDER_ITEM_NOT_FOUND(HttpStatus.BAD_REQUEST, 404, false, "주문 항목을 찾을 수 없습니다."),
     ALREADY_LIKED_REVIEW(HttpStatus.BAD_REQUEST, 404, false, "이미 이 리뷰에 좋아요를 눌렀습니다."),
     NO_PERMISSION_TO_MODIFY_REVIEW(HttpStatus.BAD_REQUEST, 403, false, "이 리뷰를 수정할 권한이 없습니다."),
     NO_IMAGES_TO_UPDATE(HttpStatus.BAD_REQUEST, 404, false, "업데이트할 이미지가 없습니다.");
