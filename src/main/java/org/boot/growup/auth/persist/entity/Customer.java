@@ -78,6 +78,7 @@ public class Customer extends BaseEntity {
     private boolean isAgreeSendSms;
 
     @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Builder.Default
     private List<Address> addresses = new ArrayList<>();
 
     public UserModel toUserDetails() {
