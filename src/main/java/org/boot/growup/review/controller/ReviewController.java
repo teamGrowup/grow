@@ -17,18 +17,18 @@ import java.util.Optional;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/customers/reviews")
+@RequestMapping
 public class ReviewController {
     private final ReviewApplication reviewApplication;
 
     /**
      * [POST]
      * 리뷰 등록 요청
-     * @header null
+     * @header Customer's AccessToken
      * @body PostReviewRequestDTO, MultipartFile[]
      * @response Review
      */
-    @PostMapping
+    @PostMapping("/customers/reviews")
     public BaseResponse<String> postReviewWithImages(
             @RequestPart(value = "form") PostReviewRequestDTO requestDTO,
             @RequestPart(value = "images", required = false) List<MultipartFile> reviewImages
@@ -40,11 +40,11 @@ public class ReviewController {
     /**
      * [GET]
      * 특정 리뷰 조회
-     * @header null
+     * @header Customer's AccessToken
      * @param reviewId 리뷰 ID
      * @response Optional<Review>
      */
-    @GetMapping("/{reviewId}")
+    @GetMapping("/customers/reviews/{reviewId}")
     public BaseResponse<Optional<GetReviewResponseDTO>> getReviewById(@PathVariable Long reviewId) {
         Optional<GetReviewResponseDTO> review = reviewApplication.getReviewById(reviewId);
         return new BaseResponse<>(review);
@@ -53,9 +53,10 @@ public class ReviewController {
     /**
      * [GET]
      * 모든 리뷰 조회
+     * @header Admin's AccessToken
      * @response BaseResponse<List<ReviewResponseDTO>>
      */
-    @GetMapping
+    @GetMapping("/admins/reviews")
     public BaseResponse<List<GetReviewResponseDTO>> getAllReviews() {
         List<GetReviewResponseDTO> reviews = reviewApplication.getAllReviews();
         return new BaseResponse<>(reviews);
@@ -64,10 +65,11 @@ public class ReviewController {
     /**
      * [GET]
      * 특정 브랜드의 모든 리뷰 조회
+     * @header Customer's AccessToken
      * @param brandId 브랜드 ID
      * @response BaseResponse<BrandReviewsResponseDTO>
      */
-    @GetMapping("/brands/{brandId}")
+    @GetMapping("/customers/reviews/brands/{brandId}")
     public BaseResponse<GetBrandReviewResponseDTO> getReviewsByBrandId(@PathVariable Long brandId) {
         GetBrandReviewResponseDTO response = reviewApplication.getReviewsByBrandId(brandId);
         return new BaseResponse<>(response);
@@ -75,13 +77,13 @@ public class ReviewController {
 
     /**
      * [PATCH]
-     * 리뷰 수정 요청
-     * @header null
+     * 구매자의 리뷰 수정
+     * @header Customer's AccessToken
      * @param reviewId 리뷰 ID
      * @body PostReviewRequestDTO
      * @response String
      */
-    @PatchMapping("/{reviewId}")
+    @PatchMapping("/customers/reviews/{reviewId}")
     public BaseResponse<String> patchReview(
             @PathVariable Long reviewId,
             @RequestPart(value = "images", required = false) List<MultipartFile> reviewImages,
@@ -93,13 +95,26 @@ public class ReviewController {
 
     /**
      * [DELETE]
-     * 리뷰 삭제 요청
-     * @header null
+     * 구매자의 리뷰 삭제
+     * @header Customer's AccessToken
      * @param reviewId 리뷰 ID
      * @response String
      */
-    @DeleteMapping("/{reviewId}")
+    @DeleteMapping("/customers/reviews/{reviewId}")
     public BaseResponse<String> deleteReview(@PathVariable Long reviewId) {
+        reviewApplication.deleteReview(reviewId);
+        return new BaseResponse<>("리뷰 삭제가 완료되었습니다.");
+    }
+
+    /**
+     * [DELETE]
+     * 관리자의 리뷰 삭제
+     * @header Admin's AccessToken
+     * @param reviewId 리뷰 ID
+     * @response String
+     */
+    @DeleteMapping("/admins/reviews/{reviewId}")
+    public BaseResponse<String> adminDeleteReview(@PathVariable Long reviewId) {
         reviewApplication.deleteReview(reviewId);
         return new BaseResponse<>("리뷰 삭제가 완료되었습니다.");
     }
@@ -107,11 +122,11 @@ public class ReviewController {
     /**
      * [POST]
      * 리뷰에 좋아요 추가 요청
-     * @header null
+     * @header Customer's AccessToken
      * @param reviewId 리뷰 ID
      * @response String
      */
-    @PostMapping("/{reviewId}/like")
+    @PostMapping("/customers/reviews/{reviewId}/like")
     public BaseResponse<String> postReviewLike(@PathVariable Long reviewId) {
         reviewApplication.postReviewLike(reviewId);
         return new BaseResponse<>("리뷰에 좋아요가 추가되었습니다.");
@@ -120,11 +135,11 @@ public class ReviewController {
     /**
      * [DELETE]
      * 리뷰 좋아요 삭제 요청
-     * @header null
+     * @header Customer's AccessToken
      * @param reviewId 리뷰 ID
      * @response String
      */
-    @DeleteMapping("/{reviewId}/like")
+    @DeleteMapping("/customers/reviews/{reviewId}/like")
     public BaseResponse<String> deleteReviewLike(@PathVariable Long reviewId) {
         reviewApplication.deleteReviewLike(reviewId);
         return new BaseResponse<>("리뷰 좋아요가 삭제되었습니다.");
