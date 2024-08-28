@@ -1,11 +1,10 @@
 package org.boot.growup.order.client;
 
+import org.boot.growup.order.dto.PortOnePaymentCancellationDTO;
 import org.boot.growup.order.dto.PortOnePaymentDTO;
+import org.boot.growup.order.dto.request.PortOnePaymentCancellationRequestDTO;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @FeignClient(name = "portOneFeignClient", url = "https://api.portone.io")
 public interface PortOneFeignClient {
@@ -17,5 +16,15 @@ public interface PortOneFeignClient {
             @PathVariable("paymentId") String paymentId,
             @RequestParam("storeId") String storeId,
             @RequestHeader("Authorization") String authorizationHeader
+    );
+
+    /*
+    PortOne에 결제 취소를 요청함.
+     */
+    @PostMapping(value = "/payments/{paymentId}/cancel")
+    PortOnePaymentCancellationDTO cancelPaymentByPaymentId(
+            @PathVariable("paymentId") String paymentId,
+            @RequestHeader("Authorization") String authorizationHeader,
+            @RequestBody PortOnePaymentCancellationRequestDTO dto
     );
 }

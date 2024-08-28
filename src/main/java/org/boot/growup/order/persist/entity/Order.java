@@ -6,8 +6,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.boot.growup.auth.persist.entity.Customer;
+import org.boot.growup.common.constant.ErrorCode;
 import org.boot.growup.common.constant.PayMethod;
+import org.boot.growup.common.entity.BaseEntity;
+import org.boot.growup.common.model.BaseException;
 import org.boot.growup.order.dto.OrderDTO;
+import org.hibernate.envers.AuditOverride;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -18,11 +22,15 @@ import java.util.*;
 @Table(name = "orders")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Order {
+@AuditOverride(forClass = BaseEntity.class)
+public class Order extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_id", nullable = false)
     private Long id;
+
+    @Column(nullable = false, length = 25)
+    private String name;
 
     @Column(nullable = false, length = 18)
     private String merchantUid;
@@ -86,4 +94,14 @@ public class Order {
         this.totalPrice += orderItemPrice;
     }
 
+    public void designateName() {
+        if (orderItems.isEmpty()) {
+            throw new BaseException(ErrorCode.ORDER_ITEM_NOT_FOUND);
+        }
+
+        int itemCount = orderItems.size();
+        String firstProductName = orderItems.get(0).getProductName();
+
+        this.name = String.format("%s 외 %d건", firstProductName, itemCount);
+    }
 }

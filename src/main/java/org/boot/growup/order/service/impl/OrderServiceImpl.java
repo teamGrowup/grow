@@ -16,6 +16,9 @@ import org.boot.growup.order.persist.repository.OrderItemRepository;
 import org.boot.growup.order.persist.repository.OrderRepository;
 import org.boot.growup.order.service.OrderService;
 import org.boot.growup.product.persist.entity.ProductOption;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -42,15 +45,20 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void completeOrder(String merchantUid, Customer customer) {
+    public void completeOrder(String merchantUid, Customer customer, int totalPrice) {
         // 1. 주문번호 + 현재 사용자 정보 토대로 Order 객체 조회.
         Order order = orderRepository.findByMerchantUidAndCustomer(merchantUid, customer)
                 .orElseThrow(() -> new BaseException(ErrorCode.ORDER_NOT_FOUND));
 
-        // 2. 해당 Order 객체 내 OrderItem들을 모두 Payed 상태로 변경 및 OrderItem당 수수료 및 판매정산금 계산
+        // 2. 포트원에서 가져온 실제 결제 금액과, Order 객체의 결제 금액을 비교함.
+        if(order.getTotalPrice() != totalPrice){
+            throw new BaseException(ErrorCode.PAY_PRICE_DIFFER_ORDER_PRICE);
+        }
+
+        // 3. 해당 Order 객체 내 OrderItem들을 모두 Payed 상태로 변경 및 OrderItem당 수수료 및 판매정산금 계산
         order.getOrderItems().forEach(OrderItem::payed);
 
-        // 3. Order 객체 저장
+        // 4. Order 객체 저장
         orderRepository.save(order);
     }
 
@@ -160,6 +168,13 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new BaseException(ErrorCode.ORDER_NOT_FOUND));
     }
 
+    @Override
+    public Page<Order> getOrders(Customer customer, int pageNo) {
+        Pageable pageable = PageRequest.of(pageNo, 10);
+
+        return orderRepository.findByCustomer(customer, pageable);
+    }
+
     private void place(Map<ProductOption, Integer> productOptionCountMap, Order order) {
         // 1. 주문상품의 허가상태 확인 및 주문상품옵션 재고 확인
         validate(productOptionCountMap);
@@ -179,6 +194,7 @@ public class OrderServiceImpl implements OrderService {
             option.decreaseStock(count); // productoption n개 만큼 재고량 감소시킴.
             orderItem.ordered(order); // 총주문금액 계산 ('개별상품 배송비 + 개별 상품옵션 가격*수량'들의 총합) 및 order 객체에 연결
         });
+        order.designateName(); // 주문명 생성
         order.designateMerchantUid(); // 주문번호 생성
     }
 

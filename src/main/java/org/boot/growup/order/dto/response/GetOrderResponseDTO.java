@@ -29,7 +29,7 @@ public class GetOrderResponseDTO {
                 .receiverPhone(order.getReceiverPhone())
                 .receiverPostCode(order.getReceiverPostCode())
                 .orderItems(order.getOrderItems().stream()
-                        .map(GetOrderItemResponseDTO::from)
+                        .map(oi -> GetOrderItemResponseDTO.of(oi, oi.getDelivery()))
                         .toList()
                 )
                 .build();

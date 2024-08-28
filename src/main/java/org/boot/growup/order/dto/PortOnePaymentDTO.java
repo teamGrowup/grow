@@ -21,6 +21,7 @@ public class PortOnePaymentDTO {
     private PaymentCancellation[] Cancellations;
     private String cancelledAt; // 결제 취소 시점
 
+    @Data
     public static class PayAmount{
         private int total; // 총 결제금액
         private int taxFree; // 면세액
@@ -30,6 +31,7 @@ public class PortOnePaymentDTO {
         private int cancelledTaxFree; // 취소금액 중 면세액
     }
 
+    @Data
     public static class PaymentCancellation{
         private String status; // 결제 취소 상태
         private String id;

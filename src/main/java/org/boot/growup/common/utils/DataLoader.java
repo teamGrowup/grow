@@ -101,6 +101,8 @@ public class DataLoader {
         preshippedOrderItem1.payed();
         preshippedOrderItem1.preShipped();
 
+        order1.designateName();
+
         orderRepository.save(order1);
     }
 

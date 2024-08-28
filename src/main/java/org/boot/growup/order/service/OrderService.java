@@ -6,6 +6,7 @@ import org.boot.growup.order.dto.OrderDTO;
 import org.boot.growup.order.dto.request.PatchShipmentRequestDTO;
 import org.boot.growup.order.persist.entity.Order;
 import org.boot.growup.product.persist.entity.ProductOption;
+import org.springframework.data.domain.Page;
 
 import java.util.Map;
 
@@ -16,9 +17,9 @@ public interface OrderService {
     Order processNormalOrder(OrderDTO orderDTO, Map<ProductOption, Integer> productOptionCountMap, Customer customer);
 
     /*
-    주문번호 + 구매자 정보를 통해 Order를 찾고, OrderItem들을 PAYED 상태로 변경 및 수수료, 정산금을 계산함.
+    주문번호 + 구매자 정보를 통해 Order를 찾고, 실제 결제 금액과 일치하는지 확인 후, OrderItem들을 PAYED 상태로 변경 및 수수료, 정산금을 계산함.
      */
-    void completeOrder(String merchantUid, Customer customer);
+    void completeOrder(String merchantUid, Customer customer, int totalPrice);
 
     /*
     주문번호 + 구매자 정보를 통해 Order를 찾고, OrderItem들을 REJECTED 상태로 변경함.
@@ -59,4 +60,9 @@ public interface OrderService {
     merchantUid와 customer 정보로 Order를 가져옴.
      */
     Order getOrder(String merchantUid, Customer customer);
+
+    /*
+    현재 customer의 order들을 페이징처리하여 가져옴.
+     */
+    Page<Order> getOrders(Customer customer, int pageNo);
 }
