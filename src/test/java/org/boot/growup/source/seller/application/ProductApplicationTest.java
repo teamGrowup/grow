@@ -20,8 +20,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Arrays;
@@ -32,6 +34,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
+@SpringBootTest
+@ActiveProfiles("test")
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class ProductApplicationTest {
     @InjectMocks
     private ProductApplication productApplication;
@@ -61,8 +66,6 @@ class ProductApplicationTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
-
         // MainCategoryDTO 초기화
         mainCategoryDTO = new MainCategoryDTO(1L, "상의");
 
@@ -173,14 +176,17 @@ class ProductApplicationTest {
     @Test
     void getProductDetail_Success() {
         // Given
-        given(productRepository.findById(product.getId())).willReturn(Optional.of(product));
+        Long productId = product.getId(); // Mock에서 사용할 상품 ID
+        // Mock 설정
+        given(productService.getProductById(productId)).willReturn(Optional.of(product)); // Ensure the service returns the product
 
         // When
-        GetProductDetailResponseDTO response = productApplication.getProductDetail(product.getId());
+        GetProductDetailResponseDTO response = productApplication.getProductDetail(productId);
 
         // Then
         assertNotNull(response);
         assertEquals("진짜 반팔", response.getName());
+        assertEquals("순도 100%의 반팔입니다. 긴팔도 아니고 나시도 아니고 진짜 반팔이에요.", response.getDescription());
     }
 
     @Test
@@ -212,12 +218,16 @@ class ProductApplicationTest {
 
     @Test
     void deleteProduct_Success() {
-        // when
-        productApplication.deleteProduct(product.getId());
+        // Given
+        Long productId = product.getId(); // 삭제할 상품 ID
 
-        // then
-        verify(productRepository).deleteById(product.getId());
+        // When
+        productApplication.deleteProduct(productId); // deleteProduct 메서드 호출
+
+        // Then
+        verify(productService).deleteProductById(productId); // productService의 deleteProductById가 호출되었는지 검증
     }
+
 
     @Test
     void approveProduct_Success() {

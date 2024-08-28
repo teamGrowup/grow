@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.boot.growup.common.constant.AuthorityStatus;
 import org.boot.growup.common.constant.ErrorCode;
+import org.boot.growup.common.entity.BaseEntity;
 import org.boot.growup.common.model.BaseException;
+import org.hibernate.envers.AuditOverride;
 
 @Entity
 @Getter
@@ -16,7 +18,8 @@ import org.boot.growup.common.model.BaseException;
 @Table(name = "product_option")
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductOption {
+@AuditOverride(forClass = BaseEntity.class)
+public class ProductOption extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "product_option_id", nullable = false)
