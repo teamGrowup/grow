@@ -5,7 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import jakarta.persistence.*;
+import org.boot.growup.common.entity.BaseEntity;
+import org.hibernate.envers.AuditOverride;
 
 @Entity
 @Getter
@@ -13,7 +14,8 @@ import jakarta.persistence.*;
 @Table(name = "main_category")
 @NoArgsConstructor
 @AllArgsConstructor
-public class MainCategory {
+@AuditOverride(forClass = BaseEntity.class)
+public class MainCategory extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "main_category_id", nullable = false)

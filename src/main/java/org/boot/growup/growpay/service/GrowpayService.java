@@ -31,4 +31,9 @@ public interface GrowpayService {
     Growpay ID로 잔액 조회
      */
     int getBalance(Long growpayId);
+
+    /*
+    그로우페이 삭제
+     */
+    void deleteGrowpay(Long growpayId);
 }

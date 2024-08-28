@@ -25,10 +25,11 @@ public class ProductController {
     private final ProductApplication productApplication;
 
     /**
+     * [POST]
      * 현재 판매자의 제품 등록 요청
-     * @param productImages
-     * @param postProductRequestDto
-     * @return BaseResponse<String>
+     * @header Seller's AccessToken
+     * @body PostProductRequestDTO, MultipartFile[]
+     * @response String
      */
     @PostMapping("/sellers/products")
     public BaseResponse<String> postProduct(
@@ -40,14 +41,16 @@ public class ProductController {
     }
 
     /**
+     * [GET]
      * 상품ID를 통해 상품의 상세 정보를 확인합니다.
+     * @header Seller's AccessToken
      * @param productId 상품 ID
-     * @return BaseResponse<ProductDetailResponseDTO>
+     * @response GetProductDetailResponseDTO
      */
     @Operation(summary = "상품 상세 정보 확인", description = "상품ID를 통해 상품의 상세 정보를 확인합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "상품 조회에 성공했을 때"),
-            @ApiResponse(responseCode = "404", description = "해당 cafeteriaId를 가진 식당이 존재하지 않을 때", content = @Content(schema = @Schema(defaultValue = "해당 cafeteriaId를 가진 식당이 존재하지 않습니다.")))
+            @ApiResponse(responseCode = "404", description = "해당 productId를 가진 상품이 존재하지 않을 때", content = @Content(schema = @Schema(defaultValue = "해당 productId를 가진 상품이 존재하지 않습니다.")))
     })
     @GetMapping("/sellers/products/{productId}")
     public BaseResponse<GetProductDetailResponseDTO> getProductDetail(@PathVariable Long productId) {
@@ -56,8 +59,10 @@ public class ProductController {
     }
 
     /**
+     * [GET]
      * 현재 판매자의 상품 정보 조회
-     * @return GetSellerProductsResponseDTO
+     * @header Seller's AccessToken
+     * @response GetSellerProductsResponseDTO
      */
     @GetMapping("/sellers/products")
     public BaseResponse<GetSellerProductsResponseDTO> getSellerProducts(){
@@ -65,11 +70,13 @@ public class ProductController {
     }
 
     /**
+     * [PATCH]
      * 현재 판매자의 제품 정보를 수정 요청
+     * @header Seller's AccessToken
      * @param productId 상품 ID
      * @param productImages 수정할 이미지 파일 리스트
      * @param postProductRequestDto 수정할 제품 정보 DTO
-     * @return BaseResponse<String>
+     * @response String
      */
     @PatchMapping("/sellers/products/{productId}")
     public BaseResponse<String> patchProduct(
@@ -77,14 +84,16 @@ public class ProductController {
             @RequestPart(value = "images", required = false) List<MultipartFile> productImages,
             @RequestPart(value = "form") PostProductRequestDTO postProductRequestDto
     ) {
-        productApplication.patchProduct(postProductRequestDto, productImages, productId );
+        productApplication.patchProduct(postProductRequestDto, productImages, productId);
         return new BaseResponse<>("수정 성공");
     }
 
     /**
+     * [DELETE]
      * 상품 삭제 요청
+     * @header Seller's AccessToken
      * @param productId 상품 ID
-     * @return BaseResponse<String>
+     * @response String
      */
     @DeleteMapping("/sellers/products/{productId}")
     public BaseResponse<String> deleteProduct(@PathVariable Long productId) {
@@ -93,9 +102,11 @@ public class ProductController {
     }
 
     /**
+     * [POST]
      * 상품 좋아요
+     * @header Customer's AccessToken
      * @param productId 상품 ID
-     * @return BaseResponse
+     * @response String
      */
     @PostMapping("/customers/products/{productId}/like")
     public BaseResponse<String> postLikeProduct(@PathVariable Long productId) {
@@ -104,9 +115,11 @@ public class ProductController {
     }
 
     /**
+     * [DELETE]
      * 상품 좋아요 취소
+     * @header Customer's AccessToken
      * @param productId 상품 ID
-     * @return BaseResponse
+     * @response String
      */
     @DeleteMapping("/customers/products/{productId}/like")
     public BaseResponse<String> deleteLikeProduct(@PathVariable Long productId) {
@@ -115,9 +128,11 @@ public class ProductController {
     }
 
     /**
+     * [PATCH]
      * 관리자가 등록된 상품들의 승인 상태 '거부'로 변경.
-     * @param productId
-     * @return
+     * @header Admin's AccessToken
+     * @param productId 상품 ID
+     * @response String
      */
     @PatchMapping("/admins/product-requests/{productId}/deny")
     public BaseResponse<String> denyProductRegister(@PathVariable Long productId) {
@@ -126,9 +141,11 @@ public class ProductController {
     }
 
     /**
+     * [PATCH]
      * 관리자가 등록된 상품들의 승인 상태 '승인'으로 변경.
-     * @param productId
-     * @return
+     * @header Admin's AccessToken
+     * @param productId 상품 ID
+     * @response String
      */
     @PatchMapping("/admins/product-requests/{productId}/approve")
     public BaseResponse<String> approveProductRegister(@PathVariable Long productId) {
@@ -137,9 +154,11 @@ public class ProductController {
     }
 
     /**
+     * [PATCH]
      * 관리자가 등록된 상품들의 승인 상태 '대기'로 변경.
-     * @param productId
-     * @return
+     * @header Admin's AccessToken
+     * @param productId 상품 ID
+     * @response String
      */
     @PatchMapping("/admins/product-requests/{productId}/pending")
     public BaseResponse<String> pendingProductRegister(@PathVariable Long productId) {
@@ -148,10 +167,12 @@ public class ProductController {
     }
 
     /**
+     * [GET]
      * 관리자가 등록된 상품들의 요청들을 상태별(AuthorityStatus) 페이징 조회할 수 있음.
-     * @param authorityStatus
-     * @param pageNo
-     * @return
+     * @header Admin's AccessToken
+     * @param authorityStatus 요청 상태
+     * @param pageNo 페이지 번호
+     * @response List<GetProductRequestByStatusResponseDTO>
      */
     @GetMapping("/admins/product-requests")
     public BaseResponse<List<GetProductRequestByStatusResponseDTO>> getProductRequestsByStatus(
@@ -159,5 +180,47 @@ public class ProductController {
             @RequestParam(value = "pageNo", defaultValue = "0") int pageNo
     ) {
         return new BaseResponse<>(productApplication.getProductRequestsByStatus(authorityStatus, pageNo));
+    }
+
+    /**
+     * [GET]
+     * 승인된 상품 요청 조회
+     * @header Admin's AccessToken
+     * @param pageNo 페이지 번호
+     * @response List<GetProductRequestByStatusResponseDTO>
+     */
+    @GetMapping("/admins/product-requests/approved")
+    public BaseResponse<List<GetProductRequestByStatusResponseDTO>> getApprovedProductRequests(
+            @RequestParam(value = "pageNo", defaultValue = "0") int pageNo
+    ) {
+        return new BaseResponse<>(productApplication.getProductRequestsByStatus(AuthorityStatus.APPROVED, pageNo));
+    }
+
+    /**
+     * [GET]
+     * 대기 중인 상품 요청 조회
+     * @header Admin's AccessToken
+     * @param pageNo 페이지 번호
+     * @response List<GetProductRequestByStatusResponseDTO>
+     */
+    @GetMapping("/admins/product-requests/pending")
+    public BaseResponse<List<GetProductRequestByStatusResponseDTO>> getPendingProductRequests(
+            @RequestParam(value = "pageNo", defaultValue = "0") int pageNo
+    ) {
+        return new BaseResponse<>(productApplication.getProductRequestsByStatus(AuthorityStatus.PENDING, pageNo));
+    }
+
+    /**
+     * [GET]
+     * 거부된 상품 요청 조회
+     * @header Admin's AccessToken
+     * @param pageNo 페이지 번호
+     * @response List<GetProductRequestByStatusResponseDTO>
+     */
+    @GetMapping("/admins/product-requests/denied")
+    public BaseResponse<List<GetProductRequestByStatusResponseDTO>> getDeniedProductRequests(
+            @RequestParam(value = "pageNo", defaultValue = "0") int pageNo
+    ) {
+        return new BaseResponse<>(productApplication.getProductRequestsByStatus(AuthorityStatus.DENIED, pageNo));
     }
 }

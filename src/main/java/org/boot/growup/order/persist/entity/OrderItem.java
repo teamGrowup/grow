@@ -10,9 +10,11 @@ import org.boot.growup.auth.persist.entity.Seller;
 import org.boot.growup.common.constant.Commission;
 import org.boot.growup.common.constant.ErrorCode;
 import org.boot.growup.common.constant.OrderStatus;
+import org.boot.growup.common.entity.BaseEntity;
 import org.boot.growup.common.model.BaseException;
 import org.boot.growup.product.persist.entity.Product;
 import org.boot.growup.product.persist.entity.ProductOption;
+import org.hibernate.envers.AuditOverride;
 
 import java.time.LocalDateTime;
 
@@ -23,7 +25,8 @@ import java.time.LocalDateTime;
 @Table(name = "order_item")
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderItem {
+@AuditOverride(forClass = BaseEntity.class)
+public class OrderItem extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_item_id", nullable = false)

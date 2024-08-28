@@ -16,6 +16,9 @@ import org.boot.growup.order.persist.repository.OrderItemRepository;
 import org.boot.growup.order.persist.repository.OrderRepository;
 import org.boot.growup.order.service.OrderService;
 import org.boot.growup.product.persist.entity.ProductOption;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -163,6 +166,13 @@ public class OrderServiceImpl implements OrderService {
     public Order getOrder(String merchantUid, Customer customer) {
         return orderRepository.findByMerchantUidAndCustomer(merchantUid, customer)
                 .orElseThrow(() -> new BaseException(ErrorCode.ORDER_NOT_FOUND));
+    }
+
+    @Override
+    public Page<Order> getOrders(Customer customer, int pageNo) {
+        Pageable pageable = PageRequest.of(pageNo, 10);
+
+        return orderRepository.findByCustomer(customer, pageable);
     }
 
     private void place(Map<ProductOption, Integer> productOptionCountMap, Order order) {

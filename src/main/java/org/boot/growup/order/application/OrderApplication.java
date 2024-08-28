@@ -16,6 +16,7 @@ import org.boot.growup.order.dto.PortOnePaymentDTO;
 import org.boot.growup.order.dto.request.PatchShipmentRequestDTO;
 import org.boot.growup.order.dto.request.PortOnePaymentCancellationRequestDTO;
 import org.boot.growup.order.dto.request.ProcessNormalOrderRequestDTO;
+import org.boot.growup.order.dto.response.GetOrderHistoryResponseDTO;
 import org.boot.growup.order.dto.response.GetOrderResponseDTO;
 import org.boot.growup.order.dto.response.ProcessNormalOrderResponseDTO;
 import org.boot.growup.order.persist.entity.Order;
@@ -23,6 +24,7 @@ import org.boot.growup.order.service.OrderService;
 import org.boot.growup.product.persist.entity.ProductOption;
 import org.boot.growup.product.service.ProductService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -154,5 +156,13 @@ public class OrderApplication {
         Order order = orderService.getOrder(merchantUid, customer);
 
         return GetOrderResponseDTO.from(order);
+    }
+
+    public Page<GetOrderHistoryResponseDTO> getOrderHistory(int pageNo) {
+        Customer customer = customerService.getCurrentCustomer();
+
+        Page<Order> orders = orderService.getOrders(customer, pageNo);
+
+        return GetOrderHistoryResponseDTO.pageFrom(orders);
     }
 }
