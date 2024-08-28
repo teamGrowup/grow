@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import org.boot.growup.common.constant.Section;
+import org.boot.growup.common.entity.BaseEntity;
+import org.hibernate.envers.AuditOverride;
 
 @Entity
 @Getter
@@ -14,7 +16,8 @@ import org.boot.growup.common.constant.Section;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "product_image")
-public class ProductImage {
+@AuditOverride(forClass = BaseEntity.class)
+public class ProductImage extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "product_image_id", nullable = false)
@@ -38,5 +41,4 @@ public class ProductImage {
     public void designateProduct(Product product) {
         this.product = product;
     }
-
 }

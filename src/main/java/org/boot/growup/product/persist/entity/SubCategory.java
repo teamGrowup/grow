@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.boot.growup.common.entity.BaseEntity;
+import org.hibernate.envers.AuditOverride;
 
 @Entity
 @Getter
@@ -12,7 +14,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "sub_category")
 @NoArgsConstructor
 @AllArgsConstructor
-public class SubCategory {
+@AuditOverride(forClass = BaseEntity.class)
+public class SubCategory extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "sub_category_id", nullable = false) // 추가된 어노테이션
@@ -27,5 +30,4 @@ public class SubCategory {
     // 메인 카테고리의 getter 메서드
 
     public MainCategory getMainCategory() { return mainCategory; }
-
 }

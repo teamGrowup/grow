@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.boot.growup.auth.persist.entity.Seller;
 import org.boot.growup.common.constant.AuthorityStatus;
+import org.boot.growup.common.entity.BaseEntity;
 import org.boot.growup.product.dto.request.PostProductRequestDTO;
+import org.hibernate.envers.AuditOverride;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +17,8 @@ import java.util.List;
 @Table(name = "product")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Product {
+@AuditOverride(forClass = BaseEntity.class)
+public class Product extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "product_id", nullable = false)
@@ -141,7 +144,5 @@ public class Product {
     public void patchBrand(Brand brand) {
         this.brand = brand;
     }
-
-
 }
 

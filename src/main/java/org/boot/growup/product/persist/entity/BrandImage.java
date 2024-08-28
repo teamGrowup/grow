@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.boot.growup.common.entity.BaseEntity;
+import org.hibernate.envers.AuditOverride;
 
 @Entity
 @Getter
@@ -12,7 +14,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "brand_image")
 @NoArgsConstructor
 @AllArgsConstructor
-public class BrandImage {
+@AuditOverride(forClass = BaseEntity.class)
+public class BrandImage extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "brand_image_id", nullable = false)
