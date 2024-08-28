@@ -100,9 +100,19 @@ public class GrowpayServiceImpl implements GrowpayService {
                 .toList();
     }
 
+    @Override
     public int getBalance(Long growpayId) {
         Growpay growpay = growpayRepository.findById(growpayId)
                 .orElseThrow(() -> new BaseException(ErrorCode.GROWPAY_NOT_FOUND));
         return growpay.getGrowpayBalance();
     }
+
+    @Override
+    public void deleteGrowpay(Long growpayId) {
+        Growpay growpay = growpayRepository.findById(growpayId)
+                .orElseThrow(() -> new BaseException(ErrorCode.GROWPAY_NOT_FOUND));
+
+        growpayRepository.delete(growpay);
+    }
+
 }

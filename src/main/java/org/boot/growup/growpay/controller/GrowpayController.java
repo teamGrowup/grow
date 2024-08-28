@@ -83,4 +83,17 @@ public class GrowpayController {
         int balance = growpayService.getBalance(growpayId);
         return new BaseResponse<>(balance);
     }
+
+    /**
+     * [DELETE]
+     * 특정 Growpay 계좌 삭제
+     * @header null
+     * @param growpayId 삭제할 Growpay ID
+     * @response String
+     */
+    @DeleteMapping("/{growpayId}")
+    public BaseResponse<String> deleteGrowpay(@PathVariable Long growpayId) {
+        growpayService.deleteGrowpay(growpayId);
+        return new BaseResponse<>("그로우페이가 삭제되었습니다.");
+    }
 }

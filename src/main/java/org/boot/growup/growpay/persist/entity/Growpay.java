@@ -9,6 +9,9 @@ import org.hibernate.envers.AuditOverride;
 import org.boot.growup.auth.persist.entity.Customer;
 import org.boot.growup.common.entity.BaseEntity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @Builder
@@ -34,6 +37,10 @@ public class Growpay extends BaseEntity{
 
     @Column(name = "growpay_balance", nullable = false)
     private int growpayBalance; // 잔액
+
+    @OneToMany(mappedBy = "growpay", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<GrowpayHistory> histories = new ArrayList<>();
 
     public void depositBalance(int amount) { // 입금
         this.growpayBalance += amount;
