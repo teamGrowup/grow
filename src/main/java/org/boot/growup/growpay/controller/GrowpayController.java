@@ -22,7 +22,7 @@ public class GrowpayController {
     /**
      * [POST]
      * Growpay 계좌 생성
-     * @header null
+     * @header Customer's AccessToken
      * @body GrowpayRequestDTO
      * @response Growpay
      */
@@ -35,7 +35,7 @@ public class GrowpayController {
     /**
      * [POST]
      * Growpay 계좌에 입금
-     * @header null
+     * @header Customer's AccessToken
      * @body GrowpayRequestDTO
      * @response String
      */
@@ -48,7 +48,7 @@ public class GrowpayController {
     /**
      * [POST]
      * Growpay 계좌에서 출금
-     * @header null
+     * @header Customer's AccessToken
      * @body GrowpayRequestDTO
      * @response String
      */
@@ -61,7 +61,7 @@ public class GrowpayController {
     /**
      * [GET]
      * 특정 Growpay 계좌의 입출금 내역 조회
-     * @header null
+     * @header Customer's AccessToken
      * @param growpayId 연결된 Growpay ID
      * @response List<GrowpayHistoryResponseDTO>
      */
@@ -74,7 +74,7 @@ public class GrowpayController {
     /**
      * [GET]
      * 특정 Growpay 계좌의 잔액 조회
-     * @header null
+     * @header Customer's AccessToken
      * @param growpayId 연결된 Growpay ID
      * @response Integer
      */
@@ -87,7 +87,7 @@ public class GrowpayController {
     /**
      * [DELETE]
      * 특정 Growpay 계좌 삭제
-     * @header null
+     * @header Customer's AccessToken
      * @param growpayId 삭제할 Growpay ID
      * @response String
      */
