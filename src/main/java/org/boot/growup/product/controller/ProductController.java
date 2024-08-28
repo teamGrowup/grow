@@ -27,7 +27,7 @@ public class ProductController {
     /**
      * [POST]
      * 현재 판매자의 제품 등록 요청
-     * @header null
+     * @header Seller's AccessToken
      * @body PostProductRequestDTO, MultipartFile[]
      * @response String
      */
@@ -43,7 +43,7 @@ public class ProductController {
     /**
      * [GET]
      * 상품ID를 통해 상품의 상세 정보를 확인합니다.
-     * @header null
+     * @header Seller's AccessToken
      * @param productId 상품 ID
      * @response GetProductDetailResponseDTO
      */
@@ -61,7 +61,7 @@ public class ProductController {
     /**
      * [GET]
      * 현재 판매자의 상품 정보 조회
-     * @header null
+     * @header Seller's AccessToken
      * @response GetSellerProductsResponseDTO
      */
     @GetMapping("/sellers/products")
@@ -72,7 +72,7 @@ public class ProductController {
     /**
      * [PATCH]
      * 현재 판매자의 제품 정보를 수정 요청
-     * @header null
+     * @header Seller's AccessToken
      * @param productId 상품 ID
      * @param productImages 수정할 이미지 파일 리스트
      * @param postProductRequestDto 수정할 제품 정보 DTO
@@ -91,7 +91,7 @@ public class ProductController {
     /**
      * [DELETE]
      * 상품 삭제 요청
-     * @header null
+     * @header Seller's AccessToken
      * @param productId 상품 ID
      * @response String
      */
@@ -104,7 +104,7 @@ public class ProductController {
     /**
      * [POST]
      * 상품 좋아요
-     * @header null
+     * @header Customer's AccessToken
      * @param productId 상품 ID
      * @response String
      */
@@ -117,7 +117,7 @@ public class ProductController {
     /**
      * [DELETE]
      * 상품 좋아요 취소
-     * @header null
+     * @header Customer's AccessToken
      * @param productId 상품 ID
      * @response String
      */
@@ -130,7 +130,7 @@ public class ProductController {
     /**
      * [PATCH]
      * 관리자가 등록된 상품들의 승인 상태 '거부'로 변경.
-     * @header null
+     * @header Admin's AccessToken
      * @param productId 상품 ID
      * @response String
      */
@@ -143,7 +143,7 @@ public class ProductController {
     /**
      * [PATCH]
      * 관리자가 등록된 상품들의 승인 상태 '승인'으로 변경.
-     * @header null
+     * @header Admin's AccessToken
      * @param productId 상품 ID
      * @response String
      */
@@ -156,7 +156,7 @@ public class ProductController {
     /**
      * [PATCH]
      * 관리자가 등록된 상품들의 승인 상태 '대기'로 변경.
-     * @header null
+     * @header Admin's AccessToken
      * @param productId 상품 ID
      * @response String
      */
@@ -169,7 +169,7 @@ public class ProductController {
     /**
      * [GET]
      * 관리자가 등록된 상품들의 요청들을 상태별(AuthorityStatus) 페이징 조회할 수 있음.
-     * @header null
+     * @header Admin's AccessToken
      * @param authorityStatus 요청 상태
      * @param pageNo 페이지 번호
      * @response List<GetProductRequestByStatusResponseDTO>
@@ -185,7 +185,7 @@ public class ProductController {
     /**
      * [GET]
      * 승인된 상품 요청 조회
-     * @header null
+     * @header Admin's AccessToken
      * @param pageNo 페이지 번호
      * @response List<GetProductRequestByStatusResponseDTO>
      */
@@ -199,7 +199,7 @@ public class ProductController {
     /**
      * [GET]
      * 대기 중인 상품 요청 조회
-     * @header null
+     * @header Admin's AccessToken
      * @param pageNo 페이지 번호
      * @response List<GetProductRequestByStatusResponseDTO>
      */
@@ -213,7 +213,7 @@ public class ProductController {
     /**
      * [GET]
      * 거부된 상품 요청 조회
-     * @header null
+     * @header Admin's AccessToken
      * @param pageNo 페이지 번호
      * @response List<GetProductRequestByStatusResponseDTO>
      */
