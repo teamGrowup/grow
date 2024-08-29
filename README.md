@@ -1,4 +1,5 @@
-# 온라인 쇼핑몰 프로젝트 
+# 🥼 온라인 의류 쇼핑몰 프로젝트
+## 😀 조원
 | 프로필 | 역할 | 작업 |
 | ------ | --- | --- |
 | 정태승([@taeGnues](https://github.com/taeGnues)) <br> Back-End | 팀장 | 브랜드 파트, 주문 및 결제, 배송 파트, 공지사항 및 일대일 문의 파트 담당 |
@@ -18,6 +19,6 @@
 ![Slack](https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=slack&logoColor=white)
 
 ## **💪 ERD**
-![온라인 쇼핑몰 ERD](https://github.com/user-attachments/assets/5f1fb365-5176-4a53-8d28-d54feaaadff6)
+![의류 쇼핑몰 ERD](https://github.com/user-attachments/assets/179a6f5c-c99e-4ddc-b44b-188931634027)
 - Link : https://www.erdcloud.com/d/pFmvokzzxN58NYe6J
 
