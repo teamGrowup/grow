@@ -14,7 +14,12 @@ import java.util.List;
 @Entity
 @Getter
 @Builder
-@Table(name = "product")
+@Table(
+    name = "product",
+    indexes = {
+        @Index(name = "idx_product_name", columnList = "product_name")
+    }
+)
 @NoArgsConstructor
 @AllArgsConstructor
 @AuditOverride(forClass = BaseEntity.class)

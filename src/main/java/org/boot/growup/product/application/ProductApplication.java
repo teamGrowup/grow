@@ -9,6 +9,7 @@ import org.boot.growup.common.constant.ErrorCode;
 import org.boot.growup.common.constant.Section;
 import org.boot.growup.auth.persist.entity.Customer;
 import org.boot.growup.auth.service.CustomerService;
+import org.boot.growup.order.dto.response.GetSearchedProductResponseDTO;
 import org.boot.growup.product.dto.response.GetSellerProductsResponseDTO;
 import org.boot.growup.product.persist.entity.Product;
 import org.boot.growup.product.persist.entity.ProductImage;
@@ -138,5 +139,12 @@ public class ProductApplication {
     public void deleteProductLike(Long productId) {
         Customer customer = customerService.getCurrentCustomer(); // 현재 고객 정보 가져오기
         productService.deleteProductLike(productId, customer);
+    }
+
+    /*
+    상품 검색
+     */
+    public List<GetSearchedProductResponseDTO> getSearchedProduct(String keyword) {
+        return productService.getSearchedProduct(keyword);
     }
 }

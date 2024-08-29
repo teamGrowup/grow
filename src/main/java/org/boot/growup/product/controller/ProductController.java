@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.boot.growup.common.model.BaseResponse;
 import org.boot.growup.common.constant.AuthorityStatus;
+import org.boot.growup.order.dto.response.GetSearchedProductResponseDTO;
 import org.boot.growup.product.application.ProductApplication;
 import org.boot.growup.product.dto.request.PostProductRequestDTO;
 import org.boot.growup.product.dto.response.*;
@@ -222,5 +223,19 @@ public class ProductController {
             @RequestParam(value = "pageNo", defaultValue = "0") int pageNo
     ) {
         return new BaseResponse<>(productApplication.getProductRequestsByStatus(AuthorityStatus.DENIED, pageNo));
+    }
+
+    /**
+     * [GET]
+     * 상품 검색
+     * @header null
+     * @param keyword 키워드
+     * @response List<GetSearchedProductResponseDTO>
+     */
+    @GetMapping("/searches")
+    public BaseResponse<List<GetSearchedProductResponseDTO>> getSearchedProduct(
+                @RequestParam("keyword") String keyword) {
+        List<GetSearchedProductResponseDTO> response = productApplication.getSearchedProduct(keyword);
+        return new BaseResponse<>(response);
     }
 }

@@ -11,6 +11,7 @@ import org.boot.growup.auth.persist.entity.Customer;
 import org.boot.growup.order.dto.OrderItemDTO;
 import org.boot.growup.common.utils.ImageStore;
 import org.boot.growup.common.utils.S3Service;
+import org.boot.growup.order.dto.response.GetSearchedProductResponseDTO;
 import org.boot.growup.product.persist.entity.*;
 import org.boot.growup.product.persist.repository.*;
 import org.boot.growup.product.service.ProductService;
@@ -24,6 +25,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toUnmodifiableMap;
 
@@ -243,5 +245,12 @@ public class ProductServiceImpl implements ProductService {
                 productImageRepository.save(uploadImage); // 저장 시도
             }
         }
+    }
+
+    @Override
+    public List<GetSearchedProductResponseDTO> getSearchedProduct(String keyword) {
+        return productRepository.findProductsByName(keyword).stream()
+                    .map(GetSearchedProductResponseDTO::from)
+                    .collect(Collectors.toList());
     }
 }

@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface ProductRepository extends JpaRepository<Product, Long> {
+public interface ProductRepository extends JpaRepository<Product, Long>, ProductSearchRepository {
     Optional<Product> findById(Long id);
     Optional<Product> findByIdAndSeller_Id(Long productId, Long sellerId);
     List<Product> findBySeller_Id(Long sellerId); // 판매자 ID로 상품 목록 조회

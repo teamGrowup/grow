@@ -468,6 +468,96 @@ public class DataLoader {
                 .subCategory(subCategory8) // 샌들/슬리퍼
                 .build();
 
+        Product product9 = Product.builder()
+                .name("맨투맨 A+")
+                .description("또 다른 맨투맨입니다.")
+                .authorityStatus(AuthorityStatus.APPROVED)
+                .averageRating(0.0)
+                .likeCount(0)
+                .deliveryFee(1000)
+                .seller(seller1)
+                .brand(brand1)
+                .subCategory(subCategory1) // 맨투맨
+                .build();
+
+        Product product10 = Product.builder()
+                .name("반팔 티셔츠 B2")
+                .description("다른 반팔 티셔츠입니다.")
+                .authorityStatus(AuthorityStatus.APPROVED)
+                .averageRating(0.0)
+                .likeCount(0)
+                .deliveryFee(1000)
+                .seller(seller2)
+                .brand(brand2)
+                .subCategory(subCategory2) // 반팔
+                .build();
+
+        Product product11 = Product.builder()
+                .name("숏 팬츠 C Lite")
+                .description("또 다른 숏 팬츠입니다.")
+                .authorityStatus(AuthorityStatus.PENDING)
+                .averageRating(0.0)
+                .likeCount(0)
+                .deliveryFee(1000)
+                .seller(seller1)
+                .brand(brand1)
+                .subCategory(subCategory3) // 숏 팬츠
+                .build();
+
+        Product product12 = Product.builder()
+                .name("코튼 팬츠 D Prime")
+                .description("또 다른 코튼 팬츠입니다.")
+                .authorityStatus(AuthorityStatus.PENDING)
+                .averageRating(0.0)
+                .likeCount(0)
+                .seller(seller2)
+                .brand(brand2)
+                .subCategory(subCategory4) // 코튼 팬츠
+                .build();
+
+        Product product13 = Product.builder()
+                .name("후드 집업 E Deluxe")
+                .description("또 다른 후드 집업입니다.")
+                .authorityStatus(AuthorityStatus.PENDING)
+                .averageRating(0.0)
+                .likeCount(0)
+                .seller(seller1)
+                .brand(brand1)
+                .subCategory(subCategory5) // 후드 집업
+                .build();
+
+        Product product14 = Product.builder()
+                .name("가디건 F Lite")
+                .description("또 다른 가디건입니다.")
+                .authorityStatus(AuthorityStatus.PENDING)
+                .averageRating(0.0)
+                .likeCount(0)
+                .seller(seller2)
+                .brand(brand2)
+                .subCategory(subCategory6) // 가디건
+                .build();
+
+        Product product15 = Product.builder()
+                .name("스니커즈 G+")
+                .description("또 다른 스니커즈입니다.")
+                .authorityStatus(AuthorityStatus.PENDING)
+                .averageRating(0.0)
+                .likeCount(0)
+                .seller(seller1)
+                .brand(brand1)
+                .subCategory(subCategory7) // 스니커즈
+                .build();
+
+        Product product16 = Product.builder()
+                .name("샌들/슬리퍼 H Deluxe")
+                .description("또 다른 샌들/슬리퍼입니다.")
+                .authorityStatus(AuthorityStatus.PENDING)
+                .averageRating(0.0)
+                .likeCount(0)
+                .seller(seller2)
+                .brand(brand2)
+                .subCategory(subCategory8) // 샌들/슬리퍼
+                .build();
 
         // 상품 옵션들 설정
         // 상품 옵션
@@ -525,6 +615,62 @@ public class DataLoader {
                 .optionStock(30)
                 .optionName("블랙 / 260mm")
                 .build();
+
+        ProductOption productOption9 = ProductOption.builder()
+                .optionPrice(100)
+                .optionStock(10)
+                .optionName("블랙 / XL")
+                .build();
+
+        // ProductOption for Product10
+        ProductOption productOption10 = ProductOption.builder()
+                .optionPrice(50)
+                .optionStock(20)
+                .optionName("화이트 / M")
+                .build();
+
+        // ProductOption for Product11
+        ProductOption productOption11 = ProductOption.builder()
+                .optionPrice(70)
+                .optionStock(15)
+                .optionName("네이비 / L")
+                .build();
+
+        // ProductOption for Product12
+        ProductOption productOption12 = ProductOption.builder()
+                .optionPrice(80)
+                .optionStock(12)
+                .optionName("베이지 / M")
+                .build();
+
+        // ProductOption for Product13
+        ProductOption productOption13 = ProductOption.builder()
+                .optionPrice(120)
+                .optionStock(8)
+                .optionName("그레이 / XL")
+                .build();
+
+        // ProductOption for Product14
+        ProductOption productOption14 = ProductOption.builder()
+                .optionPrice(90)
+                .optionStock(10)
+                .optionName("카키 / L")
+                .build();
+
+        // ProductOption for Product15
+        ProductOption productOption15 = ProductOption.builder()
+                .optionPrice(150)
+                .optionStock(25)
+                .optionName("화이트 / 270mm")
+                .build();
+
+        // ProductOption for Product16
+        ProductOption productOption16 = ProductOption.builder()
+                .optionPrice(60)
+                .optionStock(30)
+                .optionName("블랙 / 260mm")
+                .build();
+
         // ProductOption for Product1 (맨투맨 A) - 추가 옵션
         ProductOption productOption1_2 = ProductOption.builder()
                 .optionPrice(110)
@@ -532,50 +678,106 @@ public class DataLoader {
                 .optionName("네이비 / L")
                 .build();
 
-// ProductOption for Product2 (반팔 티셔츠 B) - 추가 옵션
+        // ProductOption for Product2 (반팔 티셔츠 B) - 추가 옵션
         ProductOption productOption2_2 = ProductOption.builder()
                 .optionPrice(55)
                 .optionStock(25)
                 .optionName("블랙 / L")
                 .build();
 
-// ProductOption for Product3 (숏 팬츠 C) - 추가 옵션
+        // ProductOption for Product3 (숏 팬츠 C) - 추가 옵션
         ProductOption productOption3_2 = ProductOption.builder()
                 .optionPrice(75)
                 .optionStock(18)
                 .optionName("카키 / XL")
                 .build();
 
-// ProductOption for Product4 (코튼 팬츠 D) - 추가 옵션
+        // ProductOption for Product4 (코튼 팬츠 D) - 추가 옵션
         ProductOption productOption4_2 = ProductOption.builder()
                 .optionPrice(85)
                 .optionStock(10)
                 .optionName("그레이 / L")
                 .build();
 
-// ProductOption for Product5 (후드 집업 E) - 추가 옵션
+        // ProductOption for Product5 (후드 집업 E) - 추가 옵션
         ProductOption productOption5_2 = ProductOption.builder()
                 .optionPrice(130)
                 .optionStock(6)
                 .optionName("블랙 / M")
                 .build();
 
-// ProductOption for Product6 (가디건 F) - 추가 옵션
+        // ProductOption for Product6 (가디건 F) - 추가 옵션
         ProductOption productOption6_2 = ProductOption.builder()
                 .optionPrice(95)
                 .optionStock(8)
                 .optionName("네이비 / M")
                 .build();
 
-// ProductOption for Product7 (스니커즈 G) - 추가 옵션
+        // ProductOption for Product7 (스니커즈 G) - 추가 옵션
         ProductOption productOption7_2 = ProductOption.builder()
                 .optionPrice(155)
                 .optionStock(20)
                 .optionName("블랙 / 275mm")
                 .build();
 
-// ProductOption for Product8 (샌들/슬리퍼 H) - 추가 옵션
+        // ProductOption for Product8 (샌들/슬리퍼 H) - 추가 옵션
         ProductOption productOption8_2 = ProductOption.builder()
+                .optionPrice(65)
+                .optionStock(28)
+                .optionName("브라운 / 265mm")
+                .build();
+
+        // ProductOption for Product9 - 추가 옵션
+        ProductOption productOption9_2 = ProductOption.builder()
+                .optionPrice(110)
+                .optionStock(5)
+                .optionName("네이비 / L")
+                .build();
+
+        // ProductOption for Product10 - 추가 옵션
+        ProductOption productOption10_2 = ProductOption.builder()
+                .optionPrice(55)
+                .optionStock(25)
+                .optionName("블랙 / L")
+                .build();
+
+        // ProductOption for Product11 - 추가 옵션
+        ProductOption productOption11_2 = ProductOption.builder()
+                .optionPrice(75)
+                .optionStock(18)
+                .optionName("카키 / XL")
+                .build();
+
+        // ProductOption for Product12 - 추가 옵션
+        ProductOption productOption12_2 = ProductOption.builder()
+                .optionPrice(85)
+                .optionStock(10)
+                .optionName("그레이 / L")
+                .build();
+
+        // ProductOption for Product13 - 추가 옵션
+        ProductOption productOption13_2 = ProductOption.builder()
+                .optionPrice(130)
+                .optionStock(6)
+                .optionName("블랙 / M")
+                .build();
+
+        // ProductOption for Product14 - 추가 옵션
+        ProductOption productOption14_2 = ProductOption.builder()
+                .optionPrice(95)
+                .optionStock(8)
+                .optionName("네이비 / M")
+                .build();
+
+        // ProductOption for Product15 - 추가 옵션
+        ProductOption productOption15_2 = ProductOption.builder()
+                .optionPrice(155)
+                .optionStock(20)
+                .optionName("블랙 / 275mm")
+                .build();
+
+        // ProductOption for Product16 - 추가 옵션
+        ProductOption productOption16_2 = ProductOption.builder()
                 .optionPrice(65)
                 .optionStock(28)
                 .optionName("브라운 / 265mm")
@@ -589,11 +791,21 @@ public class DataLoader {
         product6.initProductOptions(List.of(productOption6, productOption6_2));
         product7.initProductOptions(List.of(productOption7, productOption7_2));
         product8.initProductOptions(List.of(productOption8, productOption8_2));
+        product1.initProductOptions(List.of(productOption9, productOption9_2));
+        product2.initProductOptions(List.of(productOption10, productOption10_2));
+        product3.initProductOptions(List.of(productOption11, productOption11_2));
+        product4.initProductOptions(List.of(productOption12, productOption12_2));
+        product5.initProductOptions(List.of(productOption13, productOption13_2));
+        product6.initProductOptions(List.of(productOption14, productOption14_2));
+        product7.initProductOptions(List.of(productOption15, productOption15_2));
+        product8.initProductOptions(List.of(productOption16, productOption16_2));
 
         // 제품 저장
         productRepository.saveAll(List.of(
                 product1, product2, product3, product4,
-                product5, product6, product7, product8
+                product5, product6, product7, product8,
+                product9, product10, product11, product12,
+                product13, product14, product15, product16
         ));
     }
     public void adminInit(){

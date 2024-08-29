@@ -4,6 +4,7 @@ import org.boot.growup.common.constant.AuthorityStatus;
 import org.boot.growup.auth.persist.entity.Customer;
 import org.boot.growup.common.constant.Section;
 import org.boot.growup.order.dto.OrderItemDTO;
+import org.boot.growup.order.dto.response.GetSearchedProductResponseDTO;
 import org.boot.growup.product.dto.request.PostProductRequestDTO;
 import org.boot.growup.product.persist.entity.Product;
 import org.boot.growup.auth.persist.entity.Seller;
@@ -85,4 +86,9 @@ public interface ProductService {
     OrderItemDTO를 통해 Map<상품옵션 엔티티, 수량> 가져오기
      */
     Map<ProductOption, Integer> getProductOptionCountMap(List<OrderItemDTO> orderItemDTOs);
+
+    /*
+    상품 검색
+     */
+    List<GetSearchedProductResponseDTO> getSearchedProduct(String keyword);
 }
