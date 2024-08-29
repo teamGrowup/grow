@@ -1,7 +1,7 @@
 # 🥼 온라인 의류 쇼핑몰 프로젝트
 ## 😀 조원
 | 프로필 | 역할 | 작업 |
-| ------ | --- | --- |
+| ------ | ---- | --------- |
 | 정태승([@taeGnues](https://github.com/taeGnues)) <br> Back-End | 팀장 | 브랜드 파트, 주문 및 결제, 배송 파트, 공지사항 및 일대일 문의 파트 담당 |
 | 조웅희([@JOWOONGHEE](https://github.com/JOWOONGHEE)) <br> Back-End | 팀원 | 상품 파트, 리뷰 파트, 그로우페이 파트 담당 |
 | 김지섭([@Kim-Ji-Seop](https://github.com/Kim-Ji-Seop)) <br> Back-End | 팀원 | 회원 파트 담당, 소셜 로그인 구현 및 시큐리티 설계, 문자 및 이메일 인증, 마이페이지 파트 담당 |
