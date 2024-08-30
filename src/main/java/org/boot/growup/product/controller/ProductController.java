@@ -223,4 +223,17 @@ public class ProductController {
     ) {
         return new BaseResponse<>(productApplication.getProductRequestsByStatus(AuthorityStatus.DENIED, pageNo));
     }
+
+    /**
+     * [GET]
+     * 판매자 판매 현황 조회
+     * @header Admin's AccessToken
+     * @param sellerId 판매자 ID
+     * @response SellerSalesResponseDTO
+     */
+    @GetMapping("admins/sellers/{sellerId}/sales")
+    public BaseResponse<SellerSalesResponseDTO> getSalesBySellerId(@PathVariable Long sellerId) {
+        SellerSalesResponseDTO salesResponse = productApplication.getSalesBySellerId(sellerId);
+        return new BaseResponse<>(salesResponse);
+    }
 }

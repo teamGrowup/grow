@@ -3,6 +3,8 @@ package org.boot.growup.product.service.Impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.boot.growup.auth.persist.entity.Seller;
+import org.boot.growup.auth.persist.repository.SellerRepository;
+import org.boot.growup.common.constant.OrderStatus;
 import org.boot.growup.common.constant.Section;
 import org.boot.growup.common.model.BaseException;
 import org.boot.growup.common.constant.AuthorityStatus;
@@ -11,6 +13,10 @@ import org.boot.growup.auth.persist.entity.Customer;
 import org.boot.growup.order.dto.OrderItemDTO;
 import org.boot.growup.common.utils.ImageStore;
 import org.boot.growup.common.utils.S3Service;
+import org.boot.growup.order.persist.entity.OrderItem;
+import org.boot.growup.order.persist.repository.OrderItemRepository;
+import org.boot.growup.product.dto.response.ProductSalesResponseDTO;
+import org.boot.growup.product.dto.response.SellerSalesResponseDTO;
 import org.boot.growup.product.persist.entity.*;
 import org.boot.growup.product.persist.repository.*;
 import org.boot.growup.product.service.ProductService;
@@ -21,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -37,6 +44,8 @@ public class ProductServiceImpl implements ProductService {
     private final ProductLikeRepository productLikeRepository;
     private final ProductOptionRepository productOptionRepository;
     private final ProductImageRepository productImageRepository;
+    private final SellerRepository sellerRepository;
+    private final OrderItemRepository orderItemRepository;
     private final ImageStore imageStore;
     private final S3Service s3Service;
 
@@ -243,5 +252,33 @@ public class ProductServiceImpl implements ProductService {
                 productImageRepository.save(uploadImage); // 저장 시도
             }
         }
+    }
+
+    @Override
+    public SellerSalesResponseDTO getSalesBySellerId(Long sellerId) {
+        // 판매자 정보 조회
+        Seller seller = sellerRepository.findById(sellerId)
+                .orElseThrow(() -> new BaseException(ErrorCode.SELLER_NOT_FOUND));
+
+        // 구매 확정 상태의 주문 항목 조회
+        List<OrderItem> confirmedOrderItems = orderItemRepository.findBySellerIdAndOrderStatus(sellerId, OrderStatus.PURCHASE_CONFIRM);
+
+        // 판매 현황 초기화
+        int totalQuantity = 0;
+        int totalRevenue = 0;
+        List<ProductSalesResponseDTO> productSales = new ArrayList<>();
+
+        for (OrderItem orderItem : confirmedOrderItems) {
+            // 각 상품의 판매 수량 및 총 수익 계산
+            int quantitySold = orderItem.getCount();
+            int revenue = quantitySold * orderItem.getProductOptionPrice(); // 상품 옵션 가격을 사용하여 수익 계산
+
+            totalQuantity += quantitySold;
+            totalRevenue += revenue;
+
+            productSales.add(new ProductSalesResponseDTO(orderItem.getProduct().getId(), orderItem.getProductName(), quantitySold, revenue));
+        }
+
+        return new SellerSalesResponseDTO(sellerId, seller.getEpName(), productSales, totalQuantity, totalRevenue);
     }
 }

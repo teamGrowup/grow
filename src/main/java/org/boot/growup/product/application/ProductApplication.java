@@ -9,14 +9,11 @@ import org.boot.growup.common.constant.ErrorCode;
 import org.boot.growup.common.constant.Section;
 import org.boot.growup.auth.persist.entity.Customer;
 import org.boot.growup.auth.service.CustomerService;
-import org.boot.growup.product.dto.response.GetSellerProductsResponseDTO;
+import org.boot.growup.product.dto.response.*;
 import org.boot.growup.product.persist.entity.Product;
 import org.boot.growup.product.persist.entity.ProductImage;
 import org.boot.growup.product.persist.entity.ProductOption;
 import org.boot.growup.product.dto.request.PostProductRequestDTO;
-import org.boot.growup.product.dto.response.GetSellerProductResponseDTO;
-import org.boot.growup.product.dto.response.GetProductDetailResponseDTO;
-import org.boot.growup.product.dto.response.GetProductRequestByStatusResponseDTO;
 import org.boot.growup.product.service.ProductService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -138,5 +135,9 @@ public class ProductApplication {
     public void deleteProductLike(Long productId) {
         Customer customer = customerService.getCurrentCustomer(); // 현재 고객 정보 가져오기
         productService.deleteProductLike(productId, customer);
+    }
+
+    public SellerSalesResponseDTO getSalesBySellerId(Long sellerId) {
+        return productService.getSalesBySellerId(sellerId);
     }
 }
