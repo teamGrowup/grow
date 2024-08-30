@@ -5,13 +5,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.boot.growup.auth.persist.entity.Customer;
 import org.boot.growup.auth.persist.entity.Seller;
 import org.boot.growup.common.constant.ErrorCode;
+import org.boot.growup.common.constant.OrderStatus;
 import org.boot.growup.common.constant.PayMethod;
 import org.boot.growup.common.model.BaseException;
 import org.boot.growup.order.dto.OrderDTO;
+import org.boot.growup.order.dto.OrderItemCancelDTO;
 import org.boot.growup.order.dto.request.PatchShipmentRequestDTO;
 import org.boot.growup.order.persist.entity.Delivery;
 import org.boot.growup.order.persist.entity.Order;
+import org.boot.growup.order.persist.entity.OrderCancel;
 import org.boot.growup.order.persist.entity.OrderItem;
+import org.boot.growup.order.persist.repository.OrderCancelRepository;
 import org.boot.growup.order.persist.repository.OrderItemRepository;
 import org.boot.growup.order.persist.repository.OrderRepository;
 import org.boot.growup.order.service.OrderService;
@@ -29,6 +33,7 @@ import java.util.Map;
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
+    private final OrderCancelRepository orderCancelRepository;
 
     @Override
     public Order processNormalOrder(OrderDTO orderDTO, Map<ProductOption, Integer> productOptionCountMap, Customer customer) {
@@ -173,6 +178,52 @@ public class OrderServiceImpl implements OrderService {
         Pageable pageable = PageRequest.of(pageNo, 10);
 
         return orderRepository.findByCustomer(customer, pageable);
+    }
+
+    @Override
+    public OrderItemCancelDTO getOrderItemCancelDTO(String merchantUid, Customer customer, Long orderItemId) {
+
+        // 1. Fetch Join으로 OrderItem들까지 한번에 가져옴.
+        Order order = orderRepository.findByMerchantUidAndCustomerWithOrderItems(merchantUid, customer)
+                            .orElseThrow(() -> new BaseException(ErrorCode.ORDER_NOT_FOUND));
+
+        // 2. 특정 orderItem 찾기(단, PAID 혹은 PRE_SHIPPED 상태여야함)
+        OrderItem orderItem = order.getOrderItems().stream()
+                                    .filter(oi -> oi.getId().equals(orderItemId) && oi.checkCancellable())
+                                    .findFirst()
+                                    .orElseThrow(() -> new BaseException(ErrorCode.ORDER_ITEM_NOT_FOUND));
+
+        // 3. 해당 orderItem의 cancelPrice 계산하기
+        int cancelPrice = orderItem.getCount() * orderItem.getProductOptionPrice() + orderItem.getDeliveryFee();
+
+        // 4. 해당 Order의 currentCancellableAmount 계산하기 (orderstatus가 'pre_paid', 'rejected', 'canceled'가 아닌 것들의 합)
+        int currentCancellableAmount = order.getOrderItems().stream()
+                .filter(oi -> ((oi.getOrderStatus() != OrderStatus.PRE_PAID) &&
+                        (oi.getOrderStatus() != OrderStatus.CANCELED) &&
+                        (oi.getOrderStatus() != OrderStatus.REJECTED)))
+                .mapToInt(oi -> oi.getProductOptionPrice() * oi.getCount() + oi.getDeliveryFee())
+                .sum();
+        log.info("cancelPrice -> {}, currentCancellableAmount -> {}", cancelPrice, currentCancellableAmount);
+        return OrderItemCancelDTO.builder()
+                .orderItem(orderItem)
+                .cancelPrice(cancelPrice)
+                .currentCancellableAmount(currentCancellableAmount)
+                .build();
+    }
+
+    @Override
+    public void cancelOrderItem(OrderItemCancelDTO orderItemCancelDTO) {
+        // 1. 해당 주문항목을 PAID->CANCELED 상태로 변경
+        OrderItem orderItem = orderItemCancelDTO.getOrderItem();
+        orderItem.cancel();
+
+        // 2. 주문 취소 객체를 생성하여 저장
+        OrderCancel orderCancel = OrderCancel.builder()
+                .price(orderItemCancelDTO.getCancelPrice())
+                .orderItem(orderItem)
+                .build();
+
+        orderCancelRepository.save(orderCancel);
     }
 
     private void place(Map<ProductOption, Integer> productOptionCountMap, Order order) {
