@@ -201,7 +201,7 @@ public class OrderServiceImpl implements OrderService {
                 .filter(oi -> ((oi.getOrderStatus() != OrderStatus.PRE_PAID) &&
                         (oi.getOrderStatus() != OrderStatus.CANCELED) &&
                         (oi.getOrderStatus() != OrderStatus.REJECTED)))
-                .mapToInt(oi -> oi.getProductOptionPrice()*oi.getCount() + oi.getDeliveryFee())
+                .mapToInt(oi -> oi.getProductOptionPrice() * oi.getCount() + oi.getDeliveryFee())
                 .sum();
         log.info("cancelPrice -> {}, currentCancellableAmount -> {}", cancelPrice, currentCancellableAmount);
         return OrderItemCancelDTO.builder()
