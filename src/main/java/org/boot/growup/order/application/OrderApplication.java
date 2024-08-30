@@ -188,7 +188,7 @@ public class OrderApplication {
             throw new BaseException(ErrorCode.CANCEL_ORDER_ITEM_FAIL);
         }
 
-        // 4. 해당 주문항목을 PAID->CANCELED 상태로 변경하고 주문 취소 객체를 생성하여 저장
+        // 4. 해당 주문항목을 PAID->CANCELED 상태로 변경하고, 주문 취소 객체를 생성하여 저장. 또한 상품개수를 원복.
         orderService.cancelOrderItem(orderItemCancelDTO);
     }
 }

@@ -191,6 +191,7 @@ public class OrderItem extends BaseEntity{
         // PAID, PRE_SHIPPED -> CANCELED
         checkPaidOrPreShipped();
         this.orderStatus = OrderStatus.CANCELED;
+        this.getProductOption().increaseStock(this.count);
     }
 
     private void checkPaidOrPreShipped() {

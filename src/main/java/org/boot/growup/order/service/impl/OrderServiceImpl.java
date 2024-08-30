@@ -213,7 +213,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void cancelOrderItem(OrderItemCancelDTO orderItemCancelDTO) {
-        // 1. 해당 주문항목을 PAID->CANCELED 상태로 변경
+        // 1. 해당 주문항목을 PAID->CANCELED 상태로 변경 및 상품개수 원복
         OrderItem orderItem = orderItemCancelDTO.getOrderItem();
         orderItem.cancel();
 
