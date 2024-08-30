@@ -134,12 +134,9 @@ public class OrderItem extends BaseEntity{
 
     public void shipped() {
         // PRE_SHIPPED, PAID -> SHIPPED
-        if(this.orderStatus == OrderStatus.PAID || this.orderStatus == OrderStatus.PRE_SHIPPED) {
-            this.orderStatus = OrderStatus.SHIPPED;
-            this.shipped_at = LocalDateTime.now();
-            return;
-        }
-        throw new BaseException(ErrorCode.ORDER_ITEM_NOT_PAID_OR_PRE_SHIPPED_STATUS);
+        checkPaidOrPreShipped();
+        this.orderStatus = OrderStatus.SHIPPED;
+        this.shipped_at = LocalDateTime.now();
     }
 
     public void shipment(Delivery delivery) {
@@ -183,5 +180,22 @@ public class OrderItem extends BaseEntity{
             return;
         }
         throw new BaseException(ErrorCode.ORDER_ITEM_NOT_IN_TRANSIT_STATUS);
+    }
+
+    public boolean checkCancellable(){
+        checkPaidOrPreShipped();
+        return true;
+    }
+
+    public void cancel() {
+        // PAID, PRE_SHIPPED -> CANCELED
+        checkPaidOrPreShipped();
+        this.orderStatus = OrderStatus.CANCELED;
+    }
+
+    private void checkPaidOrPreShipped() {
+        if(!(this.orderStatus == OrderStatus.PAID || this.orderStatus == OrderStatus.PRE_SHIPPED)){
+            throw new BaseException(ErrorCode.ORDER_ITEM_NOT_PAID_OR_PRE_SHIPPED_STATUS);
+        }
     }
 }

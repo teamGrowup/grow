@@ -96,6 +96,7 @@ public enum ErrorCode {
     ORDER_ITEM_NOT_SHIPPED_STATUS(HttpStatus.BAD_REQUEST, 404, false, "해당 주문 항목은 SHIPPED 상태가 아닙니다."),
     ORDER_ITEM_NOT_PENDING_SHIPMENT_STATUS(HttpStatus.BAD_REQUEST, 404, false, "해당 주문 항목은 PENDING_SHIPMENT 상태가 아닙니다."),
     ORDER_ITEM_NOT_IN_TRANSIT_STATUS(HttpStatus.BAD_REQUEST, 404, false, "해당 주문 항목은 IN_TRANSIT 상태가 아닙니다."),
+    CANCEL_ORDER_ITEM_FAIL(HttpStatus.BAD_REQUEST, 404, false, "해당 주문 항목은 주문 취소에 실패했습니다."),
 
     /* Growpay 관련 */
     GROWPAY_NOT_FOUND(HttpStatus.BAD_REQUEST, 404, false, "해당 Growpay 계좌를 찾을 수 없습니다."),
