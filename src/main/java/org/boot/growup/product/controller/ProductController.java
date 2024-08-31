@@ -238,4 +238,17 @@ public class ProductController {
         List<GetSearchedProductResponseDTO> response = productApplication.getSearchedProduct(keyword);
         return new BaseResponse<>(response);
     }
+
+    /**
+     * [GET]
+     * 인기 검색어 조회
+     * @header null
+     * @body null
+     * @response List<GetFavoriteKeywordResponseDTO>
+     */
+    @GetMapping("/searches/favorite-keywords")
+    public BaseResponse<List<GetFavoriteKeywordResponseDTO>> getFavoriteKeyword() {
+        List<GetFavoriteKeywordResponseDTO> response = productApplication.getFavoriteKeyword();
+        return new BaseResponse<>(response);
+    }
 }

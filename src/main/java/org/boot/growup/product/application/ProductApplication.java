@@ -10,14 +10,11 @@ import org.boot.growup.common.constant.Section;
 import org.boot.growup.auth.persist.entity.Customer;
 import org.boot.growup.auth.service.CustomerService;
 import org.boot.growup.order.dto.response.GetSearchedProductResponseDTO;
-import org.boot.growup.product.dto.response.GetSellerProductsResponseDTO;
+import org.boot.growup.product.dto.response.*;
 import org.boot.growup.product.persist.entity.Product;
 import org.boot.growup.product.persist.entity.ProductImage;
 import org.boot.growup.product.persist.entity.ProductOption;
 import org.boot.growup.product.dto.request.PostProductRequestDTO;
-import org.boot.growup.product.dto.response.GetSellerProductResponseDTO;
-import org.boot.growup.product.dto.response.GetProductDetailResponseDTO;
-import org.boot.growup.product.dto.response.GetProductRequestByStatusResponseDTO;
 import org.boot.growup.product.service.ProductService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -146,5 +143,12 @@ public class ProductApplication {
      */
     public List<GetSearchedProductResponseDTO> getSearchedProduct(String keyword) {
         return productService.getSearchedProduct(keyword);
+    }
+
+    /*
+    인기 검색어
+     */
+    public List<GetFavoriteKeywordResponseDTO> getFavoriteKeyword() {
+        return productService.getFavoriteKeyword();
     }
 }

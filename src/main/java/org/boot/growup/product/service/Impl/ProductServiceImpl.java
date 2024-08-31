@@ -12,6 +12,7 @@ import org.boot.growup.order.dto.OrderItemDTO;
 import org.boot.growup.common.utils.ImageStore;
 import org.boot.growup.common.utils.S3Service;
 import org.boot.growup.order.dto.response.GetSearchedProductResponseDTO;
+import org.boot.growup.product.dto.response.GetFavoriteKeywordResponseDTO;
 import org.boot.growup.product.persist.entity.*;
 import org.boot.growup.product.persist.repository.*;
 import org.boot.growup.product.service.ProductService;
@@ -39,6 +40,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductLikeRepository productLikeRepository;
     private final ProductOptionRepository productOptionRepository;
     private final ProductImageRepository productImageRepository;
+    private final SearchRepository searchRepository;
     private final ImageStore imageStore;
     private final S3Service s3Service;
 
@@ -249,8 +251,36 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<GetSearchedProductResponseDTO> getSearchedProduct(String keyword) {
+        saveOrUpdateSearchKeyword(keyword);
         return productRepository.findProductsByName(keyword).stream()
                     .map(GetSearchedProductResponseDTO::from)
                     .collect(Collectors.toList());
+    }
+
+    private void saveOrUpdateSearchKeyword(String keyword) {
+        String[] keywords = keyword.split("\\s+");
+
+        for (String word : keywords) {
+            Search search = searchRepository.findByKeyword(word)
+                    .orElse(Search.builder()
+                            .keyword(word)
+                            .searchedCount(0)
+                            .build());
+
+            search.incrementSearchCount();
+            searchRepository.save(search);
+        }
+    }
+
+    @Override
+    public List<GetFavoriteKeywordResponseDTO> getFavoriteKeyword() {
+        List<Search> searches = searchRepository.findByOrderBySearchedCountDesc(PageRequest.of(0, 10));
+
+        // Log the size of the retrieved list
+        log.info("Number of favorite keywords retrieved: {}", searches.size());
+
+        return searches.stream()
+                .map(GetFavoriteKeywordResponseDTO::from)
+                .collect(Collectors.toList());
     }
 }

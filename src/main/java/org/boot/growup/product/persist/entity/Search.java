@@ -26,4 +26,8 @@ public class Search extends BaseEntity {
 
     @Column(nullable = false)
     private int searchedCount;
+
+    public void incrementSearchCount() {
+        this.searchedCount += 1;
+    }
 }
