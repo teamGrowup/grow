@@ -14,12 +14,7 @@ import java.util.List;
 @Entity
 @Getter
 @Builder
-@Table(
-    name = "product",
-    indexes = {
-        @Index(name = "idx_product_name", columnList = "product_name")
-    }
-)
+@Table(name = "product")
 @NoArgsConstructor
 @AllArgsConstructor
 @AuditOverride(forClass = BaseEntity.class)
@@ -44,7 +39,7 @@ public class Product extends BaseEntity {
     @Column(name = "delivery_fee")
     private int deliveryFee; // 배송비
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subcategory_id", nullable = false)
     private SubCategory subCategory;
 
@@ -52,7 +47,7 @@ public class Product extends BaseEntity {
     @Builder.Default
     private List<ProductOption> productOptions = new ArrayList<>();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id", nullable = false)
     private Seller seller;
 
@@ -64,7 +59,7 @@ public class Product extends BaseEntity {
     @Builder.Default
     private List<ProductImage> productImages = new ArrayList<>();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "brand_id", nullable = false)
     private Brand brand;
 

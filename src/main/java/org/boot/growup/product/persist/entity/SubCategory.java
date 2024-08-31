@@ -24,7 +24,7 @@ public class SubCategory extends BaseEntity {
     @Column(name = "name", nullable = false, length = 50) // 추가된 어노테이션
     private String name;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "main_category_id", nullable = false)
     private MainCategory mainCategory; // 메인 카테고리와의 관계
     // 메인 카테고리의 getter 메서드

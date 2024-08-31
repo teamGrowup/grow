@@ -9,6 +9,9 @@ import org.boot.growup.product.persist.entity.Product;
 public class GetSearchedProductResponseDTO {
     private Long id;
     private String productName;
+    private String brandName;
+    private String mainCategoryName;
+    private String subCategoryName;
     private Double averageRating;
     private int likeCount;
 
@@ -16,6 +19,9 @@ public class GetSearchedProductResponseDTO {
         return GetSearchedProductResponseDTO.builder()
                 .id(product.getId())
                 .productName(product.getName())
+                .brandName(product.getBrand().getName())
+                .mainCategoryName(product.getSubCategory().getMainCategory().getName())
+                .subCategoryName(product.getSubCategory().getName())
                 .averageRating(product.getAverageRating())
                 .likeCount(product.getLikeCount())
                 .build();

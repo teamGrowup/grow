@@ -186,14 +186,14 @@ public class DataLoader {
     }
     public void brandInit(){
         Brand brand1 = Brand.builder()
-                .name("브랜드1")
+                .name("바지")
                 .description("브랜드1은 심플한 디자인과 고급스러운 소재를 활용한 제품을 선보입니다.")
                 .authorityStatus(AuthorityStatus.PENDING)
                 .likeCount(10)
                 .build();
 
         Brand brand2 = Brand.builder()
-                .name("브랜드2")
+                .name("상의")
                 .description("브랜드2는 혁신적인 기술과 전통적인 장인 정신을 결합하여 특별한 제품을 만듭니다.")
                 .authorityStatus(AuthorityStatus.PENDING)
                 .likeCount(20)
@@ -323,32 +323,32 @@ public class DataLoader {
 
         SubCategory subCategory3 = SubCategory.builder()
                 .name("숏 팬츠")
-                .mainCategory(mainCategory1)
+                .mainCategory(mainCategory2)
                 .build();
 
         SubCategory subCategory4 = SubCategory.builder()
                 .name("코튼 팬츠")
-                .mainCategory(mainCategory1)
+                .mainCategory(mainCategory2)
                 .build();
 
         SubCategory subCategory5 = SubCategory.builder()
                 .name("후드 집업")
-                .mainCategory(mainCategory1)
+                .mainCategory(mainCategory3)
                 .build();
 
         SubCategory subCategory6 = SubCategory.builder()
                 .name("가디건")
-                .mainCategory(mainCategory1)
+                .mainCategory(mainCategory3)
                 .build();
 
         SubCategory subCategory7 = SubCategory.builder()
                 .name("스니커즈")
-                .mainCategory(mainCategory1)
+                .mainCategory(mainCategory4)
                 .build();
 
         SubCategory subCategory8 = SubCategory.builder()
                 .name("샌들/슬리퍼")
-                .mainCategory(mainCategory1)
+                .mainCategory(mainCategory4)
                 .build();
 
         subCategoryRepository.saveAll(List.of(

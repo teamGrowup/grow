@@ -37,7 +37,7 @@ public class Brand extends BaseEntity {
     @Column(nullable = false)
     private int likeCount;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id")
     private Seller seller;
 
