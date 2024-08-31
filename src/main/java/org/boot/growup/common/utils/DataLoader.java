@@ -186,14 +186,14 @@ public class DataLoader {
     }
     public void brandInit(){
         Brand brand1 = Brand.builder()
-                .name("바지")
+                .name("브랜드1")
                 .description("브랜드1은 심플한 디자인과 고급스러운 소재를 활용한 제품을 선보입니다.")
                 .authorityStatus(AuthorityStatus.PENDING)
                 .likeCount(10)
                 .build();
 
         Brand brand2 = Brand.builder()
-                .name("상의")
+                .name("브랜드2")
                 .description("브랜드2는 혁신적인 기술과 전통적인 장인 정신을 결합하여 특별한 제품을 만듭니다.")
                 .authorityStatus(AuthorityStatus.PENDING)
                 .likeCount(20)
