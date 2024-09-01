@@ -53,7 +53,7 @@ public class ProductController {
             @ApiResponse(responseCode = "201", description = "상품 조회에 성공했을 때"),
             @ApiResponse(responseCode = "404", description = "해당 productId를 가진 상품이 존재하지 않을 때", content = @Content(schema = @Schema(defaultValue = "해당 productId를 가진 상품이 존재하지 않습니다.")))
     })
-    @GetMapping("/sellers/products/{productId}")
+    @GetMapping("/products/{productId}")
     public BaseResponse<GetProductDetailResponseDTO> getProductDetail(@PathVariable Long productId) {
         GetProductDetailResponseDTO productDetail = productApplication.getProductDetail(productId);
         return new BaseResponse<>(productDetail);

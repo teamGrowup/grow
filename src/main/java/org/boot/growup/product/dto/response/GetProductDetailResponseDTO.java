@@ -25,24 +25,6 @@ public class GetProductDetailResponseDTO {
     private List<ProductImageDTO> productImages;
     private List<ProductOptionDTO> productOptions;
 
-    // public 생성자
-    public GetProductDetailResponseDTO(Long id, String name, String description, double averageRating, int likeCount,
-                                    AuthorityStatus authorityStatus, Long subCategoryId, Long mainCategoryId,
-                                    List<ProductImageDTO> productImages,List<ProductOptionDTO> productOptions) {
-        this.productId = id;
-        this.name = name;
-        this.description = description;
-        this.averageRating = averageRating;
-        this.likeCount = likeCount;
-        this.authorityStatus = authorityStatus;
-        this.subCategoryId = subCategoryId;
-        this.mainCategoryId = mainCategoryId;
-        this.productImages = productImages;
-        this.productOptions = productOptions;
-
-    }
-
-    // from 메서드 추가
     public static GetProductDetailResponseDTO from(Product product) {
         return GetProductDetailResponseDTO.builder()
                 .productId(product.getId())

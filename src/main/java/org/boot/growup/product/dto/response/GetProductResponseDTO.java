@@ -1,12 +1,8 @@
 package org.boot.growup.product.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Builder;
 import lombok.Data;
-import org.boot.growup.product.persist.entity.Brand;
 import org.boot.growup.product.persist.entity.Product;
-import org.boot.growup.product.persist.entity.ProductImage;
-import org.boot.growup.product.persist.entity.SubCategory;
 
 @Data
 @Builder
