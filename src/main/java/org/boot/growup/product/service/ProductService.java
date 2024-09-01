@@ -7,6 +7,7 @@ import org.boot.growup.order.dto.OrderItemDTO;
 import org.boot.growup.order.dto.response.GetSearchedProductResponseDTO;
 import org.boot.growup.product.dto.request.PostProductRequestDTO;
 import org.boot.growup.product.dto.response.GetFavoriteKeywordResponseDTO;
+import org.boot.growup.product.dto.response.GetProductResponseDTO;
 import org.boot.growup.product.persist.entity.Product;
 import org.boot.growup.auth.persist.entity.Seller;
 import org.boot.growup.product.persist.entity.ProductImage;
@@ -97,4 +98,19 @@ public interface ProductService {
     인기 검색어
      */
     List<GetFavoriteKeywordResponseDTO> getFavoriteKeyword();
+
+    /*
+    전체 상품 조회
+     */
+    List<GetProductResponseDTO> getProduts();
+
+    /*
+    좋아요 순 상품 조회
+     */
+    List<GetProductResponseDTO> getProductsByLikes();
+
+    /*
+    리뷰 많은 순 상품 조회
+     */
+    List<GetProductResponseDTO> getProductsByReviews();
 }

@@ -13,6 +13,7 @@ import org.boot.growup.common.utils.ImageStore;
 import org.boot.growup.common.utils.S3Service;
 import org.boot.growup.order.dto.response.GetSearchedProductResponseDTO;
 import org.boot.growup.product.dto.response.GetFavoriteKeywordResponseDTO;
+import org.boot.growup.product.dto.response.GetProductResponseDTO;
 import org.boot.growup.product.persist.entity.*;
 import org.boot.growup.product.persist.repository.*;
 import org.boot.growup.product.service.ProductService;
@@ -281,6 +282,27 @@ public class ProductServiceImpl implements ProductService {
 
         return searches.stream()
                 .map(GetFavoriteKeywordResponseDTO::from)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<GetProductResponseDTO> getProduts() {
+        return productRepository.findAll().stream()
+                .map(GetProductResponseDTO::from)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<GetProductResponseDTO> getProductsByLikes() {
+        return productRepository.findAllByOrderByLikeCountDesc().stream()
+                .map(GetProductResponseDTO::from)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<GetProductResponseDTO> getProductsByReviews() {
+        return productRepository.findProductsOrderByReviewCountDesc().stream()
+                .map(GetProductResponseDTO::from)
                 .collect(Collectors.toList());
     }
 }

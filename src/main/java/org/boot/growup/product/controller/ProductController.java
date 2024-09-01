@@ -251,4 +251,18 @@ public class ProductController {
         List<GetFavoriteKeywordResponseDTO> response = productApplication.getFavoriteKeyword();
         return new BaseResponse<>(response);
     }
+
+    /**
+     * [GET]
+     * 상품 조회 (전체, 좋아요 순, 리뷰 많은 순)
+     * @header null
+     * @body null
+     * @param sortBy
+     * @response List<GetProductResponseDTO>
+     */
+    @GetMapping("/products")
+    public BaseResponse<List<GetProductResponseDTO>> getProducts(@RequestParam("sortBy") String sortBy) {
+        List<GetProductResponseDTO> response = productApplication.getProducts(sortBy);
+        return new BaseResponse<>(response);
+    }
 }

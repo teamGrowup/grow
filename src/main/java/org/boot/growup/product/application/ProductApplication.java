@@ -151,4 +151,19 @@ public class ProductApplication {
     public List<GetFavoriteKeywordResponseDTO> getFavoriteKeyword() {
         return productService.getFavoriteKeyword();
     }
+
+    /*
+    상품 조회
+     */
+    public List<GetProductResponseDTO> getProducts(String sortBy) {
+        if("likes".equalsIgnoreCase(sortBy)) {
+            return productService.getProductsByLikes();
+        } else if("reviews".equalsIgnoreCase(sortBy)) {
+            return productService.getProductsByReviews();
+        } else if("all".equalsIgnoreCase(sortBy)) {
+            return productService.getProduts();
+        } else {
+            throw new IllegalArgumentException("잘못된 sortBy 인수입니다.");
+        }
+    }
 }

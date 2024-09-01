@@ -63,6 +63,9 @@ public class Product extends BaseEntity {
     @JoinColumn(name = "brand_id", nullable = false)
     private Brand brand;
 
+    @Column(name = "review_count", nullable = false)
+    private int reviewCount;
+
     public static Product of(PostProductRequestDTO postProductRequestDto, Brand brand, SubCategory subCategory) {
         return Product.builder()
                 .name(postProductRequestDto.getName())
@@ -73,6 +76,7 @@ public class Product extends BaseEntity {
                 .brand(brand)
                 .averageRating(0.0) // 초기 평균 평점
                 .likeCount(0) // 초기 좋아요 수
+                .reviewCount(0)
                 .build();
     }
 
@@ -143,6 +147,16 @@ public class Product extends BaseEntity {
 
     public void patchBrand(Brand brand) {
         this.brand = brand;
+    }
+
+    public void increaseReviewCount() {
+        this.reviewCount++;
+    }
+
+    public void decreaseReviewCount() {
+        if (this.reviewCount > 0) {
+            this.reviewCount--;
+        }
     }
 }
 

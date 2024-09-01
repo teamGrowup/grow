@@ -387,6 +387,7 @@ public class DataLoader {
                 .seller(seller1)
                 .brand(brand1)
                 .subCategory(subCategory1) // 맨투맨
+                .reviewCount(10)
                 .build();
 
         Product product2 = Product.builder()
@@ -399,6 +400,7 @@ public class DataLoader {
                 .seller(seller2)
                 .brand(brand2)
                 .subCategory(subCategory2) // 반팔
+                .reviewCount(12)
                 .build();
 
         Product product3 = Product.builder()
@@ -411,6 +413,7 @@ public class DataLoader {
                 .seller(seller1)
                 .brand(brand1)
                 .subCategory(subCategory3) // 숏 팬츠
+                .reviewCount(14)
                 .build();
 
         Product product4 = Product.builder()
@@ -422,6 +425,7 @@ public class DataLoader {
                 .seller(seller2)
                 .brand(brand2)
                 .subCategory(subCategory4) // 코튼 팬츠
+                .reviewCount(200)
                 .build();
 
         Product product5 = Product.builder()
@@ -433,6 +437,7 @@ public class DataLoader {
                 .seller(seller1)
                 .brand(brand1)
                 .subCategory(subCategory5) // 후드 집업
+                .reviewCount(25)
                 .build();
 
         Product product6 = Product.builder()
@@ -444,6 +449,7 @@ public class DataLoader {
                 .seller(seller2)
                 .brand(brand2)
                 .subCategory(subCategory6) // 가디건
+                .reviewCount(109)
                 .build();
 
         Product product7 = Product.builder()
@@ -455,6 +461,7 @@ public class DataLoader {
                 .seller(seller1)
                 .brand(brand1)
                 .subCategory(subCategory7) // 스니커즈
+                .reviewCount(4)
                 .build();
 
         Product product8 = Product.builder()
@@ -466,6 +473,7 @@ public class DataLoader {
                 .seller(seller2)
                 .brand(brand2)
                 .subCategory(subCategory8) // 샌들/슬리퍼
+                .reviewCount(25)
                 .build();
 
         Product product9 = Product.builder()
@@ -478,6 +486,7 @@ public class DataLoader {
                 .seller(seller1)
                 .brand(brand1)
                 .subCategory(subCategory1) // 맨투맨
+                .reviewCount(5)
                 .build();
 
         Product product10 = Product.builder()
@@ -490,6 +499,7 @@ public class DataLoader {
                 .seller(seller2)
                 .brand(brand2)
                 .subCategory(subCategory2) // 반팔
+                .reviewCount(68)
                 .build();
 
         Product product11 = Product.builder()
@@ -502,6 +512,7 @@ public class DataLoader {
                 .seller(seller1)
                 .brand(brand1)
                 .subCategory(subCategory3) // 숏 팬츠
+                .reviewCount(72)
                 .build();
 
         Product product12 = Product.builder()
@@ -513,6 +524,7 @@ public class DataLoader {
                 .seller(seller2)
                 .brand(brand2)
                 .subCategory(subCategory4) // 코튼 팬츠
+                .reviewCount(29)
                 .build();
 
         Product product13 = Product.builder()
@@ -524,6 +536,7 @@ public class DataLoader {
                 .seller(seller1)
                 .brand(brand1)
                 .subCategory(subCategory5) // 후드 집업
+                .reviewCount(0)
                 .build();
 
         Product product14 = Product.builder()
@@ -535,6 +548,7 @@ public class DataLoader {
                 .seller(seller2)
                 .brand(brand2)
                 .subCategory(subCategory6) // 가디건
+                .reviewCount(0)
                 .build();
 
         Product product15 = Product.builder()
@@ -546,6 +560,7 @@ public class DataLoader {
                 .seller(seller1)
                 .brand(brand1)
                 .subCategory(subCategory7) // 스니커즈
+                .reviewCount(81)
                 .build();
 
         Product product16 = Product.builder()
@@ -557,6 +572,7 @@ public class DataLoader {
                 .seller(seller2)
                 .brand(brand2)
                 .subCategory(subCategory8) // 샌들/슬리퍼
+                .reviewCount(90)
                 .build();
 
         // 상품 옵션들 설정
