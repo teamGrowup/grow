@@ -35,7 +35,11 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### application.yml ###
 src/main/resources/application-dev.yml
 src/main/resources/application-devforprod.yml
 src/test/resources/application-test.yml
 
+### Deploy ###
+/home/gnues/IdeaProjects/grow/deploy.sh
