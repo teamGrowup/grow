@@ -1,5 +1,8 @@
 name: grow-deploy-backend CI/CD
 
+# Connect to the server via ssh and run deploy.sh.
+# Executed when pull_request and push are performed in main.
+
 on:
   push:
     branches:
