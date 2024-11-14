@@ -101,6 +101,9 @@ dependencies {
 
     // yml - POJO
     implementation 'org.springframework.boot:spring-boot-starter-parent:2.6.4'
+
+    // prometeus
+    implementation 'io.micrometer:micrometer-registry-prometheus'
 }
 
 tasks.named('test') {

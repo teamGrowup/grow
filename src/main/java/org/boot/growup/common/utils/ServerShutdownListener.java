@@ -8,7 +8,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
-import org.springframework.web.client.RestClientException;
 
 @Slf4j
 @Component
@@ -47,7 +46,7 @@ public class ServerShutdownListener {
 
             log.info("Discord Notification sent successfully.");
 
-        } catch (RestClientException e) {
+        } catch (Exception e) {
             log.warn("Error sending notification: " + e.getMessage());
         }
     }
