@@ -93,6 +93,19 @@ public class CustomerOrderController {
     ){
         return new BaseResponse<>(orderApplication.getOrderHistory(pageNo));
     }
+
+    /**
+     * [PATCH]
+     * 구매자의 특정 주문 항목 취소
+     * @header CustomerAccesstoken
+     * @param merchantUid 주문번호
+     * @param orderItemId 주문함목 번호
+     */
+    @PatchMapping("/cancel/{merchantUid}/{orderItemId}")
+    public void cancelOrderItem(@PathVariable String merchantUid, @PathVariable Long orderItemId){
+        orderApplication.cancelOrderItem(merchantUid, orderItemId);
+    }
+
     // 환불 요청
     // 그로우페이 결제
 }

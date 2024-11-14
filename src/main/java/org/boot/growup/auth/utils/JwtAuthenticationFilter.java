@@ -32,6 +32,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) { //이 필터 안걸치는 path
+
+        if(request.getAttribute("alreadyReqLogged")==null){ // 중복 제거 로직
+            request.setAttribute("alreadyReqLogged", true);
+            // 로깅: IP 주소, 요청 URI, HTTP 메서드
+            String ipAddress = request.getRemoteAddr();
+            String requestUri = request.getRequestURI();
+            String method = request.getMethod();
+            log.info("Incoming request: IP={}, URI={}, Method={}", ipAddress, requestUri, method);
+        }
+
+
         return requestMatcherHolder.getRequestMatchersByMinRole(null).matches(request);
 
     }
@@ -57,14 +68,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } catch (IllegalArgumentException e) {
             request.setAttribute("exception", ErrorCode.ILLEGAL_ARGUMENT_TOKEN.getCode());
         } catch (Exception e) {
-            log.error("================================================");
-            log.error("JwtFilter - doFilterInternal() 오류발생");
-            log.error("Exception Message : {}", e.getMessage());
-            log.error("Exception StackTrace : {");
-            System.out.println(e);
-            e.printStackTrace();
-            log.error("}");
-            log.error("================================================");
             request.setAttribute("exception", ErrorCode.UNKNOWN_ERROR.getCode());
         }
 

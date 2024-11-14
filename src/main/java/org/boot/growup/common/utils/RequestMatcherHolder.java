@@ -26,6 +26,7 @@ public class RequestMatcherHolder {
             RequestInfo.of(POST,"/sellers/email/**", null),
             RequestInfo.of(POST,"/admins/login", null),
             RequestInfo.of(GET, "/login/**", null),
+            RequestInfo.of(GET, "/actuator/**", null),
 
             RequestInfo.of(GET, "/customers/**", Role.CUSTOMER),
             RequestInfo.of(POST, "/customers/**", Role.CUSTOMER),
