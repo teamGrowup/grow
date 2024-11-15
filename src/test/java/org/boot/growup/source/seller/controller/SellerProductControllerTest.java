@@ -5,7 +5,7 @@ import org.boot.growup.common.constant.Section;
 import org.boot.growup.auth.utils.JwtAuthenticationFilter;
 import org.boot.growup.auth.utils.JwtTokenProvider;
 import org.boot.growup.product.application.ProductApplication;
-import org.boot.growup.product.controller.ProductController;
+import org.boot.growup.product.controller.SellerProductController;
 import org.boot.growup.product.dto.request.PostProductRequestDTO;
 import org.boot.growup.product.dto.response.GetProductDetailResponseDTO;
 import org.boot.growup.common.constant.AuthorityStatus;
@@ -30,9 +30,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ActiveProfiles("test")
-@WebMvcTest(controllers = ProductController.class)
+@WebMvcTest(controllers = SellerProductController.class)
 @WithMockUser
-class ProductControllerTest {
+class SellerProductControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
