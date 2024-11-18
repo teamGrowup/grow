@@ -9,10 +9,7 @@ import org.boot.growup.auth.service.SellerService;
 import org.boot.growup.common.constant.ErrorCode;
 import org.boot.growup.common.model.BaseException;
 import org.boot.growup.order.client.PortOneFeignClient;
-import org.boot.growup.order.dto.OrderDTO;
-import org.boot.growup.order.dto.OrderItemDTO;
-import org.boot.growup.order.dto.PortOnePaymentCancellationDTO;
-import org.boot.growup.order.dto.PortOnePaymentDTO;
+import org.boot.growup.order.dto.*;
 import org.boot.growup.order.dto.request.PatchShipmentRequestDTO;
 import org.boot.growup.order.dto.request.PortOnePaymentCancellationRequestDTO;
 import org.boot.growup.order.dto.request.ProcessNormalOrderRequestDTO;
@@ -164,5 +161,34 @@ public class OrderApplication {
         Page<Order> orders = orderService.getOrders(customer, pageNo);
 
         return GetOrderHistoryResponseDTO.pageFrom(orders);
+    }
+
+    @Transactional
+    public void cancelOrderItem(String merchantUid, Long orderItemId) {
+        Customer customer = customerService.getCurrentCustomer();
+
+        // 1. 특정 주문항목 가져옴. & orderItem이 PAID 혹은 PRE_SHIPPED 상태인지 확인 & 취소 금액 확인 : (주문항목가격*수량)+배달비
+        OrderItemCancelDTO orderItemCancelDTO = orderService.getOrderItemCancelDTO(merchantUid, customer, orderItemId);
+
+        // 2. PortOne에 해당 주문항목가격만큼 환불을 요청함.
+        try {
+            portOneFeignClient.cancelPaymentByPaymentId(
+                    merchantUid,
+                    secretkey,
+                    PortOnePaymentCancellationRequestDTO.builder()
+                            .storeId(storeId)
+                            .reason("주문 취소")
+                            .amount(orderItemCancelDTO.getCancelPrice())
+                            .currentCancellableAmount(orderItemCancelDTO.getCurrentCancellableAmount())
+                            .build()
+            );
+        }catch (Exception e){
+            // 3-1. 실패 시 주문 취소 실패 응답.
+            log.info(e.getMessage());
+            throw new BaseException(ErrorCode.CANCEL_ORDER_ITEM_FAIL);
+        }
+
+        // 4. 해당 주문항목을 PAID->CANCELED 상태로 변경하고 주문 취소 객체를 생성하여 저장
+        orderService.cancelOrderItem(orderItemCancelDTO);
     }
 }

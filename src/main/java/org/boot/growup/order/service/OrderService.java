@@ -3,6 +3,7 @@ package org.boot.growup.order.service;
 import org.boot.growup.auth.persist.entity.Customer;
 import org.boot.growup.auth.persist.entity.Seller;
 import org.boot.growup.order.dto.OrderDTO;
+import org.boot.growup.order.dto.OrderItemCancelDTO;
 import org.boot.growup.order.dto.request.PatchShipmentRequestDTO;
 import org.boot.growup.order.persist.entity.Order;
 import org.boot.growup.product.persist.entity.ProductOption;
@@ -65,4 +66,14 @@ public interface OrderService {
     현재 customer의 order들을 페이징처리하여 가져옴.
      */
     Page<Order> getOrders(Customer customer, int pageNo);
+
+    /*
+    OrderItemId 및 Customer를 통해 OrderItem을 찾고, 취소 금액 및 취소 되기 전 결제돼어있는 총 주문 금액을 가져옴.
+     */
+    OrderItemCancelDTO getOrderItemCancelDTO(String merchantUid, Customer customer, Long orderItemId);
+
+    /*
+    해당 주문항목을 PAID->CANCELED 상태로 변경하고 주문 취소 객체를 생성하여 저장
+     */
+    void cancelOrderItem(OrderItemCancelDTO orderItem);
 }

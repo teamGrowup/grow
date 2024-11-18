@@ -1,0 +1,32 @@
+name: grow-deploy-backend CI/CD
+
+# Connect to the server via ssh and run deploy.sh.
+# Executed when pull_request and push are performed in main.
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Execute remote deploy script
+        env:
+          SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+        run: |
+          sshpass -p $SSH_PASSWORD ssh -o StrictHostKeyChecking=no -p $SSH_PORT $SSH_USER@$SSH_HOST << 'EOF'
+            cd /home/gnues/IdeaProjects/grow
+            ./deploy.sh
+          EOF
