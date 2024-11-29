@@ -1,6 +1,7 @@
 package org.boot.growup.product.service.Impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.boot.growup.common.model.BaseException;
 import org.boot.growup.common.constant.AuthorityStatus;
 import org.boot.growup.common.constant.ErrorCode;
@@ -22,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BrandServiceImpl implements BrandService {
@@ -69,14 +71,13 @@ public class BrandServiceImpl implements BrandService {
         Brand brand = brandRepository.findById(brandId).orElseThrow(
                 () -> new BaseException(ErrorCode.BRAND_BY_SELLER_NOT_FOUND)
         );
-
+        log.debug("[changeBrandAuthority] before brand status {}", brand.getAuthorityStatus());
         switch (status) {
             case DENIED -> brand.deny();
             case PENDING -> brand.pending();
             case APPROVED -> brand.approve();
         }
-
-        brandRepository.save(brand);
+        log.debug("[changeBrandAuthority] after brand status {}", brand.getAuthorityStatus());
     }
 
     @Override
