@@ -6,10 +6,7 @@ import org.boot.growup.common.model.BaseResponse;
 import org.boot.growup.common.model.TokenDTO;
 import org.boot.growup.auth.model.dto.request.AdminSignInRequestDTO;
 import org.boot.growup.auth.service.AdminService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -30,5 +27,12 @@ public class AdminController {
         TokenDTO response = adminService.signIn(request);
         return new BaseResponse<>(response);
     }
+
+
+    @GetMapping("/logout")
+    public void logout() {
+
+    }
+
 
 }
