@@ -3,7 +3,7 @@ package org.boot.growup.source.seller.controller;
 import org.boot.growup.auth.utils.JwtAuthenticationFilter;
 import org.boot.growup.auth.utils.JwtTokenProvider;
 import org.boot.growup.product.application.BrandApplication;
-import org.boot.growup.product.controller.BrandController;
+import org.boot.growup.product.controller.CustomerBrandController;
 import org.boot.growup.product.dto.request.PostBrandRequestDTO;
 import org.boot.growup.product.dto.response.GetSellerBrandResponseDTO;
 import org.hamcrest.Matchers;
@@ -28,10 +28,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ActiveProfiles("test")
-@WebMvcTest(controllers = BrandController.class)
+@WebMvcTest(controllers = CustomerBrandController.class)
 @WithMockUser(roles = "SELLER")
 @MockBean(JpaMetamodelMappingContext.class)
-class BrandControllerTest {
+class CustomerBrandControllerTest {
 
     @Autowired
     private MockMvc mockMvc;

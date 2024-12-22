@@ -60,15 +60,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 log.debug("Security Context에 '{}' 인증 정보를 저장했습니다, uri: {}", authentication.getName(), requestURI);
             }
         } catch (SecurityException | MalformedJwtException e) {
-            request.setAttribute("exception", ErrorCode.WRONG_TYPE_TOKEN.getCode());
+            request.setAttribute("exception", ErrorCode.WRONG_TYPE_TOKEN);
         } catch (ExpiredJwtException e) {
-            request.setAttribute("exception", ErrorCode.EXPIRED_TOKEN.getCode());
+            request.setAttribute("exception", ErrorCode.EXPIRED_TOKEN);
         } catch (UnsupportedJwtException e) {
-            request.setAttribute("exception", ErrorCode.UNSUPPORTED_TOKEN.getCode());
+            request.setAttribute("exception", ErrorCode.UNSUPPORTED_TOKEN);
         } catch (IllegalArgumentException e) {
-            request.setAttribute("exception", ErrorCode.ILLEGAL_ARGUMENT_TOKEN.getCode());
+            request.setAttribute("exception", ErrorCode.ILLEGAL_ARGUMENT_TOKEN);
         } catch (Exception e) {
-            request.setAttribute("exception", ErrorCode.UNKNOWN_ERROR.getCode());
+            request.setAttribute("exception", ErrorCode.UNKNOWN_ERROR);
         }
 
         filterChain.doFilter(request,response);
