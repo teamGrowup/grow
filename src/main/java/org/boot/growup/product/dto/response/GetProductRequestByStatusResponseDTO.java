@@ -11,6 +11,7 @@ public class GetProductRequestByStatusResponseDTO {
     private Long productId;
     private String productName;
     private AuthorityStatus authorityStatus;
+    private String productImageUrl;
 
     public static GetProductRequestByStatusResponseDTO from(Product product) {
         return GetProductRequestByStatusResponseDTO.builder()

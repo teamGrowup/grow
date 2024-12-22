@@ -11,40 +11,28 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import static org.boot.growup.common.constant.ErrorCode.*;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 @Component
-public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
+public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint { // 인증되지 않은 사용자가 보호된 리소스 접근 시 발생하는 예외를 처리
     @Override
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
         // request에서 exception 코드 가져오기
-        Integer exceptionCode = (Integer) request.getAttribute("exception");
-
-        if (exceptionCode == null) {
-            sendErrorResponse(response, UNKNOWN_ERROR);
-        } else if (exceptionCode == WRONG_TYPE_TOKEN.getCode()) {
-            sendErrorResponse(response, WRONG_TYPE_TOKEN);
-        } else if (exceptionCode == EXPIRED_TOKEN.getCode()) {
-            sendErrorResponse(response, EXPIRED_TOKEN);
-        } else if (exceptionCode == UNSUPPORTED_TOKEN.getCode()) {
-            sendErrorResponse(response, UNSUPPORTED_TOKEN);
-        } else if (exceptionCode == ILLEGAL_ARGUMENT_TOKEN.getCode()) {
-            sendErrorResponse(response, ILLEGAL_ARGUMENT_TOKEN);
-        } else {
-            sendErrorResponse(response, ACCESS_DENIED);
-        }
+        ErrorCode exceptionCode = (ErrorCode) request.getAttribute("exception");
+        sendErrorResponse(response, Objects.requireNonNullElse(exceptionCode, UNKNOWN_ERROR));
     }
 
-    private void sendErrorResponse(HttpServletResponse httpServletResponse, ErrorCode errorCode) throws IOException{
-        httpServletResponse.setCharacterEncoding("utf-8");
-        httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
-        httpServletResponse.setContentType(APPLICATION_JSON_VALUE);
+    private void sendErrorResponse(HttpServletResponse response, ErrorCode errorCode) throws IOException{
+        response.setCharacterEncoding("utf-8");
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setContentType(APPLICATION_JSON_VALUE);
 
         BaseResponse<?> errorResponse = new BaseResponse<>(errorCode);
-        new ObjectMapper().writeValue(httpServletResponse.getWriter(), errorResponse);
+        new ObjectMapper().writeValue(response.getWriter(), errorResponse);
     }
 }

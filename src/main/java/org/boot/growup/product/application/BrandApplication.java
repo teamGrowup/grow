@@ -69,6 +69,7 @@ public class BrandApplication {
     /*
     브랜드등록 거부
      */
+    @Transactional
     public void denyBrandPost(Long brandId){
         brandService.changeBrandAuthority(brandId, AuthorityStatus.DENIED);
 
@@ -78,6 +79,7 @@ public class BrandApplication {
     /*
     브랜드등록 허가
      */
+    @Transactional
     public void approveBrandPost(Long brandId) {
         // 브랜드 승인될 시
         brandService.changeBrandAuthority(brandId, AuthorityStatus.APPROVED);
@@ -86,6 +88,7 @@ public class BrandApplication {
     /*
     브랜드등록 허가대기중
      */
+    @Transactional
     public void pendingBrandRegister(Long brandId) {
         // 브랜드 허가대기중 상태로 임의로 변경
         brandService.changeBrandAuthority(brandId, AuthorityStatus.PENDING);
